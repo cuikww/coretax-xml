@@ -1,0 +1,28 @@
+name: Format DJP berubah
+description: DJP merilis template/converter baru, atau Coretax menolak XML yang lolos validasi library
+labels: [format-djp]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Jangan tempel NPWP, NIK, nama, atau alamat asli.** Ganti dengan angka nol atau data rekaan.
+  - type: input
+    id: sumber
+    attributes:
+      label: Sumber pengumuman
+      description: Link halaman DJP, DDTC, Ortax, atau unggahan media sosial DJP
+  - type: input
+    id: versi
+    attributes:
+      label: Versi template/converter baru
+      placeholder: mis. Template Excel v1.7, Converter v1.6
+  - type: textarea
+    id: error
+    attributes:
+      label: Pesan error dari Coretax (jika ada)
+      render: text
+  - type: textarea
+    id: xml
+    attributes:
+      label: Potongan XML yang ditolak (sudah disamarkan)
+      render: xml

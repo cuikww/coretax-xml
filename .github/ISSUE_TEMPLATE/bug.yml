@@ -1,0 +1,26 @@
+name: Bug
+description: Hasil hitung, validasi, atau XML tidak sesuai
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Jangan tempel NPWP, NIK, nama, atau alamat asli.** Ganti dengan angka nol atau data rekaan.
+  - type: input
+    id: versi
+    attributes:
+      label: Versi coretax-xml
+      placeholder: '0.1.0'
+  - type: textarea
+    id: input
+    attributes:
+      label: Input (JSON, sudah disamarkan)
+      render: json
+  - type: textarea
+    id: harap
+    attributes:
+      label: Hasil yang diharapkan dan dasar aturannya
+  - type: textarea
+    id: nyata
+    attributes:
+      label: Hasil yang didapat

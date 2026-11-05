@@ -1,0 +1,40 @@
+name: Release
+on:
+  push:
+    branches: [main]
+
+concurrency: release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # commit versi + tag
+      pull-requests: write # PR "Version Packages"
+      id-token: write # npm trusted publishing (OIDC) + provenance
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      # Pertukaran token OIDC dilakukan npm CLI (>= 11.5.1)
+      - run: npm install -g npm@latest
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+
+      - id: changesets
+        uses: changesets/action@v1
+        with:
+          title: 'chore: version packages'
+          commit: 'chore: version packages'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Setelah PR versi di-merge: publish lewat trusted publishing, tanpa token npm.
+      # Aktifkan Trusted Publisher untuk paket coretax-xml di npmjs.com sebelum rilis pertama.
+      - if: steps.changesets.outputs.hasChangesets == 'false'
+        run: pnpm release && git push --tags
+        env:
+          NPM_CONFIG_PROVENANCE: 'true'

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TaxInvoiceBulk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="TaxInvoice.xsd">
+  <TIN>0000000000000000</TIN>
+  <ListOfTaxInvoice>
+    <TaxInvoice>
+      <TaxInvoiceDate>2026-10-01</TaxInvoiceDate>
+      <TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+      <TrxCode>04</TrxCode>
+      <AddInfo/>
+      <CustomDoc/>
+      <CustomDocMonthYear/>
+      <RefDesc>INV-2026-10-001</RefDesc>
+      <FacilityStamp/>
+      <SellerIDTKU>0000000000000000000000</SellerIDTKU>
+      <BuyerTin>0000000000000000</BuyerTin>
+      <BuyerDocument>TIN</BuyerDocument>
+      <BuyerCountry>IDN</BuyerCountry>
+      <BuyerDocumentNumber>-</BuyerDocumentNumber>
+      <BuyerName>PT Contoh Pembeli</BuyerName>
+      <BuyerAdress>Jl. Contoh No. 1, Jakarta</BuyerAdress>
+      <BuyerEmail>finance@contoh.co.id</BuyerEmail>
+      <BuyerIDTKU>0000000000000000000000</BuyerIDTKU>
+      <ListOfGoodService>
+        <GoodService>
+          <Opt>B</Opt>
+          <Code>000000</Code>
+          <Name>Jasa Konsultasi Sistem</Name>
+          <Unit>UM.0033</Unit>
+          <Price>600000</Price>
+          <Qty>2</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>1200000</TaxBase>
+          <OtherTaxBase>1100000</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>132000</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0</STLG>
+        </GoodService>
+      </ListOfGoodService>
+    </TaxInvoice>
+  </ListOfTaxInvoice>
+</TaxInvoiceBulk>
