@@ -1,12 +1,13 @@
 /**
  * Skema faktur pajak keluaran, versi 2025.09.
  *
- * Dasar: template Excel faktur pajak keluaran v1.6 (diumumkan 24 September 2025)
- * dengan converter XML v1.5, serta sampel XML yang dikutip pihak ketiga.
+ * Dasar: paket resmi DJP ConverterEfakturCoretax v1.6 (template Excel v1.6.1 dan
+ * "Sample Faktur PK Template v.1.4.xml"), diunduh 2026-11-05 dari
+ * https://www.pajak.go.id/id/reformdjp/coretax/template-xml-dan-converter-excel-ke-xml
  *
- * STATUS: disusun dari sumber sekunder. Wajib dicocokkan dengan XSD dan template
- * resmi dari https://www.pajak.go.id/id/reformdjp/coretax/template-xml-dan-converter-excel-ke-xml
- * sebelum rilis 1.0. Lihat docs/DECISIONS.md.
+ * STATUS: urutan elemen dan tabel referensi sudah dicocokkan dengan paket resmi.
+ * XSD resmi tidak tersedia di halaman DJP, dan output converter resmi belum
+ * dibandingkan (golden file). Lihat docs/DECISIONS.md.
  */
 
 export interface MetaSkema {
@@ -24,14 +25,12 @@ export const meta: MetaSkema = {
   id: '2025.09',
   dokumen: 'faktur-keluaran',
   berlakuMulai: '2025-01-01',
-  template: 'Template Excel Faktur PK v1.6 / Sample Faktur PK Template v1.4',
-  converter: 'Converter XML v1.5',
+  template: 'Sample Faktur PK Template v.1.6.1.xlsx / Sample Faktur PK Template v.1.4.xml',
+  converter: 'ConverterEfakturCoretax v1.6',
   terverifikasiDenganXsdResmi: false,
   sumber: [
     'https://www.pajak.go.id/id/reformdjp/coretax/template-xml-dan-converter-excel-ke-xml',
-    'https://news.ddtc.co.id/berita/nasional/1813944/perhatian-ada-update-template-excel-faktur-pajak-keluaran',
-    'https://news.ddtc.co.id/berita/nasional/1809266/djp-luncurkan-aplikasi-converter-xml-versi-15',
-    'https://www.sipajak.com/post/format-xml-faktur-pajak-coretax',
+    'https://pajak.go.id/sites/default/files/2026-01/ConverterEfakturCoretax__v1.6.zip',
   ],
 }
 
@@ -76,52 +75,430 @@ export const elemenItem = [
 export type ElemenFaktur = (typeof elemenFaktur)[number]
 export type ElemenItem = (typeof elemenItem)[number]
 
-/**
- * Kode transaksi faktur pajak. Deskripsi ringkas mengikuti kode transaksi e-Faktur;
- * cocokkan dengan sheet REF di template resmi.
- */
-export const kodeTransaksi: Record<string, string> = {
-  '01': 'Kepada pihak yang bukan pemungut PPN',
-  '02': 'Kepada pemungut PPN instansi pemerintah',
-  '03': 'Kepada pemungut PPN selain instansi pemerintah',
-  '04': 'DPP nilai lain',
-  '05': 'Besaran tertentu',
-  '06': 'Penyerahan lainnya (termasuk kepada turis)',
-  '07': 'Penyerahan yang PPN-nya tidak dipungut atau ditanggung pemerintah',
-  '08': 'Penyerahan yang dibebaskan dari pengenaan PPN',
-  '09': 'Penyerahan aktiva (Pasal 16D UU PPN)',
-  '10': 'Penyerahan lainnya',
-}
-
 /** Kode transaksi yang PPN-nya wajib sama dengan tarif x DPP nilai lain. */
 export const kodeDenganRumusPpn = new Set(['01', '04', '09'])
 
 /** Kode transaksi yang wajib mengisi keterangan tambahan dan cap fasilitas. */
 export const kodeWajibFasilitas = new Set(['07', '08'])
 
-/**
- * Kode satuan UM.0001 sampai UM.0039 (UM.0034 sampai UM.0039 ditambahkan di template v1.6).
- * Nama satuan diisi dari sheet REF template resmi; yang sudah diketahui dari pengumuman DJP:
- */
-export const satuan: Record<string, string | null> = Object.fromEntries(
-  Array.from({ length: 39 }, (_, i) => [`UM.${String(i + 1).padStart(4, '0')}`, null]),
-)
-Object.assign(satuan, {
+export const jenisId = ['TIN', 'National ID', 'Passport', 'Other ID'] as const
+
+export const BUYER_TIN_NOL = '0000000000000000'
+export const BUYER_IDTKU_NOL = '000000'
+export const KODE_BARANG_DEFAULT = '000000'
+export const TARIF_PPN_DEFAULT = '12'
+
+// Tabel referensi di bawah dibuat dari sheet REF template resmi "Sample Faktur PK Template v.1.6.1.xlsx"
+// (paket ConverterEfakturCoretax v1.6, diunduh 2026-11-05). Lihat fixtures/djp/README.md.
+
+/** Kode transaksi (sheet REF-General). */
+export const kodeTransaksi: Record<string, string> = {
+  '01': 'kepada selain Pemungut PPN',
+  '02': 'kepada Pemungut PPN Instansi Pemerintah',
+  '03': 'kepada Pemungut PPN selain Instansi Pemerintah',
+  '04': 'DPP Nilai Lain',
+  '05': 'Besaran tertentu',
+  '06': 'kepada orang pribadi pemegang paspor luar negeri (16E UU PPN)',
+  '07': 'penyerahan dengan fasilitas PPN atau PPN dan PPnBM tidak dipungut/ditanggung pemerintah',
+  '08': 'penyerahan dengan fasilitas dibebaskan PPN atau PPN dan PPnBM',
+  '09': 'penyerahan aktiva yang menurut tujuan semula tidak diperjualbelikan (16D UU PPN)',
+  '10': 'Penyerahan lainnya',
+}
+
+/** Satuan ukur (sheet REF-General). */
+export const satuan: Record<string, string> = {
+  'UM.0001': 'Metrik Ton',
+  'UM.0002': 'Wet Ton',
+  'UM.0003': 'Kilogram',
+  'UM.0004': 'Gram',
+  'UM.0005': 'Karat',
+  'UM.0006': 'Kiloliter',
+  'UM.0007': 'Liter',
+  'UM.0008': 'Barrel',
+  'UM.0009': 'MMBTU',
+  'UM.0010': 'Ampere',
+  'UM.0011': 'Sentimeter Kubik',
+  'UM.0012': 'Meter Persegi',
+  'UM.0013': 'Meter',
+  'UM.0014': 'Inci',
+  'UM.0015': 'Sentimeter',
+  'UM.0016': 'Yard',
+  'UM.0017': 'Lusin',
+  'UM.0018': 'Unit',
+  'UM.0019': 'Set',
+  'UM.0020': 'Lembar',
+  'UM.0021': 'Piece',
+  'UM.0022': 'Boks',
+  'UM.0023': 'Tahun',
+  'UM.0024': 'Bulan',
+  'UM.0025': 'Minggu',
+  'UM.0026': 'Hari',
+  'UM.0027': 'Jam',
+  'UM.0028': 'Menit',
+  'UM.0029': 'Persen',
+  'UM.0030': 'Kegiatan',
+  'UM.0031': 'Laporan',
+  'UM.0032': 'Bahan',
+  'UM.0033': 'Lainnya',
   'UM.0034': 'Meter Kubik',
   'UM.0035': 'Sentimeter Persegi',
   'UM.0036': 'Drum',
   'UM.0037': 'Karton',
   'UM.0038': 'Kwh',
   'UM.0039': 'Roll',
-})
+}
 
-export const jenisId = ['TIN', 'National ID', 'Passport', 'Other ID'] as const
+/** Keterangan tambahan (AddInfo) per kode transaksi (sheet REF-KetTambahan). Kode yang sama punya arti berbeda untuk 07 dan 08. */
+export const keteranganTambahan: Record<'07' | '08', Record<string, string>> = {
+  '07': {
+    'TD.00501': 'untuk Kawasan Bebas',
+    'TD.00502': 'untuk Tempat Penimbunan Berikat',
+    'TD.00503': 'untuk Hibah dan Bantuan Luar Negeri',
+    'TD.00504': 'untuk Avtur',
+    'TD.00505': 'untuk Lainnya',
+    'TD.00506': 'untuk Kontraktor Perjanjian Karya Pengusahaan Pertambangan Batubara Generasi I',
+    'TD.00507': 'untuk Penyerahan bahan bakar minyak untuk Kapal Angkutan Laut Luar Negeri',
+    'TD.00508': 'untuk Penyerahan jasa kena pajak terkait alat angkutan tertentu',
+    'TD.00509': 'untuk Penyerahan BKP Tertentu di KEK',
+    'TD.00510': 'untuk BKP tertentu yang bersifat strategis berupa anode slime',
+    'TD.00511':
+      'untuk Penyerahan alat angkutan tertentu dan/atau Jasa Kena Pajak terkait alat angkutan tertentu',
+    'TD.00512':
+      'untuk Penyerahan kepada Kontraktor Kerja Sama Migas yang mengikuti ketentuan Peraturan Pemerintah Nomor 27 Tahun 2017',
+    'TD.00513':
+      'Penyerahan Rumah Tapak dan Satuan Rumah Susun Rumah Susun Ditanggung Pemerintah Tahun Anggaran 2025',
+    'TD.00514':
+      'Penyerahan Jasa Sewa Ruangan atau Bangunan Kepada Pedagang Eceran yang Ditanggung Pemerintah Tahun Anggaran 2021',
+    'TD.00515': 'Penyerahan Barang dan Jasa Dalam Rangka Penanganan Pandemi COVID-19 (PMK 239/PMK. 03/2020)',
+    'TD.00516':
+      'Insentif PMK-103/PMK.010/2021 berupa PPN atas Penyerahan Rumah Tapak dan Unit Hunian Rumah Susun yang Ditanggung Pemerintah Tahun Anggaran 2021',
+    'TD.00517': 'Kawasan Ekonomi Khusus PP nomor 40 Tahun 2021',
+    'TD.00518': 'Kawasan Bebas PP nomor 41 Tahun 2021',
+    'TD.00519':
+      'Penyerahan Rumah Tapak dan Unit Hunian Rumah Susun yang Ditanggung Pemerintah Tahun Anggaran 2022',
+    'TD.00520': 'PPN Ditanggung Pemerintah dalam rangka Penanganan Pandemi Corona Virus',
+    'TD.00521':
+      'Penyerahan kepada Kontraktor Kerja Sama Migas yang mengikuti ketentuan Peraturan Pemerintah Nomor 53 Tahun 2017',
+    'TD.00522': 'BKP strategis tertentu dalam bentuk anode slime dan emas butiran',
+    'TD.00523': 'untuk penyerahan kertas koran dan/atau majalah',
+    'TD.00524': 'PPN Ditanggung Pemerintah',
+    'TD.00525': 'BKP dan JKP tertentu',
+    'TD.00526': 'Penyerahan BKP dan JKP di Ibu Kota Negara baru',
+    'TD.00527': 'Penyerahan kendaraan listrik berbasis baterai',
+    'TD.00528':
+      'Insentif Tambahan Penyerahan Rumah Tapak dan Satuan Rumah Susun Rumah Susun Ditanggung Pemerintah Tahun Anggaran 2025',
+    'TD.00529':
+      'PPN atas Penyerahan Hewan Khusus Tertentu Berupa Kuda serta Perlengkapan Pendukungnya Pemerintah Tahun Anggaran 2025',
+    'TD.00530':
+      'PPN atas Penyerahan Bekal Khusus Operasi Tertentu Yang Ditanggung Pemerintah Tahun Anggaran 2025',
+    'TD.00531':
+      'Penyerahan Rumah Tapak dan Satuan Rumah Susun Rumah Susun Ditanggung Pemerintah Tahun Anggaran 2026',
+  },
+  '08': {
+    'TD.00501': 'untuk BKP dan JKP Tertentu',
+    'TD.00502': 'untuk BKP Tertentu yang Bersifat Strategis',
+    'TD.00503': 'untuk Jasa Kebandarudaraan',
+    'TD.00504': 'untuk Lainnya',
+    'TD.00505': 'untuk BKP Tertentu yang Bersifat Strategis sesuai PP Nomor 81 Tahun 2015',
+    'TD.00506': 'untuk Penyerahan Jasa Kepelabuhan Tertentu untuk kegiatan angkutan laut Luar Negeri',
+    'TD.00507': 'untuk Penyerahan Air Bersih',
+    'TD.00508': 'Penyerahan BKP tertentu yang bersifat strategis berdasarkan PP 48 Tahun 2020',
+    'TD.00509': 'Penyerahan kepada Perwakilan Negara Asing dan Badan Internasional serta Pejabatnya',
+    'TD.00510': 'BKP dan JKP tertentu',
+  },
+}
 
-/** Pola kode keterangan tambahan dan cap fasilitas. Daftar lengkap ada di sheet REF template resmi. */
-export const polaKeteranganTambahan = /^TD\.005\d{2}$/
-export const polaCapFasilitas = /^TD\.011\d{2}$/
+/** Cap fasilitas (FacilityStamp) per kode transaksi (sheet REF-CapFasilitas). */
+export const capFasilitas: Record<'07' | '08', Record<string, string>> = {
+  '07': {
+    'TD.01101': 'Pajak Pertambahan Nilai Tidak Dipungut berdasarkan PP Nomor 10 Tahun 2012',
+    'TD.01102':
+      'Pajak Pertambahan Nilai atau Pajak Pertambahan Nilai dan Pajak Penjualan atas Barang Mewah tidak dipungut',
+    'TD.01103': 'Pajak Pertambahan Nilai dan Pajak Penjualan atas Barang Mewah Tidak Dipungut',
+    'TD.01104': 'Pajak Pertambahan Nilai Tidak Dipungut Sesuai PP Nomor 71 Tahun 2012',
+    'TD.01105': '(Tidak ada Cap)',
+    'TD.01106': 'PPN dan/atau PPnBM tidak dipungut berdasarkan PMK No. 194/PMK.03/2012',
+    'TD.01107': 'PPN Tidak Dipungut Berdasarkan PP Nomor 15 Tahun 2015',
+    'TD.01108': 'PPN Tidak Dipungut Berdasarkan PP Nomor 69 Tahun 2015',
+    'TD.01109': 'PPN Tidak Dipungut Berdasarkan PP Nomor 96 Tahun 2015',
+    'TD.01110': 'PPN Tidak Dipungut Berdasarkan PP Nomor 106 Tahun 2015',
+    'TD.01111': 'PPN Tidak Dipungut Sesuai PP Nomor 50 Tahun 2019',
+    'TD.01112': 'PPN atau PPN dan PPnBM Tidak Dipungut Sesuai Dengan PP Nomor 27 Tahun 2017',
+    'TD.01113': 'PPN DITANGGUNG PEMERINTAH EKSEKUSI PMK NOMOR 13 TAHUN 2025',
+    'TD.01114': 'PPN DITANGGUNG PEMERINTAH EKS PMK 102/PMK.010/2021',
+    'TD.01115': 'PPN DITANGGUNG PEMERINTAH EKS PMK 239/PMK.03/2020',
+    'TD.01116': 'Insentif PPN DITANGGUNG PEMERINTAH EKSEKUSI PMK NOMOR 103/PMK.010/2021',
+    'TD.01117': 'PAJAK PERTAMBAHAN NILAI TIDAK DIPUNGUT BERDASARKAN PP NOMOR 40 TAHUN 2021',
+    'TD.01118': 'PAJAK PERTAMBAHAN NILAI TIDAK DIPUNGUT BERDASARKAN PP NOMOR 41 TAHUN 2021',
+    'TD.01119': 'PPN DITANGGUNG PEMERINTAH EKS PMK 6/PMK.010/2022',
+    'TD.01120': 'PPN DITANGGUNG PEMERINTAH EKSEKUSI PMK NOMOR 226/PMK.03/2021',
+    'TD.01121': 'PPN ATAU PPN DAN PPnBM TIDAK DIPUNGUT SESUAI DENGAN PP NOMOR 53 TAHUN 2017',
+    'TD.01122': 'PPN tidak dipungut berdasarkan PP Nomor 70 Tahun 2021',
+    'TD.01123': 'PPN ditanggung Pemerintah Ex PMK-125/PMK.01/2020',
+    'TD.01124': '(Tidak ada Cap)',
+    'TD.01125': 'PPN tidak dipungut berdasarkan PP Nomor 49 Tahun 2022',
+    'TD.01126': 'PPN tidak dipungut berdasarkan PP Nomor 12 Tahun 2023',
+    'TD.01127': 'PPN Ditanggung Pemerintah berdasarkan PMK Nomor 12 Tahun 2025',
+    'TD.01128': 'PPN DITANGGUNG PEMERINTAH EKSEKUSI PMK NOMOR 60 TAHUN 2025',
+    'TD.01129': 'PPN DITANGGUNG PEMERINTAH BERDASARKAN PMK NOMOR 61 TAHUN 2025',
+    'TD.01130': 'PPN DITANGGUNG PEMERINTAH BERDASARKAN PMK NOMOR 44 TAHUN 2025',
+    'TD.01131': 'PPN DITANGGUNG PEMERINTAH BERDASARKAN PMK NOMOR 90 TAHUN 2025',
+  },
+  '08': {
+    'TD.01101':
+      'PPN Dibebaskan Sesuai PP Nomor 146 Tahun 2000 Sebagaimana Telah Diubah Dengan PP Nomor 38 Tahun 2003',
+    'TD.01102':
+      'PPN Dibebaskan Sesuai PP Nomor 12 Tahun 2001 Sebagaimana Telah Beberapa Kali Diubah Terakhir Dengan PP Nomor 31 Tahun 2007',
+    'TD.01103': 'PPN dibebaskan berdasarkan Peraturan Pemerintah Nomor 28 Tahun 2009',
+    'TD.01104': '(Tidak ada cap)',
+    'TD.01105': 'PPN Dibebaskan Sesuai Dengan PP Nomor 81 Tahun 2015',
+    'TD.01106': 'PPN Dibebaskan Berdasarkan PP Nomor 74 Tahun 2015',
+    'TD.01107': '(tanpa cap)',
+    'TD.01108':
+      'PPN DIBEBASKAN SESUAI PP NOMOR 81 TAHUN 2015 SEBAGAIMANA TELAH DIUBAH DENGAN PP 48 TAHUN 2020',
+    'TD.01109': 'PPN DIBEBASKAN BERDASARKAN PP NOMOR 47 TAHUN 2020',
+    'TD.01110': 'PPN Dibebaskan berdasarkan PP Nomor 49 Tahun 2022',
+  },
+}
 
-export const BUYER_TIN_NOL = '0000000000000000'
-export const BUYER_IDTKU_NOL = '000000'
-export const KODE_BARANG_DEFAULT = '000000'
-export const TARIF_PPN_DEFAULT = '12'
+/** Kode negara (sheet REF-KodeNegara), nama apa adanya dari DJP. Perhatian: IND = India, Indonesia = IDN. */
+export const negara: Record<string, string> = {
+  ABW: 'Aruba',
+  AFG: 'Afganistan',
+  AGO: 'Angola',
+  AIA: 'Angola',
+  ALA: 'Kepulauan Aland',
+  ALB: 'Albania',
+  AND: 'Andorra',
+  ARE: 'Uni Emirat Arab',
+  ARG: 'Argentina',
+  ARM: 'Armenia',
+  ASM: 'Samoa Amerika',
+  ATA: 'Antartika',
+  ATF: 'Wilayah Selatan Prancis',
+  ATG: 'Antigua dan Barbuda',
+  AUS: 'Australia',
+  AUT: 'Austria',
+  AZE: 'Azerbaijan',
+  BDI: 'Burundi',
+  BEL: 'Belgia',
+  BEN: 'Benin',
+  BES: 'Bonaire, Sint Eustatius dan Saba',
+  BFA: 'Burkina Faso',
+  BGD: 'Bangladesh',
+  BGR: 'Bulgaria',
+  BHR: 'Bahrain',
+  BHS: 'Bahama',
+  BIH: 'Bosnia dan Herzegovina',
+  BLM: 'Santo Barthelemy',
+  BLR: 'Belarusia',
+  BLZ: 'Belize',
+  BMU: 'Bermuda',
+  BOL: 'Negara Majemuk Bolivia',
+  BRA: 'Brasil',
+  BRB: 'Barbados',
+  BRN: 'Brunei Darussalam',
+  BTN: 'Bhutan',
+  BVT: 'Pulau Bouvet',
+  BWA: 'Botswana',
+  CAF: 'Republik Afrika Tengah',
+  CAN: 'Kanada',
+  CCK: 'Kepulauan Cocos (Keeling)',
+  CHE: 'Swiss',
+  CHL: 'Cile',
+  CHN: 'Cina',
+  CIV: 'Pantai Gading',
+  CMR: 'Kamerun',
+  COD: 'Republik Demokratik Kongo',
+  COG: 'Kongo',
+  COK: 'Kepulauan Cook',
+  COL: 'Kolombia',
+  COM: 'Komoro',
+  CPV: 'Cabo Verde',
+  CRI: 'Kosta Rika',
+  CUB: 'Kuba',
+  CUW: 'Curacao',
+  CXR: 'Pulau Natal',
+  CYM: 'Kepulauan Cayman',
+  CZE: 'Republik Ceko',
+  DEU: 'Jerman',
+  DJI: 'Djibouti',
+  DMA: 'Dominika',
+  DNK: 'Denmark',
+  DOM: 'Republik Dominika',
+  DZA: 'Aljazair',
+  ECU: 'Ekuador',
+  EGY: 'Mesir',
+  ERI: 'Eritrea',
+  ESH: 'Sahara Barat',
+  ESP: 'Spanyol',
+  EST: 'Estonia',
+  ETH: 'Etiopia',
+  FIN: 'Finlandia',
+  FLK: 'Kepulauan Falkland (Malvinas)',
+  FRA: 'Prancis',
+  FRO: 'Kepulauan Faroe',
+  FSM: 'Negara Federasi Mikronesia',
+  GAB: 'Gabon',
+  GBR: 'Britania Raya',
+  GEO: 'Georgia',
+  GGY: 'Guernsey',
+  GHA: 'Ghana',
+  GIB: 'Gibraltar',
+  GIN: 'Guinea',
+  GLP: 'Guadeloupe',
+  GMB: 'Gambia',
+  GNB: 'Guinea-Bissau',
+  GRC: 'Yunani',
+  GRD: 'Granada',
+  GRL: 'Greenland',
+  GTM: 'Guatemala',
+  GUF: 'Guyana Prancis',
+  GUM: 'Guam',
+  GUY: 'Guyana',
+  HKG: 'Hongkong',
+  HMD: 'Pulau Heard dan Kepulauan McDonald',
+  HND: 'Honduras',
+  HRV: 'Kroasia',
+  HTI: 'Haiti',
+  HUN: 'Hongaria',
+  IDN: 'Indonesia',
+  IND: 'India',
+  IOT: 'Wilayah Samudra Hindia Britania',
+  IRL: 'Irlandia',
+  IRN: 'Republik Islam Iran',
+  IRQ: 'Irak',
+  ISL: 'Islandia',
+  ISR: 'Israel',
+  ITA: 'Italia',
+  JAM: 'Jamaika',
+  JOR: 'Yordania',
+  JPN: 'Jepang',
+  KAZ: 'Kazakstan',
+  KEN: 'Kenya',
+  KGZ: 'Kirgistan',
+  KHM: 'Kamboja',
+  KNA: 'Saint Kitts dan Nevis',
+  KOR: 'Korea (Republik)',
+  KWT: 'Kuwait',
+  LAO: 'Republik Demokratik Rakyat Laos',
+  LBN: 'Libanon',
+  LBR: 'Liberia',
+  LBY: 'Libya',
+  LCA: 'Santa Lucia',
+  LIE: 'Liechtenstein',
+  LKA: 'Sri Lanka',
+  LSO: 'Lesoto',
+  LTU: 'Lithuania',
+  LUX: 'Luksemburg',
+  LVA: 'Latvia',
+  MAC: 'Makao',
+  MAF: 'Santo Martin (bagian Prancis)',
+  MAR: 'Maroko',
+  MCO: 'Monako',
+  MDA: 'Republik Moldova',
+  MDG: 'Madagaskar',
+  MDV: 'Maladewa',
+  MEX: 'Meksiko',
+  MHL: 'Kepulauan Marshall',
+  MLI: 'Mali',
+  MLT: 'Malta',
+  MNE: 'Montenegro',
+  MNG: 'Mongolia',
+  MNP: 'Kepulauan Mariana Utara',
+  MOZ: 'Mozambik',
+  MRT: 'Mauritania',
+  MSR: 'Montserrat',
+  MTQ: 'Martinik',
+  MUS: 'Mauritius',
+  MWI: 'Malawi',
+  MYS: 'Malaysia',
+  NAM: 'Namibia',
+  NCL: 'Kaledonia Baru',
+  NER: 'Niger',
+  NFK: 'Pulau Norfolk',
+  NGA: 'Nigeria',
+  NIC: 'Nikaragua',
+  NIU: 'Niue',
+  NLD: 'Belanda',
+  NOR: 'Norwegia',
+  NPL: 'Nepal',
+  NRU: 'Nauru',
+  NZL: 'Selandia Baru',
+  OMN: 'Oman',
+  PAK: 'Pakistan',
+  PAN: 'Panama',
+  PCN: 'Pitcairn',
+  PER: 'Peru',
+  PHL: 'Filipina',
+  PLW: 'Palau',
+  PNG: 'Papua Nugini',
+  POL: 'Polandia',
+  PRA: 'Perancis',
+  PRI: 'Puerto Riko',
+  PRK: 'Republik Rakyat Demokratik Korea',
+  PRT: 'Portugal',
+  PRY: 'Paraguay',
+  PYF: 'Polinesia',
+  QAT: 'Qatar',
+  REU: 'Reuni',
+  RIL: 'Republik Irlandia',
+  ROM: 'Rumania (New Code)',
+  ROU: 'Rumania',
+  RUS: 'Federasi Rusia',
+  RWA: 'Rwanda',
+  SAU: 'Arab Saudi',
+  SDN: 'Sudan',
+  SEN: 'Senegal',
+  SGP: 'Singapura',
+  SHN: 'Saint Helena, Ascension dan Tristan da Cunha',
+  SJM: 'Svalbard dan Jan Mayen',
+  SLE: 'Sierra Leone',
+  SLV: 'El Salvador',
+  SMR: 'San Marino',
+  SOM: 'Somalia',
+  SPM: 'Saint Pierre dan Miquelon',
+  SRB: 'Serbia',
+  SSD: 'Sudan Selatan',
+  STP: 'Sao Tome dan Principe',
+  SUR: 'nama Suriname',
+  SVK: 'Slowakia',
+  SVN: 'Slovenia',
+  SWE: 'Swedia',
+  SWZ: 'Swaziland',
+  SXM: 'Sint Maarten (bagian Belanda)',
+  SYC: 'Seychelles',
+  SYR: 'Republik Arab Suriah',
+  TCA: 'Kepulauan Turks dan Caicos',
+  TCD: 'Chad',
+  TGO: 'Togo',
+  THA: 'Thailand',
+  TJK: 'Tajikistan',
+  TKL: 'Tokelau',
+  TKM: 'Turkmenistan',
+  TLS: 'Timor Leste',
+  TON: 'Tonga',
+  TTO: 'Trinidad dan Tobago',
+  TUN: 'Tunisia',
+  TUR: 'Turki',
+  TUV: 'Tuvalu',
+  TWN: 'Taiwan',
+  UGA: 'Uganda',
+  UKR: 'Ukraina',
+  UMI: 'Kepulauan Terpencil Kecil Amerika Serikat',
+  URY: 'Uruguay',
+  USA: 'Amerika Serikat',
+  UZB: 'Uzbekistan',
+  VAT: 'Tahta Suci (Negara Kota Vatikan)',
+  VCT: 'Saint Vincent dan Grenadines',
+  VEN: 'Venezuela (Republik Bolivarian)',
+  VGB: 'Kepulauan Virgin (Inggris)',
+  VIR: 'Kepulauan Virgin (Amerika Serikat)',
+  VNM: 'Vietnam',
+  VUT: 'Vanuatu',
+  WLF: 'Wallis dan Futuna',
+  YEM: 'Yaman',
+  ZAF: 'Afrika Selatan',
+  ZMB: 'Zambia',
+  ZWE: 'Zimbabwe',
+}

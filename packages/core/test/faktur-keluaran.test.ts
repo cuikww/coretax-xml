@@ -49,6 +49,56 @@ describe('build', () => {
     expect(fakturKeluaran.build(contoh())).toBe(fixture('contoh-jasa-kode-04.xml'))
   })
 
+  it('isinya sama dengan sampel resmi DJP "Sample Faktur PK Template v.1.4.xml"', () => {
+    const resmi = readFileSync(
+      fileURLToPath(new URL('../../../fixtures/djp/Sample Faktur PK Template v.1.4.xml', import.meta.url)),
+      'utf8',
+    )
+    const xml = fakturKeluaran.build({
+      penjual: { npwp: '1091031210912281', nitku: '1091031210912281000000' },
+      faktur: [
+        {
+          tanggal: '2025-02-02',
+          kodeTransaksi: '07',
+          keteranganTambahan: 'TD.00502',
+          dokumenPendukung: '00004092893220241216000270',
+          periodeDokumenPendukung: '122024',
+          capFasilitas: 'TD.01102',
+          pembeli: {
+            jenisId: 'TIN',
+            npwp: '1091031210912281',
+            nitku: '1091031210912281000000',
+            negara: 'IND',
+            nama: 'PT Contoh',
+            alamat: 'Jakarta',
+            email: 'someemail@gmail.com',
+          },
+          item: [
+            {
+              jenis: 'barang',
+              kode: '000000',
+              nama: 'Barang',
+              satuan: 'UM.0001',
+              harga: 15000,
+              jumlah: 200,
+              diskon: 100000,
+              tarifPpn: 11,
+              tarifPpnbm: 20,
+            },
+          ],
+        },
+      ],
+    })
+    // Sampel v1.4 (Feb 2025) mengosongkan 3 field ini; template v1.6.1 mewajibkannya
+    // ("-" untuk nomor dokumen pembeli TIN, nama dan alamat wajib).
+    const bedaYangDiketahui = ['BuyerDocumentNumber', 'BuyerName', 'BuyerAdress']
+    const daun = (x: string) =>
+      [...x.matchAll(/<(\w+)(?:\/>|>([^<]*)<\/\1>)/g)]
+        .filter((m) => !bedaYangDiketahui.includes(m[1] as string))
+        .map((m) => `${m[1]}=${m[2] ?? ''}`)
+    expect(daun(xml)).toEqual(daun(resmi))
+  })
+
   it('melempar CoretaxValidationError berisi semua error', () => {
     const b = contoh({ tanggal: '2026-02-30', kodeTransaksi: '99' as never })
     try {
@@ -163,6 +213,30 @@ describe('validate', () => {
     expect(
       kodeError(contoh({ kodeTransaksi: '07', keteranganTambahan: 'TD.00524', capFasilitas: 'TD.01113' })),
     ).toEqual([])
+  })
+
+  it('keterangan tambahan dan cap fasilitas dicek ke daftar resmi per kode transaksi', () => {
+    // TD.00511 dan TD.01111 ada untuk kode 07, tidak untuk 08
+    const ok07 = contoh({ kodeTransaksi: '07', keteranganTambahan: 'TD.00511', capFasilitas: 'TD.01111' })
+    expect(kodeError(ok07)).toEqual([])
+    const salah08 = contoh({ kodeTransaksi: '08', keteranganTambahan: 'TD.00511', capFasilitas: 'TD.01111' })
+    expect(kodeError(salah08)).toEqual(['ADDINFO_UNKNOWN', 'FACILITY_UNKNOWN'])
+  })
+
+  it('kode negara dicek ke daftar resmi', () => {
+    const b = contoh()
+    ;(b.faktur[0] as FakturKeluaran).pembeli.negara = 'XYZ'
+    expect(kodeError(b)).toEqual(['COUNTRY_UNKNOWN'])
+    expect(referensi.negara().IDN).toBe('Indonesia')
+  })
+
+  it('PPnBM dihitung dari DPP nilai lain; nilai lain hanya peringatan', () => {
+    const item = { jenis: 'barang' as const, nama: 'X', satuan: 'UM.0002', harga: 12000000, jumlah: 10 }
+    const b = contoh({ item: [{ ...item, tarifPpnbm: 10 }] })
+    expect(fakturKeluaran.analisis(b).faktur[0]?.item[0]?.STLG).toBe(1100000000n) // 10% x 110.000.000, dalam sen
+    const h = fakturKeluaran.validate(contoh({ item: [{ ...item, tarifPpnbm: 10, ppnbm: 12000000 }] }))
+    expect(h.valid).toBe(true)
+    expect(h.warnings.map((w) => w.code)).toContain('STLG_MISMATCH')
   })
 
   it('negara IND diperingatkan sebagai India', () => {

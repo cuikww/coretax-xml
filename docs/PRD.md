@@ -10,7 +10,7 @@ Per 5 November 2026: repo disiapkan, `coretax-xml` 0.1.0 (draf, belum terbit di 
 
 | Fase | Status |
 | --- | --- |
-| v0.1 Faktur | 🟡 Kode core, hitung, validasi, dan writer XML ada dengan 42 test. **Belum**: template resmi DJP, golden file, uji impor nyata (Gerbang 1) |
+| v0.1 Faktur | 🟡 Kode core, hitung, validasi, dan writer XML ada dengan 46 test. Paket resmi DJP (converter v1.6, template v1.6.1) sudah diunduh; tabel referensi dan urutan elemen dicocokkan, output sama dengan sampel resmi v1.4. **Belum**: golden file dari converter, uji impor nyata (Gerbang 1) |
 | v0.2 CLI + retur | Belum dimulai |
 | v0.3 sampai v0.4 Bupot | Belum dimulai |
 | v1.0 Stabil | Belum dimulai |
@@ -550,7 +550,7 @@ Gerbang 1 paling penting: tidak ada jenis dokumen baru sebelum XML faktur keluar
 **Langkah pertama (minggu 1)**
 
 - [x] Daftarkan nama `coretax-xml` di npm dan GitHub *(repo GitHub dibuat; nama npm diklaim saat rilis pertama)*
-- [ ] Unduh paket template dan converter dari halaman resmi DJP, simpan di `fixtures/` beserta tanggal unduh
+- [x] Unduh paket template dan converter dari halaman resmi DJP, simpan di `fixtures/` beserta tanggal unduh *(2026-11-05, lihat `fixtures/djp/README.md`)*
 - [ ] Buat 10 golden file dengan converter resmi
 - [ ] Cari mitra PKP atau konsultan pajak untuk uji impor nyata
 - [x] Setup monorepo (pnpm, tsup, Vitest, Biome, Changesets)
@@ -575,6 +575,7 @@ Risiko terbesar adalah aturan pajak yang salah diterjemahkan ke kode; mitigasiny
 - [ ] Aturan pembulatan resmi untuk DPP nilai lain dan PPN per item atau per faktur?
 - [ ] Apakah ada batas jumlah faktur atau ukuran file per impor XML?
 - [ ] Apakah NITKU kantor pusat selalu NPWP + `000000`?
+- [ ] Converter v1.6 memakai `Round` (.NET): pembulatan setengah ke atas atau ke genap? Dijawab oleh golden file
 - [ ] Elemen `CustomRefDoc` yang disebut di changelog converter v1.5 ada di dokumen mana?
 - [ ] Siapa reviewer pajak pertama, dan apakah ada klien PKP yang bersedia menjadi mitra uji?
 

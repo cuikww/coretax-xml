@@ -245,12 +245,13 @@ function analisisItem(
     })
   }
 
-  const bmHitung = persen(dpp, tarifBm)
+  // Template DJP v1.6.1: PPnBM = tarif PPnBM x DPP nilai lain, dan "bisa diisi dengan nilai lain"
+  const bmHitung = persen(dppNl, tarifBm)
   if (bmInput !== null && bmInput !== bmHitung) {
-    k.tambah('error', 'STLG_MISMATCH', loc('ppnbm', 'STLG'), {
+    k.tambah('warning', 'STLG_MISMATCH', loc('ppnbm', 'STLG'), {
       nilai: formatRupiah(bmInput),
       tarif: formatRupiah(tarifBm),
-      dpp: formatRupiah(dpp),
+      dpp: formatRupiah(dppNl),
       harap: formatRupiah(bmHitung),
     })
   }
@@ -302,11 +303,25 @@ function analisisFaktur(
       k.tambah('error', 'ADDINFO_REQUIRED', loc('keteranganTambahan', 'AddInfo'), { kode: kodeTrx })
     if (!cap) k.tambah('error', 'FACILITY_REQUIRED', loc('capFasilitas', 'FacilityStamp'), { kode: kodeTrx })
   }
-  if (addInfo && !s.polaKeteranganTambahan.test(addInfo)) {
-    k.tambah('error', 'ADDINFO_FORMAT', loc('keteranganTambahan', 'AddInfo'), { nilai: addInfo }, addInfo)
+  // Daftar resmi hanya ada untuk 07 dan 08; kode lain dicek ke daftar 07 (yang paling lengkap)
+  const kodeRef = kodeTrx === '08' ? '08' : '07'
+  if (addInfo && !(addInfo in s.keteranganTambahan[kodeRef])) {
+    k.tambah(
+      'error',
+      'ADDINFO_UNKNOWN',
+      loc('keteranganTambahan', 'AddInfo'),
+      { nilai: addInfo, kode: kodeRef },
+      addInfo,
+    )
   }
-  if (cap && !s.polaCapFasilitas.test(cap)) {
-    k.tambah('error', 'FACILITY_FORMAT', loc('capFasilitas', 'FacilityStamp'), { nilai: cap }, cap)
+  if (cap && !(cap in s.capFasilitas[kodeRef])) {
+    k.tambah(
+      'error',
+      'FACILITY_UNKNOWN',
+      loc('capFasilitas', 'FacilityStamp'),
+      { nilai: cap, kode: kodeRef },
+      cap,
+    )
   }
 
   const periode = (f.periodeDokumenPendukung ?? '').trim()
@@ -371,8 +386,8 @@ function analisisFaktur(
   }
   const negara = (p.negara ?? 'IDN').trim()
   if (negara === 'IND') k.tambah('warning', 'COUNTRY_IND', loc('pembeli.negara', 'BuyerCountry'))
-  else if (!/^[A-Z]{3}$/.test(negara)) {
-    k.tambah('error', 'COUNTRY_FORMAT', loc('pembeli.negara', 'BuyerCountry'), { nilai: negara })
+  else if (!(negara in s.negara)) {
+    k.tambah('error', 'COUNTRY_UNKNOWN', loc('pembeli.negara', 'BuyerCountry'), { nilai: negara })
   }
 
   Object.assign(header, {

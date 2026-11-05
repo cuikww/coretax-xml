@@ -31,3 +31,19 @@ Keputusan selama implementasi, pelengkap [PRD](PRD.md). Bagian terbaru di bawah.
 **Validasi XSD, CLI, streaming, dan `check()` belum ada.** Sesuai roadmap: CLI di v0.2, paket XSD di v0.3. `check()` untuk XML buatan pihak lain menyusul setelah XSD resmi tersedia.
 
 **Test privasi.** `test/privasi.test.ts` gagal jika file di `src/` memakai `fetch`, `XMLHttpRequest`, WebSocket, atau modul `http`, `net`, `fs`, `child_process`.
+
+## 2026-11-05: Paket resmi DJP
+
+**Sumber utama sekarang paket resmi.** `ConverterEfakturCoretax__v1.6.zip` dan sampel XML diunduh dari halaman DJP; hash dan isinya dicatat di `fixtures/djp/README.md`. Sampel XML disimpan apa adanya (`-text` di `.gitattributes`). Exe dan template Excel tidak disimpan di repo karena izin redistribusi belum jelas.
+
+**Tidak ada XSD.** Halaman DJP hanya merujuk `TaxInvoice.xsd` di atribut XML; filenya tidak diterbitkan. `meta.terverifikasiDenganXsdResmi` tetap `false`.
+
+**Tabel referensi dari sheet REF template v1.6.1.** Satuan (39, lengkap dengan nama), kode transaksi, keterangan tambahan dan cap fasilitas per kode 07 (31 kode) dan 08 (10 kode), serta 238 kode negara. Validasi pola `TD.005xx`/`TD.011xx` dan `[A-Z]{3}` diganti dengan pengecekan ke daftar. Kode error berganti nama: `ADDINFO_FORMAT` → `ADDINFO_UNKNOWN`, `FACILITY_FORMAT` → `FACILITY_UNKNOWN`, `COUNTRY_FORMAT` → `COUNTRY_UNKNOWN` (belum ada rilis, jadi tidak dianggap breaking). Untuk kode transaksi selain 07/08 yang mengisi keterangan tambahan atau cap fasilitas, dicek ke daftar 07 (paling lengkap). Nama negara disalin apa adanya, termasuk salah DJP (`AIA` tertulis "Angola").
+
+**`IND` tetap peringatan.** Daftar resmi mengonfirmasi `IND` = India dan `IDN` = Indonesia. Sampel XML resmi v1.4 masih memakai `IND` untuk pembeli NPWP Indonesia, jadi tetap peringatan, bukan error.
+
+**PPnBM = tarif PPnBM x DPP nilai lain, selisih hanya peringatan.** Mengikuti rumus di sheet `DetailFaktur` template (`=M2*J2/100`) dan keterangan "bisa diisi dengan nilai lain". Sebelumnya dihitung dari DPP dan selisih dianggap error.
+
+**Sampel resmi v1.4 jadi test.** `build` menghasilkan elemen dan nilai yang sama dengan `Sample Faktur PK Template v.1.4.xml`, kecuali `BuyerDocumentNumber`, `BuyerName`, `BuyerAdress` yang dikosongkan sampel lama tetapi diwajibkan template v1.6.1 (`-` untuk pembeli TIN, nama dan alamat wajib). Indentasi tidak dibandingkan: sampel memakai tab, library 2 spasi.
+
+**Converter tidak bisa dijalankan otomatis.** Converter adalah aplikasi WinForms .NET tanpa mode baris perintah. Golden file harus dibuat manual: isi template Excel, jalankan converter, simpan XML-nya. String di exe menyebut `Round` (pembulatan .NET default adalah ke genap, bukan setengah ke atas) dan `xsi:nil="true"`; keduanya baru bisa dipastikan dari golden file.

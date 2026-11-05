@@ -35,4 +35,9 @@ export const referensi = {
   kodeTransaksi: () => ({ ...skema2025_09.kodeTransaksi }),
   satuan: () => Object.entries(skema2025_09.satuan).map(([kode, nama]) => ({ kode, nama })),
   jenisId: () => [...skema2025_09.jenisId],
+  /** Keterangan tambahan untuk kode transaksi 07 atau 08. */
+  keteranganTambahan: (kode: '07' | '08') => ({ ...skema2025_09.keteranganTambahan[kode] }),
+  /** Cap fasilitas untuk kode transaksi 07 atau 08. */
+  capFasilitas: (kode: '07' | '08') => ({ ...skema2025_09.capFasilitas[kode] }),
+  negara: () => ({ ...skema2025_09.negara }),
 }

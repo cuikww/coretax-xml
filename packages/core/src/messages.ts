@@ -48,7 +48,10 @@ const id: Katalog = {
     pesan: (p) => `Nomor dokumen pembeli wajib diisi untuk jenis ID "${p.jenisId}".`,
     saran: () => 'Isi pembeli.nomorDokumen dengan NIK, nomor paspor, atau nomor dokumen lain.',
   },
-  COUNTRY_FORMAT: { pesan: (p) => `Kode negara "${p.nilai}" harus 3 huruf kapital, mis. "IDN".` },
+  COUNTRY_UNKNOWN: {
+    pesan: (p) => `Kode negara "${p.nilai}" tidak ada di daftar negara DJP.`,
+    saran: () => 'Pakai kode 3 huruf dari referensi.negara(), mis. "IDN" untuk Indonesia.',
+  },
   COUNTRY_IND: {
     pesan: () => 'Kode negara "IND" adalah India, bukan Indonesia.',
     saran: () => 'Gunakan "IDN" untuk Indonesia.',
@@ -58,14 +61,18 @@ const id: Katalog = {
     pesan: (p) => `Kode transaksi ${p.kode} wajib mengisi keterangan tambahan.`,
     saran: () => 'Isi keteranganTambahan dengan kode TD.005xx dari sheet REF template DJP.',
   },
-  ADDINFO_FORMAT: {
-    pesan: (p) => `Keterangan tambahan "${p.nilai}" harus berformat TD.005xx.`,
+  ADDINFO_UNKNOWN: {
+    pesan: (p) => `Keterangan tambahan "${p.nilai}" tidak ada di daftar untuk kode transaksi ${p.kode}.`,
+    saran: () => 'Pakai kode dari referensi.keteranganTambahan(kodeTransaksi).',
   },
   FACILITY_REQUIRED: {
     pesan: (p) => `Kode transaksi ${p.kode} wajib mengisi cap fasilitas.`,
     saran: () => 'Isi capFasilitas dengan kode TD.011xx dari sheet REF template DJP.',
   },
-  FACILITY_FORMAT: { pesan: (p) => `Cap fasilitas "${p.nilai}" harus berformat TD.011xx.` },
+  FACILITY_UNKNOWN: {
+    pesan: (p) => `Cap fasilitas "${p.nilai}" tidak ada di daftar untuk kode transaksi ${p.kode}.`,
+    saran: () => 'Pakai kode dari referensi.capFasilitas(kodeTransaksi).',
+  },
   CUSTOM_DOC_PERIOD_FORMAT: {
     pesan: (p) => `Periode dokumen pendukung "${p.nilai}" harus berformat MMYYYY, mis. "012025".`,
   },
@@ -104,7 +111,8 @@ const id: Katalog = {
     saran: () => 'Kosongkan ppn supaya dihitung otomatis, atau periksa DPP nilai lain dan tarif.',
   },
   STLG_MISMATCH: {
-    pesan: (p) => `PPnBM ${p.nilai} tidak sama dengan ${p.tarif}% x DPP ${p.dpp} = ${p.harap}.`,
+    pesan: (p) => `PPnBM ${p.nilai} tidak sama dengan ${p.tarif}% x DPP nilai lain ${p.dpp} = ${p.harap}.`,
+    saran: () => 'Rumus template DJP. Nilai lain tetap boleh dipakai jika memang benar.',
   },
   STRICT_VALUE_MISSING: {
     pesan: (p) => `Mode strict: ${p.label} wajib diisi.`,
@@ -154,7 +162,7 @@ const en: Katalog = {
   BUYER_DOC_NUMBER_REQUIRED: {
     pesan: (p) => `A buyer document number is required for ID type "${p.jenisId}".`,
   },
-  COUNTRY_FORMAT: { pesan: (p) => `Country code "${p.nilai}" must be 3 capital letters, e.g. "IDN".` },
+  COUNTRY_UNKNOWN: { pesan: (p) => `Country code "${p.nilai}" is not in the DJP country list.` },
   COUNTRY_IND: {
     pesan: () => 'Country code "IND" is India, not Indonesia.',
     saran: () => 'Use "IDN" for Indonesia.',
@@ -163,9 +171,13 @@ const en: Katalog = {
   ADDINFO_REQUIRED: {
     pesan: (p) => `Transaction code ${p.kode} requires additional information (TD.005xx).`,
   },
-  ADDINFO_FORMAT: { pesan: (p) => `Additional information "${p.nilai}" must look like TD.005xx.` },
+  ADDINFO_UNKNOWN: {
+    pesan: (p) => `Additional information "${p.nilai}" is not listed for transaction code ${p.kode}.`,
+  },
   FACILITY_REQUIRED: { pesan: (p) => `Transaction code ${p.kode} requires a facility stamp (TD.011xx).` },
-  FACILITY_FORMAT: { pesan: (p) => `Facility stamp "${p.nilai}" must look like TD.011xx.` },
+  FACILITY_UNKNOWN: {
+    pesan: (p) => `Facility stamp "${p.nilai}" is not listed for transaction code ${p.kode}.`,
+  },
   CUSTOM_DOC_PERIOD_FORMAT: { pesan: (p) => `Supporting document period "${p.nilai}" must be MMYYYY.` },
   ITEMS_EMPTY: { pesan: () => 'An invoice needs at least 1 item.' },
   ITEM_TYPE_UNKNOWN: { pesan: (p) => `Unknown item type "${p.nilai}". Use "barang" or "jasa".` },
@@ -185,7 +197,7 @@ const en: Katalog = {
     pesan: (p) => `VAT ${p.nilai} differs from ${p.tarif}% x other tax base ${p.dppNl} = ${p.harap}.`,
   },
   STLG_MISMATCH: {
-    pesan: (p) => `Luxury tax ${p.nilai} differs from ${p.tarif}% x tax base ${p.dpp} = ${p.harap}.`,
+    pesan: (p) => `Luxury tax ${p.nilai} differs from ${p.tarif}% x other tax base ${p.dpp} = ${p.harap}.`,
   },
   STRICT_VALUE_MISSING: { pesan: (p) => `Strict mode: ${p.label} is required.` },
   SCHEMA_UNKNOWN: { pesan: (p) => `Schema "${p.nilai}" is not available.` },

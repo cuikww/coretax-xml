@@ -5,7 +5,7 @@
 
 **Buat dan validasi file XML impor Coretax DJP langsung dari data aplikasi**, tanpa template Excel dan aplikasi converter. Pesan error per faktur dan per field dalam Bahasa Indonesia.
 
-> **Status: v0.1 pra-rilis.** Struktur XML disusun dari sumber sekunder dan **belum** dicocokkan dengan XSD resmi DJP maupun diuji impor di Coretax sungguhan. Jangan dipakai untuk produksi sebelum Gerbang 1 di [roadmap](docs/PRD.md#roadmap) lolos.
+> **Status: v0.1 pra-rilis.** Urutan elemen dan tabel referensi sudah dicocokkan dengan paket resmi DJP (converter v1.6, template v1.6.1), tetapi **belum** dibandingkan dengan output converter resmi maupun diuji impor di Coretax sungguhan. DJP tidak menerbitkan file XSD. Jangan dipakai untuk produksi sebelum Gerbang 1 di [roadmap](docs/PRD.md#roadmap) lolos.
 
 *English: a TypeScript library that builds and validates Indonesian DJP Coretax XML import files (tax invoices) from application data, with field-level error messages. Indonesian-first; English messages via `bahasa: 'en'`.*
 
@@ -96,7 +96,7 @@ Untuk contoh di atas, library menghitung DPP 1.200.000, DPP nilai lain 1.100.000
 | DPP (`TaxBase`) | harga x jumlah - diskon |
 | DPP nilai lain (`OtherTaxBase`) | 11/12 x DPP untuk kode transaksi 04, selain itu sama dengan DPP; bisa diisi sendiri |
 | PPN (`VAT`) | tarif (default 12%) x DPP nilai lain |
-| PPnBM (`STLG`) | tarif PPnBM x DPP |
+| PPnBM (`STLG`) | tarif PPnBM x DPP nilai lain (rumus template DJP v1.6.1); nilai lain yang diisi sendiri hanya diberi peringatan |
 | Pembulatan | ke 2 desimal, setengah ke atas, per item |
 
 Aturan pembulatan resmi DJP masih perlu dikonfirmasi (lihat [pertanyaan terbuka](docs/PRD.md#risiko--pertanyaan-terbuka)).
@@ -105,7 +105,7 @@ Aturan pembulatan resmi DJP masih perlu dikonfirmasi (lihat [pertanyaan terbuka]
 
 - [PRD](docs/PRD.md): tujuan, cakupan, arsitektur, stack, roadmap
 - [Keputusan teknis](docs/DECISIONS.md)
-- [Fixtures dan rencana golden file](fixtures/README.md)
+- [Fixtures dan rencana golden file](fixtures/README.md) · [File resmi DJP](fixtures/djp/README.md)
 - [Kontribusi](CONTRIBUTING.md) · [Keamanan dan privasi](SECURITY.md)
 
 ## Penafian

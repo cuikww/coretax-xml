@@ -8,7 +8,7 @@ File acuan untuk test. Setiap file XML di sini dibandingkan byte per byte dengan
 
 ## Rencana golden file (Gerbang 1, lihat `docs/PRD.md`)
 
-1. Unduh paket template dan converter dari [halaman resmi DJP](https://www.pajak.go.id/id/reformdjp/coretax/template-xml-dan-converter-excel-ke-xml), catat tanggal unduh dan versi di `djp/README.md`.
+1. ~~Unduh paket template dan converter dari halaman resmi DJP~~ Selesai 2026-11-05, lihat [`djp/README.md`](djp/README.md).
 2. Isi template Excel dengan kasus uji (kode 01, 04, 07; pembeli TIN dan National ID; banyak item; diskon).
 3. Ubah dengan converter resmi, simpan XML-nya di `faktur-keluaran/golden/`.
 4. Simpan input yang sama sebagai JSON di sebelahnya, lalu tambahkan test yang membandingkan keduanya.

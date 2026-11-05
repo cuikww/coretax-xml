@@ -57,13 +57,13 @@ export interface FakturKeluaran {
   kodeTransaksi: KodeTransaksi
   /** Referensi internal, mis. nomor invoice. Ditulis ke `RefDesc`. */
   referensi?: string
-  /** Kode keterangan tambahan (TD.005xx). Wajib untuk kode transaksi 07 dan 08. */
+  /** Kode keterangan tambahan (TD.005xx) dari `referensi.keteranganTambahan()`. Wajib untuk kode transaksi 07 dan 08. */
   keteranganTambahan?: string
   /** Nomor dokumen pendukung. Ditulis ke `CustomDoc`. */
   dokumenPendukung?: string
   /** Periode dokumen pendukung, format MMYYYY. Ditulis ke `CustomDocMonthYear`. */
   periodeDokumenPendukung?: string
-  /** Kode cap fasilitas (TD.011xx). Wajib untuk kode transaksi 07 dan 08. */
+  /** Kode cap fasilitas (TD.011xx) dari `referensi.capFasilitas()`. Wajib untuk kode transaksi 07 dan 08. */
   capFasilitas?: string
   pembeli: Pembeli
   item: ItemFaktur[]
@@ -121,13 +121,13 @@ export type KodeError =
   | 'BUYER_IDTKU_MISMATCH'
   | 'BUYER_TIN_NOT_ALLOWED'
   | 'BUYER_DOC_NUMBER_REQUIRED'
-  | 'COUNTRY_FORMAT'
+  | 'COUNTRY_UNKNOWN'
   | 'COUNTRY_IND'
   | 'EMAIL_FORMAT'
   | 'ADDINFO_REQUIRED'
-  | 'ADDINFO_FORMAT'
+  | 'ADDINFO_UNKNOWN'
   | 'FACILITY_REQUIRED'
-  | 'FACILITY_FORMAT'
+  | 'FACILITY_UNKNOWN'
   | 'CUSTOM_DOC_PERIOD_FORMAT'
   | 'ITEMS_EMPTY'
   | 'ITEM_TYPE_UNKNOWN'
