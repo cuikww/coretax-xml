@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TaxInvoiceBulk xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <TIN>0000000000000000</TIN>
+  <ListOfTaxInvoice>
+    <TaxInvoice>
+      <TaxInvoiceDate>2026-10-01</TaxInvoiceDate>
+      <TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+      <TrxCode>01</TrxCode>
+      <AddInfo/>
+      <CustomDoc/>
+      <CustomDocMonthYear/>
+      <RefDesc>PROBE pembulatan converter</RefDesc>
+      <FacilityStamp/>
+      <SellerIDTKU>0000000000000000000000</SellerIDTKU>
+      <BuyerTin>9999000000000001</BuyerTin>
+      <BuyerDocument>TIN</BuyerDocument>
+      <BuyerCountry>IDN</BuyerCountry>
+      <BuyerDocumentNumber>-</BuyerDocumentNumber>
+      <BuyerName>PT Probe</BuyerName>
+      <BuyerAdress>Jl. Probe No. 1</BuyerAdress>
+      <BuyerEmail/>
+      <BuyerIDTKU>9999000000000001000000</BuyerIDTKU>
+      <ListOfGoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>p 0.005</Name>
+          <Unit>UM.0021</Unit>
+          <Price>0</Price>
+          <Qty>1</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>0</TaxBase>
+          <OtherTaxBase>0</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>0</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0</STLG>
+        </GoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>p 0.015</Name>
+          <Unit>UM.0021</Unit>
+          <Price>0.02</Price>
+          <Qty>1</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>0.02</TaxBase>
+          <OtherTaxBase>0.02</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>0.02</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0.02</STLG>
+        </GoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>p 0.025</Name>
+          <Unit>UM.0021</Unit>
+          <Price>0.02</Price>
+          <Qty>1</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>0.02</TaxBase>
+          <OtherTaxBase>0.02</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>0.02</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0.02</STLG>
+        </GoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>p 0.035</Name>
+          <Unit>UM.0021</Unit>
+          <Price>0.04</Price>
+          <Qty>1</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>0.04</TaxBase>
+          <OtherTaxBase>0.04</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>0.04</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0.04</STLG>
+        </GoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>p 2.675</Name>
+          <Unit>UM.0021</Unit>
+          <Price>2.68</Price>
+          <Qty>1</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>2.68</TaxBase>
+          <OtherTaxBase>2.68</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>2.68</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>2.68</STLG>
+        </GoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>p 100.125</Name>
+          <Unit>UM.0021</Unit>
+          <Price>100.12</Price>
+          <Qty>1</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>100.12</TaxBase>
+          <OtherTaxBase>100.12</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>100.12</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>100.12</STLG>
+        </GoodService>
+      </ListOfGoodService>
+    </TaxInvoice>
+  </ListOfTaxInvoice>
+</TaxInvoiceBulk>

@@ -575,7 +575,7 @@ Risiko terbesar adalah aturan pajak yang salah diterjemahkan ke kode; mitigasiny
 - [ ] Aturan pembulatan resmi untuk DPP nilai lain dan PPN per item atau per faktur?
 - [ ] Apakah ada batas jumlah faktur atau ukuran file per impor XML?
 - [ ] Apakah NITKU kantor pusat selalu NPWP + `000000`?
-- [ ] Converter v1.6 memakai `Round` (.NET): pembulatan setengah ke atas atau ke genap? Dijawab oleh golden file
+- [ ] Converter v1.6 membulatkan angka masukan ke 2 desimal dengan **setengah ke genap** (probe, 2026-11-06), tetapi tidak menghitung apa pun. Aturan resmi Coretax untuk DPP nilai lain dan PPN per item masih belum diketahui; library memakai setengah ke atas. Perlu jawaban dari uji impor nyata atau reviewer pajak
 - [ ] Elemen `CustomRefDoc` yang disebut di changelog converter v1.5 ada di dokumen mana?
 - [ ] Siapa reviewer pajak pertama, dan apakah ada klien PKP yang bersedia menjadi mitra uji?
 

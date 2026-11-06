@@ -67,3 +67,9 @@ Keputusan selama implementasi, pelengkap [PRD](PRD.md). Bagian terbaru di bawah.
 **Beda yang dibiarkan (tidak memengaruhi isi):** converter menulis BOM UTF-8, CRLF, dan root `<TaxInvoiceBulk xmlns:xsd=... xmlns:xsi=...>` tanpa `xsi:noNamespaceSchemaLocation`. Sampel resmi v1.4 memakai tab dan menyertakan `noNamespaceSchemaLocation="TaxInvoice.xsd"`. Library mengikuti sampel. Mana yang diterima Coretax baru bisa dipastikan lewat uji impor nyata; kedua bentuk berasal dari DJP.
 
 **Pelajaran penting:** converter DJP tidak menghitung apa pun. Semua angka disalin dari sel Excel. Aturan hitung (11/12, pembulatan) sepenuhnya tanggung jawab pengisi template, jadi golden file ini tidak bisa membuktikan benar-tidaknya rumus, hanya format penulisan. Kebenaran rumus tetap perlu uji impor nyata dan reviewer pajak.
+
+## 2026-11-06: Probe pembulatan converter
+
+Hasil `probe-pembulatan.converter.xml` (angka 3 desimal diisi di semua kolom angka): 0,005 → 0 · 0,015 → 0,02 · 0,025 → 0,02 · 0,035 → 0,04 · 2,675 → 2,68 · 100,125 → 100,12. Converter **menerima** angka lebih dari 2 desimal dan membulatkannya **setengah ke genap** (banker's rounding, `Math.Round` .NET), di semua kolom, tanpa peringatan.
+
+**Keputusan: library tidak berubah.** Library menolak input lebih dari 2 desimal (`NUMBER_DECIMALS`) dan membulatkan hasil hitungan setengah ke atas. Converter hanya membulatkan angka yang sudah diisi pengguna di Excel; DJP tidak menerbitkan aturan pembulatan untuk DPP nilai lain dan PPN. Beda dengan setengah ke atas hanya muncul pada hasil yang tepat di .xx5 dan digit sebelumnya genap (mis. 0,045: genap 0,04 · atas 0,05). Untuk tarif 12% hasil seperti itu tidak mungkin muncul dari angka 2 desimal; untuk tarif lain (mis. 11%, PPnBM) bisa. Aturan yang berlaku di server Coretax hanya bisa dipastikan lewat uji impor nyata.
