@@ -105,6 +105,7 @@ Aturan pembulatan resmi DJP masih perlu dikonfirmasi (lihat [pertanyaan terbuka]
 
 - [PRD](docs/PRD.md): tujuan, cakupan, arsitektur, stack, roadmap
 - [Keputusan teknis](docs/DECISIONS.md)
+- [Panduan uji impor Coretax](docs/UJI-IMPOR.md) (untuk mitra PKP atau konsultan pajak)
 - [Fixtures dan rencana golden file](fixtures/README.md) · [File resmi DJP](fixtures/djp/README.md)
 - [Kontribusi](CONTRIBUTING.md) · [Keamanan dan privasi](SECURITY.md)
 
