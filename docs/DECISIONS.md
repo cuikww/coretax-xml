@@ -73,3 +73,11 @@ Keputusan selama implementasi, pelengkap [PRD](PRD.md). Bagian terbaru di bawah.
 Hasil `probe-pembulatan.converter.xml` (angka 3 desimal diisi di semua kolom angka): 0,005 → 0 · 0,015 → 0,02 · 0,025 → 0,02 · 0,035 → 0,04 · 2,675 → 2,68 · 100,125 → 100,12. Converter **menerima** angka lebih dari 2 desimal dan membulatkannya **setengah ke genap** (banker's rounding, `Math.Round` .NET), di semua kolom, tanpa peringatan.
 
 **Keputusan: library tidak berubah.** Library menolak input lebih dari 2 desimal (`NUMBER_DECIMALS`) dan membulatkan hasil hitungan setengah ke atas. Converter hanya membulatkan angka yang sudah diisi pengguna di Excel; DJP tidak menerbitkan aturan pembulatan untuk DPP nilai lain dan PPN. Beda dengan setengah ke atas hanya muncul pada hasil yang tepat di .xx5 dan digit sebelumnya genap (mis. 0,045: genap 0,04 · atas 0,05). Untuk tarif 12% hasil seperti itu tidak mungkin muncul dari angka 2 desimal; untuk tarif lain (mis. 11%, PPnBM) bisa. Aturan yang berlaku di server Coretax hanya bisa dipastikan lewat uji impor nyata.
+
+## 2026-11-06: CI dan gerbang rilis
+
+**CI gagal sejak commit pertama.** Matriks Node 20/22/24 memakai pnpm 11 yang butuh Node >= 22.13, jadi `setup-node` (yang memanggil pnpm untuk cache) gagal di Node 20 dan membatalkan job lain. Sekarang: job `check` (lint, build, typecheck, test, smoke paket) di Node 24; job `node-lama` memasang dan membangun di Node 24 lalu menjalankan vitest langsung di Node 20 dan 22, karena `engines` paket menjanjikan Node >= 20.
+
+**Smoke test paket.** `scripts/smoke-paket.mjs` mem-pack paket, memasangnya di folder kosong, dan memakainya lewat ESM dan CJS. Menangkap salah `files`/`exports` yang tidak terlihat oleh test di `src/`.
+
+**Rilis npm dikunci sampai Gerbang 1.** `release.yml` sebelumnya berjalan di setiap push ke `main` dan, tanpa changeset, langsung `changeset publish`. Artinya 0.1.0 akan terbit begitu Trusted Publisher diaktifkan, padahal belum lolos uji impor. Sekarang job rilis hanya jalan jika variabel repo `RILIS_NPM` = `true`. Variabel itu diset manual setelah Gerbang 1 lolos dan Trusted Publisher untuk `coretax-xml` diaktifkan di npmjs.com. Saat diperiksa 2026-11-06, `coretax-xml` belum ada di npm (404), jadi tidak ada yang sempat terbit.

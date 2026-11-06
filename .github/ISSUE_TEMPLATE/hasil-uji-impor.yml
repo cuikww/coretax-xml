@@ -1,0 +1,32 @@
+name: Hasil uji impor Coretax
+description: Laporan hasil mengimpor XML buatan coretax-xml ke Coretax sungguhan (lihat docs/UJI-IMPOR.md)
+labels: [uji-impor]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Jangan tempel NPWP, NIK, nama, atau alamat asli.** Ganti dengan `***`. Jangan unggah file XML hasil uji.
+  - type: input
+    id: versi
+    attributes:
+      label: Versi coretax-xml
+      placeholder: mis. 0.1.0 atau hash commit
+    validations:
+      required: true
+  - type: input
+    id: tanggal
+    attributes:
+      label: Tanggal uji dan versi tampilan Coretax (jika terlihat)
+  - type: textarea
+    id: hasil
+    attributes:
+      label: Isi lembar-hasil.md
+      description: Tempel tabelnya apa adanya (kolom Hasil dan Pesan error sudah diisi)
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: selisih
+    attributes:
+      label: Selisih angka antara file XML dan faktur di Coretax (jika ada)
+      placeholder: "mis. kasus 04: PPN file 4074,17; Coretax 4074,18"

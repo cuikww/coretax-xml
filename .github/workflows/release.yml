@@ -7,6 +7,9 @@ concurrency: release
 
 jobs:
   release:
+    # Gerbang 1 (docs/PRD.md#roadmap): rilis hanya jalan setelah variabel repo RILIS_NPM = true diset
+    # (Settings > Secrets and variables > Actions > Variables), yaitu setelah XML lolos impor Coretax.
+    if: vars.RILIS_NPM == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write # commit versi + tag
