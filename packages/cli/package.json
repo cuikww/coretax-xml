@@ -1,0 +1,50 @@
+{
+  "name": "@coretax-xml/cli",
+  "version": "0.1.0",
+  "description": "CLI coretax-xml: ubah Excel/CSV menjadi XML impor Coretax DJP, dan periksa XML sebelum diunggah",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "coretax-xml": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --clean",
+    "test": "vitest run",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "coretax-xml": "workspace:*",
+    "fflate": "^0.8.2"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cuikww/coretax-xml.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/cuikww/coretax-xml#readme",
+  "bugs": "https://github.com/cuikww/coretax-xml/issues",
+  "keywords": [
+    "coretax",
+    "djp",
+    "pajak",
+    "faktur pajak",
+    "xml",
+    "cli",
+    "excel",
+    "ppn",
+    "indonesia"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

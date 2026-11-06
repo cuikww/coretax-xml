@@ -81,3 +81,23 @@ Hasil `probe-pembulatan.converter.xml` (angka 3 desimal diisi di semua kolom ang
 **Smoke test paket.** `scripts/smoke-paket.mjs` mem-pack paket, memasangnya di folder kosong, dan memakainya lewat ESM dan CJS. Menangkap salah `files`/`exports` yang tidak terlihat oleh test di `src/`.
 
 **Rilis npm dikunci sampai Gerbang 1.** `release.yml` sebelumnya berjalan di setiap push ke `main` dan, tanpa changeset, langsung `changeset publish`. Artinya 0.1.0 akan terbit begitu Trusted Publisher diaktifkan, padahal belum lolos uji impor. Sekarang job rilis hanya jalan jika variabel repo `RILIS_NPM` = `true`. Variabel itu diset manual setelah Gerbang 1 lolos dan Trusted Publisher untuk `coretax-xml` diaktifkan di npmjs.com. Saat diperiksa 2026-11-06, `coretax-xml` belum ada di npm (404), jadi tidak ada yang sempat terbit.
+
+## 2026-11-06: v0.2 dimulai sebelum Gerbang 1 lolos
+
+PRD menyatakan tidak ada jenis dokumen baru sebelum Gerbang 1 (impor Coretax nyata). Maintainer memutuskan memulai v0.2. Yang dikerjakan tidak menambah jenis dokumen baru (CLI dan `check()` memakai faktur keluaran), dan rilis ke npm tetap terkunci oleh `RILIS_NPM`. Retur faktur masukan, yang adalah jenis dokumen baru, dikerjakan setelah ini dan ditandai belum teruji impor.
+
+**`check()` di core, bukan di CLI.** Memeriksa XML yang sudah ada adalah kebutuhan library (F3.6), bukan hanya CLI. Pembaca XML ditulis sendiri (± 80 baris, tanpa dependensi) karena struktur DJP tetap. Struktur diperiksa (akar, elemen wajib, elemen asing, urutan, `SellerIDTKU` konsisten), lalu isinya lewat jalur validasi yang sama dengan mode strict.
+
+**Pembaca Excel: `fflate` + pembaca sel sendiri, bukan `exceljs`.** PRD memilih `exceljs`; ia membawa banyak paket turunan (archiver, unzipper, uuid, ...) dan rilis terakhirnya Desember 2024. CLI hanya butuh nilai sel. `fflate` (MIT, tanpa dependensi turunan) membuka zip, `xlsx.ts` (± 90 baris) membaca string bersama, sel angka, dan nilai tersimpan dari sel berumus. Pembaca tetap terpisah di `xlsx.ts` sehingga bisa diganti tanpa menyentuh yang lain.
+
+**Argumen CLI: `node:util parseArgs`, bukan `citty`.** Empat perintah dan enam opsi; stdlib cukup. Tambahkan pustaka jika perintahnya bertambah banyak.
+
+**Angka dari Excel dibaca sebagai teks.** Sel angka dikembalikan persis seperti tertulis di file (`504166.66666666669`), tidak lewat `Number`, supaya NPWP/NITKU numerik dan angka besar tidak rusak. Pembulatan ke 2 desimal memakai setengah ke genap seperti converter DJP (hasil probe), hanya untuk nilai yang datang dari Excel. Hitungan library sendiri tetap setengah ke atas; selisihnya hanya mungkin pada hasil yang tepat di .xx5.
+
+**Default `--hitung` bergantung sumber.** Excel DJP: `strict`, karena angka di template adalah kebenaran bagi pengisinya dan library hanya mencocokkan. CSV: `otomatis`, karena pengguna CSV hanya mengisi harga dan jumlah. Jika rumus Excel dan hitungan library berbeda 0,01 pada kode 01/04/09, `convert` menolak dengan `VAT_MISMATCH`; `--hitung otomatis` menjadi jalan keluarnya. Perlu dikonfirmasi dari pengguna nyata apakah ini terlalu ketat.
+
+**Error menunjuk baris sumber.** `Sumber` mencatat nomor baris Excel/CSV untuk setiap faktur dan item; laporan menulis `Faktur ke-2 (baris Excel 5), item 1 (baris Excel 3)`. Ini jawaban atas keluhan pesan error converter DJP yang merujuk baris XML.
+
+**Biner CLI.** `bun build --compile` berhasil di Windows (± 96 MB karena menyertakan runtime Bun). Workflow `biner.yml` membangun 4 platform tetapi hanya dijalankan manual dan belum dicoba di GitHub Actions. Versi dibaca dari `package.json` lewat impor JSON supaya ikut ter-bundle.
+
+**Diuji dengan file asli.** `convert` pada `kasus.xlsx` (dibuat dari template DJP asli) menghasilkan XML yang sama dengan converter resmi (test lokal, dilewati di CI karena file Excel tidak ada di repo). Template DJP asli dengan rumus juga berhasil dibaca.

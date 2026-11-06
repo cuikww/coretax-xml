@@ -101,6 +101,21 @@ Untuk contoh di atas, library menghitung DPP 1.200.000, DPP nilai lain 1.100.000
 
 Aturan pembulatan resmi DJP masih perlu dikonfirmasi (lihat [pertanyaan terbuka](docs/PRD.md#risiko--pertanyaan-terbuka)).
 
+### Periksa XML yang sudah ada
+
+```ts
+const hasil = fakturKeluaran.check(xmlString) // { valid, errors, warnings }, mode strict
+```
+
+### CLI (untuk non-programmer)
+
+```sh
+coretax-xml convert penjualan.xlsx   # template Excel DJP atau CSV -> XML
+coretax-xml check faktur.xml         # periksa XML (satu file atau folder)
+```
+
+Error menunjuk baris Excel, bukan baris XML. Lihat [packages/cli](packages/cli/README.md). Biner mandiri tanpa Node.js bisa dibuat dengan workflow *Biner CLI* (manual).
+
 ## Dokumentasi
 
 - [PRD](docs/PRD.md): tujuan, cakupan, arsitektur, stack, roadmap

@@ -1,0 +1,243 @@
+import { existsSync, readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { describe, expect, it } from 'vitest'
+import { bulat2, tanggalIso } from '../src/angka.js'
+import { parseCsv } from '../src/csv.js'
+import { bacaXlsx } from '../src/xlsx.js'
+import { barisDetail, barisFaktur, buatXlsx, cli, folderSementara, templateExcel, tulis } from './bantu.js'
+
+const dariRepo = (p: string) => fileURLToPath(new URL(`../../../${p}`, import.meta.url))
+
+describe('angka', () => {
+  it('bulat2 setengah ke genap seperti converter DJP (hasil probe-pembulatan)', () => {
+    const hasil = ['0.005', '0.015', '0.025', '0.035', '2.675', '100.125'].map(bulat2)
+    expect(hasil).toEqual(['0.00', '0.02', '0.02', '0.04', '2.68', '100.12'])
+  })
+  it('bulat2 membiarkan angka 2 desimal, notasi ilmiah, dan teks yang bukan angka', () => {
+    expect(bulat2('1500.5')).toBe('1500.5')
+    expect(bulat2('504166.66666666669')).toBe('504166.67')
+    expect(bulat2('1.5E-05')).toBe('0.00')
+    expect(bulat2('1.000.000')).toBe('1.000.000')
+    expect(bulat2(undefined)).toBeUndefined()
+  })
+  it('tanggalIso: nomor seri Excel, DD/MM/YYYY, ISO', () => {
+    expect(tanggalIso('46296')).toBe('2026-10-01')
+    expect(tanggalIso('05/10/2026')).toBe('2026-10-05')
+    expect(tanggalIso('2026-10-01')).toBe('2026-10-01')
+    expect(tanggalIso('kemarin')).toBe('kemarin')
+  })
+})
+
+describe('parseCsv', () => {
+  it('kutip, kutip di dalam kutip, baris baru di dalam kutip, pemisah titik koma, baris kosong tetap dihitung', () => {
+    expect(parseCsv('a;b\n"x;1";"say ""hi"""\n\n"l1\nl2";z\n')).toEqual([
+      ['a', 'b'],
+      ['x;1', 'say "hi"'],
+      [''],
+      ['l1\nl2', 'z'],
+    ])
+  })
+  it('kutip tidak ditutup', () => {
+    expect(() => parseCsv('a,"b')).toThrow('kutip')
+  })
+})
+
+describe('bacaXlsx', () => {
+  it('string bersama, angka apa adanya, nilai rumus tersimpan, sel kosong dilewati', () => {
+    const l = bacaXlsx(buatXlsx({ S: [['A & B', 12.5, { rumus: '1+1', hasil: 2 }], [], [undefined, 'x']] }))
+    expect(l.S?.[0]).toEqual(['A & B', '12.5', '2'])
+    expect(l.S?.[2]?.[1]).toBe('x')
+  })
+  it('bukan xlsx', () => {
+    expect(() => bacaXlsx(new Uint8Array([1, 2, 3]))).toThrow('xlsx')
+  })
+})
+
+describe('convert dari template Excel DJP', () => {
+  it('menulis XML dan melaporkan LOLOS', async () => {
+    const dir = folderSementara()
+    const f = tulis(dir, 'jual.xlsx', templateExcel([barisFaktur(1)], [barisDetail(1)]))
+    const r = await cli('convert', f)
+    expect(r.kode).toBe(0)
+    expect(r.out).toContain('LOLOS')
+    expect(r.out).toContain('Catatan: XML yang lolos pemeriksaan belum tentu diterima Coretax')
+    const xml = readFileSync(f.replace('.xlsx', '.xml'), 'utf8')
+    expect(xml).toContain('<TaxInvoiceDate>2026-10-01</TaxInvoiceDate>')
+    expect(xml).toContain('<OtherTaxBase>1100000</OtherTaxBase>')
+    expect(xml).toContain('<VAT>132000</VAT>')
+  })
+
+  it('opsi -o dan hasilnya lolos check', async () => {
+    const dir = folderSementara()
+    const f = tulis(dir, 'jual.xlsx', templateExcel([barisFaktur(1)], [barisDetail(1)]))
+    const keluar = `${dir}/hasil.xml`
+    expect((await cli('convert', f, '-o', keluar)).kode).toBe(0)
+    expect((await cli('check', keluar)).kode).toBe(0)
+  })
+
+  it('error menunjuk baris Excel di sheet asal', async () => {
+    const dir = folderSementara()
+    const f = tulis(
+      dir,
+      'salah.xlsx',
+      templateExcel([barisFaktur(1), barisFaktur(2)], [barisDetail(1), barisDetail(2, [4, 'UM.9999'])]),
+    )
+    const r = await cli('convert', f)
+    expect(r.kode).toBe(1)
+    expect(r.out).toContain('DITOLAK')
+    // Faktur 2 ada di baris Excel 5 (judul di baris 3, data mulai 4); item di baris 3 sheet DetailFaktur
+    expect(r.out).toContain('Faktur ke-2 (baris Excel 5), item 1 (baris Excel 3) <Unit>')
+    expect(existsSync(f.replace('.xlsx', '.xml'))).toBe(false)
+  })
+
+  it('angka yang tidak cocok dengan hitungan: strict menolak, otomatis menghitung ulang', async () => {
+    const dir = folderSementara()
+    const f = tulis(dir, 'beda.xlsx', templateExcel([barisFaktur(1)], [barisDetail(1, [11, 131000])]))
+    expect((await cli('convert', f)).out).toContain('VAT_MISMATCH')
+    const r = await cli('convert', f, '--hitung', 'otomatis')
+    expect(r.kode).toBe(0)
+    expect(readFileSync(f.replace('.xlsx', '.xml'), 'utf8')).toContain('<VAT>132000</VAT>')
+  })
+
+  it('nilai Excel dibulatkan setengah ke genap seperti converter DJP', async () => {
+    const dir = folderSementara()
+    // Harga 0,025 -> 0,02 (ke genap); jumlah 1; DPP/NL/PPN/PPnBM diisi sama dengan hasil bulat
+    const f = tulis(
+      dir,
+      'bulat.xlsx',
+      templateExcel(
+        [barisFaktur(1, [3, '01'])],
+        [barisDetail(1, [5, 0.025], [6, 1], [8, 0.02], [9, 0.02], [11, 0], [13, 0])],
+      ),
+    )
+    const r = await cli('convert', f, '--hitung', 'strict', '--format', 'json')
+    const j = JSON.parse(r.out)
+    expect(j[0].errors.map((e: { code: string }) => e.code)).toEqual([]) // 0,02 x 12% = 0,0024 -> 0
+    expect(readFileSync(f.replace('.xlsx', '.xml'), 'utf8')).toContain('<Price>0.02</Price>')
+  })
+
+  it('format file salah: keluar kode 2 dengan pesan jelas', async () => {
+    const dir = folderSementara()
+    const tanpaDetail = tulis(dir, 'a.xlsx', buatXlsx({ Faktur: [['x']] }))
+    const r1 = await cli('convert', tanpaDetail)
+    expect(r1.kode).toBe(2)
+    expect(r1.err).toContain('bukan template Excel faktur pajak keluaran DJP')
+
+    const yatim = tulis(dir, 'b.xlsx', templateExcel([barisFaktur(1)], [barisDetail(1), barisDetail(7)]))
+    const r2 = await cli('convert', yatim)
+    expect(r2.kode).toBe(2)
+    expect(r2.err).toContain('DetailFaktur baris 3: nilai kolom Baris tidak ada di sheet Faktur')
+
+    const dua = tulis(
+      dir,
+      'c.xlsx',
+      templateExcel(
+        [barisFaktur(1), barisFaktur(2, [9, `9${'0'.repeat(21)}`])],
+        [barisDetail(1), barisDetail(2)],
+      ),
+    )
+    expect((await cli('convert', dua)).err).toContain('ID TKU Penjual harus sama')
+
+    expect((await cli('convert', `${dir}/tidak-ada.xlsx`)).kode).toBe(2)
+    expect((await cli('convert', tulis(dir, 'd.txt', 'x'))).err).toContain('tidak didukung')
+    expect((await cli('convert', tulis(dir, 'rusak.xlsx', 'bukan zip'))).err).toContain('xlsx')
+  })
+
+  it.skipIf(!existsSync(dariRepo('fixtures/djp/unduhan/kasus.xlsx')))(
+    'kasus.xlsx asli (template DJP) menghasilkan XML yang sama dengan converter resmi',
+    async () => {
+      const dir = folderSementara()
+      const f = tulis(dir, 'kasus.xlsx', readFileSync(dariRepo('fixtures/djp/unduhan/kasus.xlsx')))
+      expect((await cli('convert', f)).kode).toBe(0)
+      const normal = (x: string) =>
+        x.replace(/^﻿/, '').slice(x.replace(/^﻿/, '').indexOf('<TIN>')).replace(/>\s+</g, '><').trim()
+      const resmi = readFileSync(dariRepo('fixtures/faktur-keluaran/golden/kasus.converter.xml'), 'utf8')
+      expect(normal(readFileSync(f.replace('.xlsx', '.xml'), 'utf8'))).toBe(normal(resmi))
+    },
+  )
+})
+
+describe('convert dari CSV', () => {
+  it('template -> convert: lolos, hitung otomatis, 2 baris satu faktur menjadi 2 item', async () => {
+    const dir = folderSementara()
+    const t = await cli('template', 'faktur-keluaran')
+    expect(t.kode).toBe(0)
+    const [judul, contoh] = t.out.trim().split('\n') as [string, string]
+    const f = tulis(
+      dir,
+      'jual.csv',
+      `${judul}\n${contoh}\n${contoh.replace('Jasa Konsultasi', 'Jasa Lain')}\n`,
+    )
+    const r = await cli('convert', f)
+    expect(r.kode).toBe(0)
+    const xml = readFileSync(f.replace('.csv', '.xml'), 'utf8')
+    expect(xml.match(/<TaxInvoice>/g)).toHaveLength(1)
+    expect(xml.match(/<GoodService>/g)).toHaveLength(2)
+    expect(xml).toContain('<OtherTaxBase>1100000</OtherTaxBase>')
+  })
+
+  it('error menunjuk baris CSV; kolom wajib hilang = kode 2', async () => {
+    const dir = folderSementara()
+    const t = (await cli('template', 'faktur-keluaran')).out.trim().split('\n') as [string, string]
+    const f = tulis(dir, 'salah.csv', `${t[0]}\n${t[1].replace('UM.0033', 'UM.9999')}\n`)
+    const r = await cli('convert', f)
+    expect(r.kode).toBe(1)
+    expect(r.out).toContain('Faktur ke-1 (baris CSV 2), item 1 (baris CSV 2) <Unit>')
+    const r2 = await cli('convert', tulis(dir, 'k.csv', 'a,b\n1,2\n'))
+    expect(r2.kode).toBe(2)
+    expect(r2.err).toContain('Kolom wajib tidak ada di CSV')
+  })
+})
+
+describe('check', () => {
+  const xmlBagus = async () => {
+    const dir = folderSementara()
+    const f = tulis(dir, 'jual.xlsx', templateExcel([barisFaktur(1)], [barisDetail(1)]))
+    await cli('convert', f)
+    return { dir, xml: f.replace('.xlsx', '.xml') }
+  }
+
+  it('satu file, folder, dan format json/html', async () => {
+    const { dir, xml } = await xmlBagus()
+    tulis(dir, 'rusak.xml', '<a><b></a>')
+    const satu = await cli('check', xml)
+    expect(satu.kode).toBe(0)
+    const folder = await cli('check', dir)
+    expect(folder.kode).toBe(1)
+    expect(folder.out).toContain('1 dari 2 berkas lolos.')
+    const j = JSON.parse((await cli('check', dir, '--format', 'json')).out)
+    expect(j.map((x: { valid: boolean }) => x.valid)).toEqual([true, false])
+    const html = (await cli('check', dir, '--format', 'html')).out
+    expect(html).toContain('<!doctype html>')
+    expect(html).toContain('XML_PARSE')
+  })
+
+  it('-o menulis laporan ke file, bukan ke layar', async () => {
+    const { dir, xml } = await xmlBagus()
+    const laporan = `${dir}/laporan.html`
+    const r = await cli('check', xml, '--format', 'html', '-o', laporan)
+    expect(r.out).toBe('')
+    expect(readFileSync(laporan, 'utf8')).toContain('LOLOS')
+  })
+
+  it('pesan bahasa Inggris dan folder tanpa xml', async () => {
+    const dir = folderSementara()
+    const f = tulis(dir, 'x.xml', '<Lain/>')
+    expect((await cli('check', f, '--bahasa', 'en')).out).toContain('Root element must be <TaxInvoiceBulk>')
+    const kosong = folderSementara()
+    expect((await cli('check', kosong)).kode).toBe(2)
+  })
+})
+
+describe('umum', () => {
+  it('bantuan, versi, schemas, dan salah pakai', async () => {
+    expect((await cli('--help')).out).toContain('Pemakaian:')
+    expect((await cli('--version')).out).toMatch(/^\d+\.\d+\.\d+\n$/)
+    expect((await cli('schemas')).out).toContain('faktur-keluaran@2025.09')
+    expect((await cli()).kode).toBe(2)
+    expect((await cli('hapus')).err).toContain('Perintah tidak dikenal')
+    expect((await cli('check', 'x', '--format', 'pdf')).err).toContain('--format harus')
+    expect((await cli('check', 'x', '--tidak-ada')).kode).toBe(2)
+    expect((await cli('template', 'bupot')).kode).toBe(2)
+  })
+})

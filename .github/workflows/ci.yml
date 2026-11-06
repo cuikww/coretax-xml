@@ -45,3 +45,5 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: node ../../node_modules/vitest/vitest.mjs run
         working-directory: packages/core
+      - run: node ../../node_modules/vitest/vitest.mjs run
+        working-directory: packages/cli

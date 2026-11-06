@@ -6,12 +6,12 @@
 
 ## Status implementasi
 
-Per 5 November 2026: repo disiapkan, `coretax-xml` 0.1.0 (draf, belum terbit di npm).
+Per 6 November 2026: `coretax-xml` dan `@coretax-xml/cli` 0.1.0 (draf, belum terbit di npm). v0.2 dikerjakan sebelum Gerbang 1 lolos atas keputusan maintainer; rilis publik tetap menunggu Gerbang 1.
 
 | Fase | Status |
 | --- | --- |
 | v0.1 Faktur | 🟡 Kode core, hitung, validasi, dan writer XML ada dengan 46 test. Paket resmi DJP (converter v1.6, template v1.6.1) sudah diunduh; tabel referensi dan urutan elemen dicocokkan, output sama dengan sampel resmi v1.4. **Belum**: golden file dari converter, uji impor nyata (Gerbang 1) |
-| v0.2 CLI + retur | Belum dimulai |
+| v0.2 CLI + retur | 🟡 Ada: `check()` di core (F3.6); paket CLI dengan `convert` (template Excel DJP dan CSV), `check`, `template`, `schemas`, laporan teks/JSON/HTML, error menunjuk baris Excel; biner mandiri (workflow manual). Output `convert` sama dengan converter DJP untuk 10 kasus uji. **Belum**: retur faktur masukan, pembaca CSV/Excel untuk jenis dokumen lain, validasi XSD (DJP tidak menerbitkan), Gerbang 2 (diuji staf pajak) |
 | v0.3 sampai v0.4 Bupot | Belum dimulai |
 | v1.0 Stabil | Belum dimulai |
 

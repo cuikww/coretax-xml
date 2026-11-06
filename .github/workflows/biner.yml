@@ -1,0 +1,26 @@
+name: Biner CLI
+# Manual: membangun satu file biner coretax-xml per platform (bun build --compile) dan mengunggahnya sebagai artifact.
+# Tidak otomatis dan tidak menerbitkan apa pun; rilis ke staf pajak menunggu Gerbang 1 (docs/PRD.md#roadmap).
+on: workflow_dispatch
+
+jobs:
+  biner:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [bun-windows-x64, bun-linux-x64, bun-darwin-x64, bun-darwin-arm64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: bun build packages/cli/src/index.ts --compile --target=${{ matrix.target }} --outfile coretax-xml-${{ matrix.target }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coretax-xml-${{ matrix.target }}
+          path: coretax-xml-${{ matrix.target }}*
