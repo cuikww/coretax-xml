@@ -1,0 +1,102 @@
+{
+  "pembeli": { "npwp": "0000000000000000" },
+  "retur": [
+    {
+      "nomorFaktur": "01002482423782332",
+      "npwpPenjual": "9999000000000002",
+      "tanggal": "2026-10-05",
+      "dpp": 200000,
+      "dppLain": 200000,
+      "ppn": 22000,
+      "ppnbm": 40000,
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "Barang",
+          "kode": "000000",
+          "jumlah": 20,
+          "satuan": "UM.0010",
+          "harga": 200000,
+          "tarifPpnbm": 20,
+          "jumlahRetur": 1,
+          "diskonRetur": 0,
+          "dpp": 200000,
+          "pakaiDppLain": false,
+          "dppLain": 200000,
+          "ppn": 22000,
+          "ppnbm": 40000
+        }
+      ]
+    },
+    {
+      "nomorFaktur": "04002500000348920",
+      "npwpPenjual": "9999000000000003",
+      "tanggal": "2026-10-06",
+      "dpp": 625000,
+      "dppLain": 572916.67,
+      "ppn": 68750,
+      "ppnbm": 0,
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "Kopi & Teh <Premium>",
+          "kode": "000000",
+          "jumlah": 10,
+          "satuan": "UM.0018",
+          "harga": 150000,
+          "tarifPpnbm": 0,
+          "jumlahRetur": 4,
+          "diskonRetur": 50000,
+          "dpp": 550000,
+          "pakaiDppLain": true,
+          "dppLain": 504166.67,
+          "ppn": 60500,
+          "ppnbm": 0
+        },
+        {
+          "jenis": "jasa",
+          "nama": "Jasa Pengiriman",
+          "kode": "000000",
+          "jumlah": 1,
+          "satuan": "UM.0033",
+          "harga": 75000,
+          "tarifPpnbm": 0,
+          "jumlahRetur": 1,
+          "diskonRetur": 0,
+          "dpp": 75000,
+          "pakaiDppLain": true,
+          "dppLain": 68750,
+          "ppn": 8250,
+          "ppnbm": 0
+        }
+      ]
+    },
+    {
+      "nomorFaktur": "01002482423782999",
+      "npwpPenjual": "9999000000000004",
+      "tanggal": "2026-10-07",
+      "dpp": 36251.25,
+      "dppLain": 36251.25,
+      "ppn": 4350.15,
+      "ppnbm": 0,
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "Gula Pasir",
+          "kode": "000000",
+          "jumlah": 10.5,
+          "satuan": "UM.0003",
+          "harga": 14500.5,
+          "tarifPpnbm": 0,
+          "jumlahRetur": 2.5,
+          "diskonRetur": 0,
+          "dpp": 36251.25,
+          "pakaiDppLain": false,
+          "dppLain": 36251.25,
+          "ppn": 4350.15,
+          "ppnbm": 0
+        }
+      ]
+    }
+  ]
+}

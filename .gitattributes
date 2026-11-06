@@ -1,3 +1,4 @@
 * text=auto eol=lf
 fixtures/djp/** -text
 fixtures/faktur-keluaran/golden/*.converter.xml -text
+fixtures/retur-masukan/golden/*.converter.xml -text

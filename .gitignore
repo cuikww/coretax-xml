@@ -9,3 +9,4 @@ coverage
 fixtures/djp/unduhan/
 fixtures/faktur-keluaran/golden/*.xlsx
 uji-impor-keluar/
+fixtures/retur-masukan/golden/*.xlsx
