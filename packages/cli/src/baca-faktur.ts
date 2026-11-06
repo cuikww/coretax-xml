@@ -23,10 +23,10 @@ export interface OpsiBaca {
 /** File bukan format yang dikenal (sheet atau kolom wajib tidak ada). Bukan error isi data. */
 export class FormatBerkasError extends Error {}
 
-const norm = (s: string | undefined) => (s ?? '').trim().toLowerCase()
-const pad = (s: string | undefined, n: number) =>
+export const norm = (s: string | undefined) => (s ?? '').trim().toLowerCase()
+export const pad = (s: string | undefined, n: number) =>
   s && /^\d+$/.test(s) && s.length < n ? s.padStart(n, '0') : s // Excel membuang nol di depan angka
-const jenisItem = (j: string | undefined) =>
+export const jenisItem = (j: string | undefined) =>
   (j === 'A' ? 'barang' : j === 'B' ? 'jasa' : j) as ItemFaktur['jenis']
 
 function buatFaktur(
@@ -113,7 +113,7 @@ const KOLOM_DETAIL: Record<string, string> = {
 }
 
 /** Baris data: [nomor baris Excel, sel] mulai setelah baris judul (kolom A = "Baris") sampai baris "END". */
-function barisData(
+export function barisData(
   lembar: Lembar,
   nama: string,
 ): {

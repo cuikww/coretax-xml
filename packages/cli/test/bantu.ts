@@ -172,3 +172,92 @@ export async function cli(...argv: string[]) {
   const kode = await jalankan(argv, { stdout: (s) => (out += s), stderr: (s) => (err += s) })
   return { kode, out, err }
 }
+
+export const JUDUL_RETUR = [
+  'Baris',
+  'Nomor Faktur',
+  'NPWP Penjual',
+  'Tanggal Retur',
+  'DPP Retur',
+  'DPP Lain Retur',
+  'PPN Retur',
+  'PPnBM Retur',
+  'Total DPP Retur',
+  'Total DPP Lain Retur',
+  'Total PPN Retur',
+  'Total PPnBM Retur',
+]
+export const JUDUL_DETAIL_RETUR = [
+  'Baris',
+  'Jenis Barang Jasa',
+  'Nama Barang Jasa',
+  'Kode Barang Jasa',
+  'Jumlah Barang Jasa',
+  'Satuan Ukur Barang Jasa',
+  'Harga Satuan',
+  'Jumlah Barang Retur',
+  'Diskon Retur',
+  'DPP Retur',
+  'Flag DPP Lain Retur',
+  'DPP Lain Retur',
+  'PPN Retur',
+  'Tarif PPnBM',
+  'PPNBM Retur',
+]
+
+/** Serial tanggal Excel dari YYYY-MM-DD. */
+export const serial = (iso: string) => {
+  const [y, m, d] = iso.split('-').map(Number) as [number, number, number]
+  return (Date.UTC(y, m - 1, d) - Date.UTC(1899, 11, 30)) / 86400000
+}
+
+/** Retur 27-02-2025: 1 dari 20 unit @ 10000, PPN 1100 (sama seperti sampel resmi DJP). */
+export const barisRetur = (baris: number, ...ubah: [number, SelUji][]): SelUji[] => {
+  const b: SelUji[] = [
+    baris,
+    '04002500000348920',
+    '1091031210912281',
+    serial('2025-02-27'),
+    10000,
+    10000,
+    1100,
+    0,
+    { rumus: 'E4', hasil: 10000 },
+    { rumus: 'F4', hasil: 10000 },
+    { rumus: 'G4', hasil: 1100 },
+    { rumus: 'H4', hasil: 0 },
+  ]
+  for (const [i, v] of ubah) b[i] = v
+  return b
+}
+export const barisDetailRetur = (baris: number, ...ubah: [number, SelUji][]): SelUji[] => {
+  const b: SelUji[] = [
+    baris,
+    'A',
+    'Barang',
+    '000000',
+    20,
+    'UM.0033',
+    10000,
+    1,
+    0,
+    { rumus: 'H2*G2', hasil: 10000 },
+    'No',
+    { rumus: 'J2', hasil: 10000 },
+    1100,
+    0,
+    0,
+  ]
+  for (const [i, v] of ubah) b[i] = v
+  return b
+}
+export function templateRetur(
+  retur: SelUji[][],
+  detail: SelUji[][],
+  npwpPembeli = '1091031210912281',
+): Uint8Array {
+  return buatXlsx({
+    Retur: [['NPWP Pembeli', undefined, npwpPembeli], [], JUDUL_RETUR, ...retur, ['END']],
+    DetailRetur: [JUDUL_DETAIL_RETUR, ...detail, ['END']],
+  })
+}

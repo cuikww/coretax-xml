@@ -101,3 +101,21 @@ PRD menyatakan tidak ada jenis dokumen baru sebelum Gerbang 1 (impor Coretax nya
 **Biner CLI.** `bun build --compile` berhasil di Windows (± 96 MB karena menyertakan runtime Bun). Workflow `biner.yml` membangun 4 platform tetapi hanya dijalankan manual dan belum dicoba di GitHub Actions. Versi dibaca dari `package.json` lewat impor JSON supaya ikut ter-bundle.
 
 **Diuji dengan file asli.** `convert` pada `kasus.xlsx` (dibuat dari template DJP asli) menghasilkan XML yang sama dengan converter resmi (test lokal, dilewati di CI karena file Excel tidak ada di repo). Template DJP asli dengan rumus juga berhasil dibaca.
+
+## 2026-11-06: Retur faktur pajak masukan
+
+**Sumber.** `Sample Retur Faktur PM Template v.1.1.xml` dan template Excel `Sample Retur Faktur PM Template v.1.1.xlsx` dari paket DJP v1.6. Akar `InputTaxInvoiceReturn`; per retur: `TransactionDocumentData`, lalu `TransactionDetailsData` berisi `Rows` (satu per barang) dan `FooterRow`. Skema `retur-masukan@2025.03`, terpisah dari faktur keluaran.
+
+**PPN retur tidak dihitung.** Tidak ada kolom tarif di template retur (rumus contoh di Excel memakai 11% tetap), dan tarif yang berlaku mengikuti faktur asal yang tidak dilihat library. Jadi `ppn` wajib diisi pengguna. DPP dihitung (jumlah retur x harga - diskon) dan total dokumen dijumlah dari item bila kosong.
+
+**Error hanya untuk aturan yang tertulis jelas.** Error: nomor faktur 17 digit, NPWP 16 digit, tanggal, satuan, jumlah retur tidak boleh melebihi jumlah faktur asal atau nol, DPP lain harus sama dengan DPP jika flag DPP lain = tidak (sheet Keterangan: "isikan dengan nilai yang sama dengan DPP Retur jika Flag DPP Lain bernilai Tidak"), FooterRow harus sama dengan nilai dokumen (Keterangan: "Diisi sama dengan ..."). **Peringatan** saja untuk yang tersirat: DPP berbeda dari jumlah retur x harga - diskon (rumus di template Excel `=H2*G2` tidak mengurangi diskon, jadi aturan sebenarnya tidak jelas) dan total dokumen berbeda dari jumlah item.
+
+**Satuan retur memakai daftar faktur (UM.0001 sampai UM.0039).** Sheet REF template retur berhenti di UM.0033, tetapi retur harus memakai satuan yang sama dengan faktur asal, yang bisa UM.0034 ke atas.
+
+**Format.** Tanggal ditulis `DD-MM-YYYY` (sampel dan string converter `dd-MM-yyyy`), berbeda dari faktur keluaran (`YYYY-MM-DD`); di `check()`, tanggal ISO ditolak dengan `RETUR_DATE_FORMAT`. `ReturnOtherTaxBaseCheck` ditulis `true`/`false`. Deklarasi XML `encoding="UTF-8"` mengikuti sampel retur (faktur keluaran memakai `utf-8` seperti output converter).
+
+**Dalam hasil validasi retur, `faktur` berarti nomor retur** (retur ke-n); laporan CLI menulis "Retur ke-n".
+
+**Refaktor bersama.** `periksaElemen` dan `pengumpulXml` dipakai faktur dan retur. Pemeriksa urutan menganggap elemen yang berulang berurutan (`<Rows>` banyak kali) sebagai satu; bug ini ketahuan oleh sampel retur resmi. `XML_ROOT` kini menyebut akar yang diharapkan.
+
+**Belum.** Golden file dari converter DJP untuk retur (CLI sudah membaca template retur, tetapi XML-nya baru dibandingkan dengan sampel resmi satu kasus), CSV untuk retur, dan uji impor Coretax. Sampai golden file ada, perlakukan keluaran retur sebagai kandidat, bukan terbukti.

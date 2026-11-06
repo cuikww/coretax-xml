@@ -101,6 +101,28 @@ Untuk contoh di atas, library menghitung DPP 1.200.000, DPP nilai lain 1.100.000
 
 Aturan pembulatan resmi DJP masih perlu dikonfirmasi (lihat [pertanyaan terbuka](docs/PRD.md#risiko--pertanyaan-terbuka)).
 
+### Retur faktur pajak masukan
+
+```ts
+import { returMasukan } from 'coretax-xml'
+
+const xml = returMasukan.build({
+  pembeli: { npwp: '0000000000000000' }, // pelapor retur (TIN)
+  retur: [
+    {
+      nomorFaktur: '04002500000348920', // 17 digit
+      npwpPenjual: '0000000000000000',
+      tanggal: '2025-02-27',
+      item: [
+        { jenis: 'barang', nama: 'Barang', satuan: 'UM.0033', jumlah: 1, harga: 10000, jumlahRetur: 1, ppn: 1100 },
+      ],
+    },
+  ],
+})
+```
+
+PPN retur **wajib diisi sendiri**: template retur DJP tidak punya kolom tarif, jadi library tidak bisa menghitungnya. Total dokumen dihitung dari item. Belum diuji impor di Coretax.
+
 ### Periksa XML yang sudah ada
 
 ```ts

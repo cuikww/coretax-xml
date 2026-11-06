@@ -63,7 +63,7 @@ export function samarkan(nilai: string): string {
   return `${nilai.slice(0, 4)}${'*'.repeat(nilai.length - 8)}${nilai.slice(-4)}`
 }
 
-function tanggalValid(t: string): boolean {
+export function tanggalValid(t: string): boolean {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(t)
   if (!m) return false
   const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])]
@@ -71,7 +71,7 @@ function tanggalValid(t: string): boolean {
   return dt.getUTCFullYear() === y && dt.getUTCMonth() === mo - 1 && dt.getUTCDate() === d
 }
 
-class Pengumpul {
+export class Pengumpul {
   readonly errors: MasalahValidasi[] = []
   readonly warnings: MasalahValidasi[] = []
   constructor(
@@ -96,14 +96,14 @@ class Pengumpul {
   }
 }
 
-interface Lokasi {
+export interface Lokasi {
   faktur: number | null
   item: number | null
   field: string
   element: string | null
 }
 
-function bacaAngka(
+export function bacaAngka(
   k: Pengumpul,
   nilai: Angka | undefined,
   lokasi: Lokasi,
@@ -129,13 +129,18 @@ function bacaAngka(
   }
 }
 
-function wajibTeks(k: Pengumpul, nilai: string | undefined, lokasi: Lokasi): string {
+export function wajibTeks(k: Pengumpul, nilai: string | undefined, lokasi: Lokasi): string {
   const t = (nilai ?? '').trim()
   if (!t) k.tambah('error', 'REQUIRED', lokasi)
   return t
 }
 
-function periksaDigit(k: Pengumpul, nilai: string | undefined, panjang: 16 | 22, lokasi: Lokasi): string {
+export function periksaDigit(
+  k: Pengumpul,
+  nilai: string | undefined,
+  panjang: 16 | 22,
+  lokasi: Lokasi,
+): string {
   const t = (nilai ?? '').trim()
   if (!t) {
     k.tambah('error', 'REQUIRED', lokasi)

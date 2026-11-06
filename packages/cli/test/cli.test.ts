@@ -4,7 +4,18 @@ import { describe, expect, it } from 'vitest'
 import { bulat2, tanggalIso } from '../src/angka.js'
 import { parseCsv } from '../src/csv.js'
 import { bacaXlsx } from '../src/xlsx.js'
-import { barisDetail, barisFaktur, buatXlsx, cli, folderSementara, templateExcel, tulis } from './bantu.js'
+import {
+  barisDetail,
+  barisDetailRetur,
+  barisFaktur,
+  barisRetur,
+  buatXlsx,
+  cli,
+  folderSementara,
+  templateExcel,
+  templateRetur,
+  tulis,
+} from './bantu.js'
 
 const dariRepo = (p: string) => fileURLToPath(new URL(`../../../${p}`, import.meta.url))
 
@@ -155,6 +166,86 @@ describe('convert dari template Excel DJP', () => {
       expect(normal(readFileSync(f.replace('.xlsx', '.xml'), 'utf8'))).toBe(normal(resmi))
     },
   )
+})
+
+describe('convert retur faktur masukan dari template Excel DJP', () => {
+  it('dikenali dari sheet Retur + DetailRetur; XML sama dengan sampel resmi DJP (selain indentasi)', async () => {
+    const dir = folderSementara()
+    const f = tulis(
+      dir,
+      'retur.xlsx',
+      templateRetur([barisRetur(1)], [barisDetailRetur(1), barisDetailRetur(1)]),
+    )
+    const r = await cli('convert', f)
+    expect(r.kode).toBe(0)
+    expect(r.out).toContain('skema retur-masukan@2025.03')
+    const normal = (x: string) =>
+      x
+        .replace(/^\ufeff/, '')
+        .replace(/>\s+</g, '><')
+        .trim()
+    const resmi = readFileSync(dariRepo('fixtures/djp/Sample Retur Faktur PM Template v.1.1.xml'), 'utf8')
+    // Sampel resmi memuat 2 baris dan total 20000; padankan datanya
+    const dua = tulis(
+      dir,
+      'dua.xlsx',
+      templateRetur(
+        [barisRetur(1, [4, 20000], [5, 20000], [6, 2200])],
+        [barisDetailRetur(1, [4, 1]), barisDetailRetur(1, [4, 1])],
+      ),
+    )
+    expect((await cli('convert', dua)).kode).toBe(0)
+    expect(normal(readFileSync(dua.replace('.xlsx', '.xml'), 'utf8'))).toBe(normal(resmi))
+    expect((await cli('check', dua.replace('.xlsx', '.xml'))).kode).toBe(0)
+  })
+
+  it('error menunjuk baris Excel dan memakai istilah Retur', async () => {
+    const dir = folderSementara()
+    const f = tulis(dir, 'salah.xlsx', templateRetur([barisRetur(1)], [barisDetailRetur(1, [7, 25])]))
+    const r = await cli('convert', f)
+    expect(r.kode).toBe(1)
+    expect(r.out).toContain('Retur ke-1 (baris Excel 4), item 1 (baris Excel 2) <ReturnQuantity>')
+    expect(r.out).toContain('RETUR_QTY_EXCEEDS')
+  })
+
+  it('--hitung otomatis menghitung ulang DPP dan total dokumen; PPN tetap harus diisi', async () => {
+    const dir = folderSementara()
+    const f = tulis(dir, 'beda.xlsx', templateRetur([barisRetur(1, [4, 999])], [barisDetailRetur(1)]))
+    const strict = await cli('convert', f)
+    expect(strict.kode).toBe(0)
+    expect(strict.out).toContain('RETUR_TOTAL_MISMATCH') // hanya peringatan
+    const o = await cli('convert', f, '--hitung', 'otomatis')
+    expect(o.kode).toBe(0)
+    expect(o.out).not.toContain('RETUR_TOTAL_MISMATCH')
+    expect(readFileSync(f.replace('.xlsx', '.xml'), 'utf8')).toContain('<ReturnTaxBase>10000</ReturnTaxBase>')
+  })
+
+  it('baris detail tanpa retur = kode 2; check mengenali retur dan faktur dalam satu folder', async () => {
+    const dir = folderSementara()
+    const yatim = tulis(
+      dir,
+      'y.xlsx',
+      templateRetur([barisRetur(1)], [barisDetailRetur(1), barisDetailRetur(5)]),
+    )
+    const r = await cli('convert', yatim)
+    expect(r.kode).toBe(2)
+    expect(r.err).toContain('DetailRetur baris 3: nilai kolom Baris tidak ada di sheet Retur')
+
+    const campur = folderSementara()
+    const a = tulis(campur, 'a.xlsx', templateRetur([barisRetur(1)], [barisDetailRetur(1)]))
+    const b = tulis(campur, 'b.xlsx', templateExcel([barisFaktur(1)], [barisDetail(1)]))
+    await cli('convert', a)
+    await cli('convert', b)
+    const j = JSON.parse((await cli('check', campur, '--format', 'json')).out) as {
+      schema: string
+      valid: boolean
+    }[]
+    expect(j.map((x) => [x.schema, x.valid])).toEqual([
+      ['retur-masukan@2025.03', true],
+      ['faktur-keluaran@2025.09', true],
+    ])
+    expect((await cli('schemas')).out).toContain('retur-masukan@2025.03')
+  })
 })
 
 describe('convert dari CSV', () => {

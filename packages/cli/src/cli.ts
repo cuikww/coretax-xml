@@ -1,9 +1,24 @@
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { extname, join } from 'node:path'
 import { parseArgs } from 'node:util'
-import { type Bahasa, fakturKeluaran, type OpsiValidasi } from 'coretax-xml'
+import {
+  type Bahasa,
+  type BatchReturFakturMasukan,
+  fakturKeluaran,
+  type HasilValidasi,
+  type OpsiValidasi,
+  returMasukan,
+} from 'coretax-xml'
 import pkg from '../package.json' with { type: 'json' }
-import { dariCsv, dariExcel, FormatBerkasError, type HasilBaca, templateCsv } from './baca-faktur.js'
+import {
+  dariCsv,
+  dariExcel,
+  FormatBerkasError,
+  type HasilBaca,
+  type Sumber,
+  templateCsv,
+} from './baca-faktur.js'
+import { dariExcelRetur } from './baca-retur.js'
 import { formatLaporan, type Laporan } from './laporan.js'
 import { bacaXlsx } from './xlsx.js'
 
@@ -17,11 +32,12 @@ Bukan produk DJP dan bukan nasihat pajak. Berjalan lokal, tanpa internet.
 
 Pemakaian:
   coretax-xml convert <file.xlsx|file.csv> [-o hasil.xml] [--hitung strict|otomatis] [--format teks|json|html]
-      .xlsx = template Excel faktur pajak keluaran DJP (sheet Faktur + DetailFaktur); angka dibaca dari file
+      .xlsx = template Excel DJP: faktur pajak keluaran (sheet Faktur + DetailFaktur) atau retur faktur pajak
+              masukan (sheet Retur + DetailRetur), dikenali otomatis; angka dibaca dari file
               (default --hitung strict: dicocokkan dengan hitungan library)
       .csv  = format sederhana, satu baris per item (default --hitung otomatis; lihat perintah template)
   coretax-xml check <file.xml|folder> [--format teks|json|html] [-o laporan.html]
-      memeriksa XML faktur pajak keluaran yang sudah ada (buatan converter DJP atau aplikasi lain)
+      memeriksa XML faktur pajak keluaran atau retur faktur pajak masukan yang sudah ada (dikenali dari elemen akar)
   coretax-xml template faktur-keluaran [-o contoh.csv]
       mencetak contoh CSV dengan kolom yang benar
   coretax-xml schemas
@@ -40,10 +56,14 @@ const PENAFIAN =
 
 class SalahPakai extends Error {}
 
+type Dibaca =
+  | ({ dokumen: 'faktur-keluaran' } & HasilBaca)
+  | { dokumen: 'retur-masukan'; batch: BatchReturFakturMasukan; sumber: Sumber }
+
 function bacaBerkas(
   berkas: string,
   hitung: 'strict' | 'otomatis' | undefined,
-): HasilBaca & { hitung: 'strict' | 'otomatis' } {
+): Dibaca & { hitung: 'strict' | 'otomatis' } {
   const ext = extname(berkas).toLowerCase()
   if (ext !== '.xlsx' && ext !== '.csv') {
     throw new SalahPakai(
@@ -59,10 +79,14 @@ function bacaBerkas(
   try {
     if (ext === '.xlsx') {
       const h = hitung ?? 'strict'
-      return { ...dariExcel(bacaXlsx(new Uint8Array(data)), { hitung: h }), hitung: h }
+      const sheets = bacaXlsx(new Uint8Array(data))
+      if (sheets.Retur && sheets.DetailRetur) {
+        return { dokumen: 'retur-masukan', ...dariExcelRetur(sheets, { hitung: h }), hitung: h }
+      }
+      return { dokumen: 'faktur-keluaran', ...dariExcel(sheets, { hitung: h }), hitung: h }
     }
     const h = hitung ?? 'otomatis'
-    return { ...dariCsv(data.toString('utf8'), { hitung: h }), hitung: h }
+    return { dokumen: 'faktur-keluaran', ...dariCsv(data.toString('utf8'), { hitung: h }), hitung: h }
   } catch (e) {
     if (e instanceof FormatBerkasError || e instanceof Error) throw new SalahPakai(`${berkas}: ${e.message}`)
     throw e
@@ -123,9 +147,9 @@ export async function jalankan(
     const dasar: OpsiValidasi = { bahasa: v.bahasa as Bahasa, ...(v.schema ? { schema: v.schema } : {}) }
 
     if (perintah === 'schemas') {
-      for (const s of fakturKeluaran.schemas()) {
+      for (const s of [...fakturKeluaran.schemas(), ...returMasukan.schemas()]) {
         io.stdout(
-          `faktur-keluaran@${s.id}  berlaku mulai ${s.berlakuMulai}\n  template: ${s.template}\n  converter: ${s.converter}\n  ${s.terverifikasiDenganXsdResmi ? 'diverifikasi dengan XSD resmi' : 'belum diverifikasi dengan XSD resmi (DJP tidak menerbitkan XSD)'}\n`,
+          `${s.dokumen}@${s.id}  berlaku mulai ${s.berlakuMulai}\n  template: ${s.template}\n  converter: ${s.converter}\n  ${s.terverifikasiDenganXsdResmi ? 'diverifikasi dengan XSD resmi' : 'belum diverifikasi dengan XSD resmi (DJP tidak menerbitkan XSD)'}\n`,
         )
       }
       return 0
@@ -141,13 +165,22 @@ export async function jalankan(
     if (perintah === 'convert') {
       const berkas = sisa[0]
       if (!berkas) throw new SalahPakai('convert butuh nama file .xlsx atau .csv.')
-      const { batch, sumber, hitung } = bacaBerkas(berkas, v.hitung as 'strict' | 'otomatis' | undefined)
+      const dibaca = bacaBerkas(berkas, v.hitung as 'strict' | 'otomatis' | undefined)
+      const { sumber, hitung } = dibaca
       const opsi: OpsiValidasi = { ...dasar, hitung }
-      const hasil = fakturKeluaran.validate(batch, opsi)
+      const hasil: HasilValidasi =
+        dibaca.dokumen === 'retur-masukan'
+          ? returMasukan.validate(dibaca.batch, opsi)
+          : fakturKeluaran.validate(dibaca.batch, opsi)
       const laporan: Laporan = { berkas, hasil, sumber }
       if (hasil.valid) {
         const keluaran = v.output ?? `${berkas.slice(0, berkas.length - extname(berkas).length)}.xml`
-        writeFileSync(keluaran, fakturKeluaran.build(batch, opsi))
+        writeFileSync(
+          keluaran,
+          dibaca.dokumen === 'retur-masukan'
+            ? returMasukan.build(dibaca.batch, opsi)
+            : fakturKeluaran.build(dibaca.batch, opsi),
+        )
         laporan.keluaran = keluaran
       }
       io.stdout(formatLaporan(format, [laporan]))
@@ -157,10 +190,11 @@ export async function jalankan(
 
     if (perintah === 'check') {
       if (!sisa[0]) throw new SalahPakai('check butuh nama file .xml atau folder.')
-      const daftar: Laporan[] = kumpulkanXml(sisa[0]).map((f) => ({
-        berkas: f,
-        hasil: fakturKeluaran.check(readFileSync(f, 'utf8'), dasar),
-      }))
+      const daftar: Laporan[] = kumpulkanXml(sisa[0]).map((f) => {
+        const xml = readFileSync(f, 'utf8')
+        const retur = /<InputTaxInvoiceReturn[\s>/]/.test(xml.slice(0, 4000))
+        return { berkas: f, hasil: retur ? returMasukan.check(xml, dasar) : fakturKeluaran.check(xml, dasar) }
+      })
       const teks = formatLaporan(format, daftar)
       if (v.output) writeFileSync(v.output, teks)
       else io.stdout(teks)

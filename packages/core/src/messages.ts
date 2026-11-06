@@ -124,10 +124,44 @@ const id: Katalog = {
       `Tanggal faktur ${p.nilai} lebih awal dari skema tertua (${p.skema}); skema itu tetap dipakai.`,
   },
   FAKTUR_EMPTY: { pesan: () => 'Batch harus berisi minimal 1 faktur.' },
+  INVOICE_NUMBER_FORMAT: {
+    pesan: (p) => `Nomor faktur "${p.nilai}" harus 17 digit angka.`,
+    saran: () => 'Hapus titik dan strip dari nomor faktur pajak masukan yang diretur.',
+  },
+  RETUR_EMPTY: { pesan: () => 'Batch harus berisi minimal 1 retur.' },
+  RETUR_QTY_EXCEEDS: {
+    pesan: (p) => `Jumlah barang retur ${p.retur} melebihi jumlah pada faktur asal (${p.jumlah}).`,
+  },
+  RETUR_OTHER_BASE_MISMATCH: {
+    pesan: (p) =>
+      `Flag DPP lain = tidak, tetapi DPP lain retur ${p.dppLain} berbeda dari DPP retur ${p.dpp}.`,
+    saran: () =>
+      'Isi sama dengan DPP retur, atau set pakaiDppLain: true jika faktur asal memakai DPP nilai lain.',
+  },
+  RETUR_DPP_MISMATCH: {
+    pesan: (p) => `DPP retur ${p.nilai} tidak sama dengan jumlah retur x harga - diskon = ${p.harap}.`,
+    saran: () =>
+      'Template DJP menghitung jumlah retur x harga tanpa diskon. Pastikan nilai sesuai faktur asal.',
+  },
+  RETUR_TOTAL_MISMATCH: {
+    pesan: (p) => `${p.label} dokumen ${p.nilai} tidak sama dengan jumlah semua item (${p.harap}).`,
+  },
+  RETUR_FOOTER_MISMATCH: {
+    pesan: (p) =>
+      `<${p.elemen}> ${p.nilai} tidak sama dengan nilai pada TransactionDocumentData (${p.harap}).`,
+    saran: () => 'Total di FooterRow harus diisi sama dengan nilai dokumen.',
+  },
+  RETUR_BOOL_FORMAT: {
+    pesan: (p) => `ReturnOtherTaxBaseCheck harus true atau false, ditemukan "${p.nilai}".`,
+  },
+  RETUR_DATE_FORMAT: {
+    pesan: (p) => `ReturnDate "${p.nilai}" harus berformat DD-MM-YYYY di XML retur, mis. "27-02-2025".`,
+  },
   XML_PARSE: { pesan: (p) => `XML tidak dapat dibaca (posisi ${p.posisi}): ${p.detail}.` },
   XML_ROOT: {
-    pesan: (p) => `Elemen akar harus <TaxInvoiceBulk>, ditemukan <${p.nama}>.`,
-    saran: () => 'Ini bukan XML faktur pajak keluaran. Retur dan bukti potong punya akar yang berbeda.',
+    pesan: (p) => `Elemen akar harus <${p.harap}>, ditemukan <${p.nama}>.`,
+    saran: () =>
+      'Dokumen ini bukan jenis yang diperiksa. Faktur keluaran, retur masukan, dan bukti potong punya akar yang berbeda.',
   },
   XML_ELEMENT_MISSING: { pesan: (p) => `${p.lokasi}: elemen <${p.nama}> tidak ada.` },
   XML_ELEMENT_UNKNOWN: { pesan: (p) => `${p.lokasi}: elemen <${p.nama}> tidak dikenal.` },
@@ -220,10 +254,35 @@ const en: Katalog = {
     pesan: (p) => `Invoice date ${p.nilai} is before the oldest schema (${p.skema}); that schema is used.`,
   },
   FAKTUR_EMPTY: { pesan: () => 'A batch needs at least 1 invoice.' },
+  INVOICE_NUMBER_FORMAT: { pesan: (p) => `Invoice number "${p.nilai}" must be 17 digits.` },
+  RETUR_EMPTY: { pesan: () => 'A batch needs at least 1 return.' },
+  RETUR_QTY_EXCEEDS: {
+    pesan: (p) => `Returned quantity ${p.retur} exceeds the original invoice quantity (${p.jumlah}).`,
+  },
+  RETUR_OTHER_BASE_MISMATCH: {
+    pesan: (p) =>
+      `Other-tax-base flag is off, but return other tax base ${p.dppLain} differs from return tax base ${p.dpp}.`,
+    saran: () => 'Use the same value as the tax base, or set pakaiDppLain: true.',
+  },
+  RETUR_DPP_MISMATCH: {
+    pesan: (p) =>
+      `Return tax base ${p.nilai} differs from returned quantity x price - discount = ${p.harap}.`,
+  },
+  RETUR_TOTAL_MISMATCH: {
+    pesan: (p) => `Document ${p.label} ${p.nilai} differs from the sum of all items (${p.harap}).`,
+  },
+  RETUR_FOOTER_MISMATCH: {
+    pesan: (p) => `<${p.elemen}> ${p.nilai} differs from TransactionDocumentData (${p.harap}).`,
+  },
+  RETUR_BOOL_FORMAT: { pesan: (p) => `ReturnOtherTaxBaseCheck must be true or false, found "${p.nilai}".` },
+  RETUR_DATE_FORMAT: {
+    pesan: (p) => `ReturnDate "${p.nilai}" must be DD-MM-YYYY in return XML, e.g. "27-02-2025".`,
+  },
   XML_PARSE: { pesan: (p) => `XML cannot be read (position ${p.posisi}): ${p.detail}.` },
   XML_ROOT: {
-    pesan: (p) => `Root element must be <TaxInvoiceBulk>, found <${p.nama}>.`,
-    saran: () => 'This is not an output tax invoice XML. Returns and withholding slips have different roots.',
+    pesan: (p) => `Root element must be <${p.harap}>, found <${p.nama}>.`,
+    saran: () =>
+      'This is not the document type being checked. Output invoices, input returns and withholding slips have different roots.',
   },
   XML_ELEMENT_MISSING: { pesan: (p) => `${p.lokasi}: element <${p.nama}> is missing.` },
   XML_ELEMENT_UNKNOWN: { pesan: (p) => `${p.lokasi}: unknown element <${p.nama}>.` },
@@ -252,6 +311,11 @@ const label: Record<Bahasa, Record<string, string>> = {
     'penjual.nitku': 'NITKU penjual',
     tanggal: 'Tanggal faktur',
     kodeTransaksi: 'Kode transaksi',
+    nomorFaktur: 'Nomor faktur',
+    npwpPenjual: 'NPWP penjual',
+    jumlahRetur: 'Jumlah barang retur',
+    diskonRetur: 'Diskon retur',
+    dppLain: 'DPP lain retur',
     'pembeli.npwp': 'NPWP pembeli',
     'pembeli.nitku': 'NITKU pembeli',
     'pembeli.nama': 'Nama pembeli',
@@ -274,6 +338,11 @@ const label: Record<Bahasa, Record<string, string>> = {
     'penjual.nitku': 'Seller NITKU',
     tanggal: 'Invoice date',
     kodeTransaksi: 'Transaction code',
+    nomorFaktur: 'Invoice number',
+    npwpPenjual: 'Seller NPWP',
+    jumlahRetur: 'Returned quantity',
+    diskonRetur: 'Return discount',
+    dppLain: 'Return other tax base',
     'pembeli.npwp': 'Buyer NPWP',
     'pembeli.nitku': 'Buyer NITKU',
     'pembeli.nama': 'Buyer name',

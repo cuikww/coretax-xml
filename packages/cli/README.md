@@ -7,7 +7,8 @@ Ubah template Excel faktur pajak keluaran DJP (atau CSV sederhana) menjadi XML i
 ## Pemakaian
 
 ```sh
-# Template Excel resmi DJP (sheet Faktur + DetailFaktur) -> XML di sebelah file Excel-nya
+# Template Excel resmi DJP -> XML di sebelah file Excel-nya. Jenisnya dikenali dari nama sheet:
+#   Faktur + DetailFaktur = faktur pajak keluaran; Retur + DetailRetur = retur faktur pajak masukan
 coretax-xml convert penjualan.xlsx
 coretax-xml convert penjualan.xlsx -o faktur-oktober.xml
 
@@ -15,7 +16,8 @@ coretax-xml convert penjualan.xlsx -o faktur-oktober.xml
 coretax-xml template faktur-keluaran -o contoh.csv
 coretax-xml convert contoh.csv
 
-# Periksa XML yang sudah ada (buatan converter DJP atau aplikasi lain), satu file atau satu folder
+# Periksa XML yang sudah ada (buatan converter DJP atau aplikasi lain), satu file atau satu folder.
+# Faktur keluaran dan retur masukan dikenali dari elemen akar.
 coretax-xml check faktur-oktober.xml
 coretax-xml check folder-xml/ --format html -o laporan.html
 
@@ -46,7 +48,7 @@ Excel menyimpan rumus beserta hasil terakhir yang dihitungnya. CLI hanya membaca
 
 ## Keterbatasan
 
-- Hanya faktur pajak keluaran. Retur faktur masukan dan bukti potong menyusul.
+- Faktur pajak keluaran (Excel dan CSV) dan retur faktur pajak masukan (hanya Excel). Bukti potong menyusul.
 - `.xls` lama tidak didukung; simpan sebagai `.xlsx`.
 - Angka CSV memakai titik desimal tanpa pemisah ribuan (`1500.50`, bukan `1.500,50`).
 - Kode barang dan kode transaksi yang kehilangan nol di depan karena Excel (`4`, `0`) dipulihkan menjadi `04` dan `000000`.

@@ -21,10 +21,10 @@ function barisSumber(m: MasalahValidasi, s?: Sumber): { faktur?: number; item?: 
   return hasil
 }
 
-function lokasi(m: MasalahValidasi, s?: Sumber): string {
+function lokasi(m: MasalahValidasi, s: Sumber | undefined, schema: string): string {
   if (m.faktur === null) return 'Dokumen'
   const b = barisSumber(m, s)
-  let t = `Faktur ke-${m.faktur}`
+  let t = `${schema.startsWith('retur-') ? 'Retur' : 'Faktur'} ke-${m.faktur}`
   if (b.faktur !== undefined) t += ` (baris ${s?.jenis} ${b.faktur})`
   if (m.item !== null) {
     t += `, item ${m.item}`
@@ -47,7 +47,7 @@ export function formatTeks(daftar: Laporan[]): string {
     ] as const) {
       for (const m of daftarMasalah) {
         keluar.push(
-          `  ${level} [${m.code}] ${lokasi(m, l.sumber)}${m.element ? ` <${m.element}>` : ''}: ${m.pesan}`,
+          `  ${level} [${m.code}] ${lokasi(m, l.sumber, l.hasil.schema)}${m.element ? ` <${m.element}>` : ''}: ${m.pesan}`,
         )
         if (m.saran) keluar.push(`      saran: ${m.saran}`)
       }
@@ -84,7 +84,7 @@ export function formatHtml(daftar: Laporan[]): string {
     const baris = [...l.hasil.errors, ...l.hasil.warnings]
       .map((m) => {
         const saran = m.saran ? `<br><small>Saran: ${esc(m.saran)}</small>` : ''
-        return `<tr class="${m.level}"><td>${m.level === 'error' ? 'Error' : 'Peringatan'}</td><td>${esc(lokasi(m, l.sumber))}</td><td>${esc(m.element ?? '')}</td><td>${esc(m.code)}</td><td>${esc(m.pesan)}${saran}</td></tr>`
+        return `<tr class="${m.level}"><td>${m.level === 'error' ? 'Error' : 'Peringatan'}</td><td>${esc(lokasi(m, l.sumber, l.hasil.schema))}</td><td>${esc(m.element ?? '')}</td><td>${esc(m.code)}</td><td>${esc(m.pesan)}${saran}</td></tr>`
       })
       .join('\n')
     const tabel = baris

@@ -78,8 +78,8 @@ export function parseXml(xml: string): Node {
   return akar
 }
 
-const anak = (n: Node | undefined, nama: string) => n?.anak.find((a) => a.nama === nama)
-const nilai = (n: Node | undefined, nama: string) => anak(n, nama)?.teks.trim() ?? ''
+export const anak = (n: Node | undefined, nama: string) => n?.anak.find((a) => a.nama === nama)
+export const nilai = (n: Node | undefined, nama: string) => anak(n, nama)?.teks.trim() ?? ''
 
 function keItem(n: Node): ItemFaktur {
   const opt = nilai(n, 'Opt')
@@ -124,21 +124,18 @@ function keFaktur(n: Node): FakturKeluaran {
   }
 }
 
-/**
- * Periksa file XML faktur pajak keluaran yang sudah ada (buatan converter DJP, library ini, atau aplikasi lain).
- * Memeriksa struktur (elemen wajib dan urutannya), lalu isi dengan aturan yang sama seperti `validate`
- * dalam mode strict: semua angka dibaca dari file dan dicocokkan dengan hitungan.
- */
-export function check(xml: string, opsi: OpsiValidasi = {}): HasilValidasi {
-  const bahasa: Bahasa = opsi.bahasa ?? 'id'
+export type Tambah = (
+  code: KodeError,
+  element: string | null,
+  faktur: number | null,
+  item: number | null,
+  param?: Record<string, string | number>,
+) => void
+
+/** Pengumpul error struktur XML: setiap panggilan menambah satu error berlokasi (field "xml"). */
+export function pengumpulXml(bahasa: Bahasa): { errors: MasalahValidasi[]; tambah: Tambah } {
   const errors: MasalahValidasi[] = []
-  const tambah = (
-    code: KodeError,
-    element: string | null,
-    faktur: number | null,
-    item: number | null,
-    param: Record<string, string | number> = {},
-  ) => {
+  const tambah: Tambah = (code, element, faktur, item, param = {}) => {
     const { pesan, saran } = teks(bahasa, code, param)
     errors.push({
       code,
@@ -151,6 +148,40 @@ export function check(xml: string, opsi: OpsiValidasi = {}): HasilValidasi {
       ...(saran ? { saran } : {}),
     })
   }
+  return { errors, tambah }
+}
+
+/** Periksa anak langsung sebuah elemen: elemen wajib hilang, elemen asing, dan urutan. */
+export function periksaElemen(
+  tambah: Tambah,
+  n: Node,
+  harapan: readonly string[],
+  lokasi: string,
+  faktur: number | null,
+  item: number | null,
+) {
+  const ada = n.anak.map((a) => a.nama)
+  for (const nama of harapan.filter((h) => !ada.includes(h))) {
+    tambah('XML_ELEMENT_MISSING', nama, faktur, item, { lokasi, nama })
+  }
+  for (const nama of ada.filter((a) => !harapan.includes(a))) {
+    tambah('XML_ELEMENT_UNKNOWN', nama, faktur, item, { lokasi, nama })
+  }
+  // elemen yang berulang berurutan (mis. <Rows> banyak kali) dihitung satu
+  const dikenal = ada.filter((a, i) => harapan.includes(a) && a !== ada[i - 1])
+  if (dikenal.join() !== harapan.filter((h) => ada.includes(h)).join()) {
+    tambah('XML_ELEMENT_ORDER', null, faktur, item, { lokasi, urutan: harapan.join(', ') })
+  }
+}
+
+/**
+ * Periksa file XML faktur pajak keluaran yang sudah ada (buatan converter DJP, library ini, atau aplikasi lain).
+ * Memeriksa struktur (elemen wajib dan urutannya), lalu isi dengan aturan yang sama seperti `validate`
+ * dalam mode strict: semua angka dibaca dari file dan dicocokkan dengan hitungan.
+ */
+export function check(xml: string, opsi: OpsiValidasi = {}): HasilValidasi {
+  const bahasa: Bahasa = opsi.bahasa ?? 'id'
+  const { errors, tambah } = pengumpulXml(bahasa)
   const gagal = (): HasilValidasi => ({
     valid: false,
     schema: `faktur-keluaran@${opsi.schema ?? 'auto'}`,
@@ -167,7 +198,7 @@ export function check(xml: string, opsi: OpsiValidasi = {}): HasilValidasi {
     return gagal()
   }
   if (akar.nama !== 'TaxInvoiceBulk') {
-    tambah('XML_ROOT', akar.nama, null, null, { nama: akar.nama })
+    tambah('XML_ROOT', akar.nama, null, null, { nama: akar.nama, harap: 'TaxInvoiceBulk' })
     return gagal()
   }
 
@@ -178,19 +209,7 @@ export function check(xml: string, opsi: OpsiValidasi = {}): HasilValidasi {
     lokasi: string,
     faktur: number | null,
     item: number | null,
-  ) => {
-    const ada = n.anak.map((a) => a.nama)
-    for (const nama of harapan.filter((h) => !ada.includes(h))) {
-      tambah('XML_ELEMENT_MISSING', nama, faktur, item, { lokasi, nama })
-    }
-    for (const nama of ada.filter((a) => !harapan.includes(a))) {
-      tambah('XML_ELEMENT_UNKNOWN', nama, faktur, item, { lokasi, nama })
-    }
-    const dikenal = ada.filter((a) => harapan.includes(a))
-    if (dikenal.join() !== harapan.filter((h) => ada.includes(h)).join()) {
-      tambah('XML_ELEMENT_ORDER', null, faktur, item, { lokasi, urutan: harapan.join(', ') })
-    }
-  }
+  ) => periksaElemen(tambah, n, harapan, lokasi, faktur, item)
 
   periksa(akar, ['TIN', 'ListOfTaxInvoice'], '<TaxInvoiceBulk>', null, null)
   const daftar = anak(akar, 'ListOfTaxInvoice')?.anak.filter((a) => a.nama === 'TaxInvoice') ?? []

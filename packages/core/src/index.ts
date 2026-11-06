@@ -5,8 +5,10 @@
  * library ini tidak melakukan panggilan jaringan.
  */
 import { analisis, build, validate } from './faktur-keluaran.js'
+import * as retur from './retur-masukan.js'
 import * as skema2025_09 from './schemas/faktur-keluaran/v2025-09.js'
 import { daftarSkema } from './schemas/index.js'
+import * as skemaRetur from './schemas/retur-masukan/v2025-03.js'
 import { check } from './xml-baca.js'
 
 export type {
@@ -31,6 +33,26 @@ export const fakturKeluaran = {
   check,
   /** Daftar skema yang tersedia. */
   schemas: daftarSkema,
+}
+
+export type {
+  AnalisisRetur,
+  BatchReturFakturMasukan,
+  ItemRetur,
+  ReturFakturMasukan,
+} from './retur-masukan.js'
+export type { MetaSkemaRetur } from './schemas/retur-masukan/v2025-03.js'
+
+/**
+ * Retur faktur pajak masukan (root XML `InputTaxInvoiceReturn`).
+ * Dalam hasil validasi, `faktur` berarti nomor retur (retur ke-n).
+ */
+export const returMasukan = {
+  validate: retur.validate,
+  build: retur.build,
+  analisis: retur.analisis,
+  check: retur.check,
+  schemas: () => [skemaRetur.meta],
 }
 
 /** Tabel referensi untuk mengisi dropdown di aplikasi. */
