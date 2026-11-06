@@ -57,3 +57,13 @@ Keputusan selama implementasi, pelengkap [PRD](PRD.md). Bagian terbaru di bawah.
 **Probe pembulatan terpisah.** `probe-pembulatan.json` berisi angka 3 desimal yang sengaja tidak sah untuk library; hanya untuk melihat apakah converter membulatkan ke genap atau setengah ke atas, memotong, atau menolak.
 
 **Test pembanding otomatis aktif.** `golden.test.ts` melewati perbandingan sampai `kasus.converter.xml` ada. Perbandingan mengabaikan indentasi, header XML, dan beda penulisan elemen kosong (`<X/>` vs `xsi:nil`); semua nilai dan urutan elemen dibandingkan.
+
+## 2026-11-06: Hasil converter resmi (kasus.converter.xml)
+
+**Output library sama dengan converter resmi untuk 10 kasus**: nilai, urutan elemen, elemen kosong `<X/>` (converter tidak memakai `xsi:nil`), angka tanpa pemisah ribuan, `10.5` dan `14500.5` tanpa nol di belakang, dan karakter `&`, `<`, `>`.
+
+**Beda yang diperbaiki: tanda kutip.** Converter menulis `"` dan `'` apa adanya di isi elemen (hanya `& < >` di-escape). Library sebelumnya menulis `&quot;` dan `&apos;`. Keduanya XML valid; disamakan dengan converter.
+
+**Beda yang dibiarkan (tidak memengaruhi isi):** converter menulis BOM UTF-8, CRLF, dan root `<TaxInvoiceBulk xmlns:xsd=... xmlns:xsi=...>` tanpa `xsi:noNamespaceSchemaLocation`. Sampel resmi v1.4 memakai tab dan menyertakan `noNamespaceSchemaLocation="TaxInvoice.xsd"`. Library mengikuti sampel. Mana yang diterima Coretax baru bisa dipastikan lewat uji impor nyata; kedua bentuk berasal dari DJP.
+
+**Pelajaran penting:** converter DJP tidak menghitung apa pun. Semua angka disalin dari sel Excel. Aturan hitung (11/12, pembulatan) sepenuhnya tanggung jawab pengisi template, jadi golden file ini tidak bisa membuktikan benar-tidaknya rumus, hanya format penulisan. Kebenaran rumus tetap perlu uji impor nyata dan reviewer pajak.

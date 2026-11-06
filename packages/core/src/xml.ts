@@ -6,8 +6,6 @@ const ESCAPE: Record<string, string> = {
   '&': '&amp;',
   '<': '&lt;',
   '>': '&gt;',
-  '"': '&quot;',
-  "'": '&apos;',
 }
 
 export function escapeXml(teks: string): string {
@@ -17,7 +15,7 @@ export function escapeXml(teks: string): string {
     const kode = c.charCodeAt(0)
     if (kode >= 0x20 || kode === 0x09 || kode === 0x0a || kode === 0x0d) bersih += c
   }
-  return bersih.replace(/[&<>"']/g, (c) => ESCAPE[c] ?? c)
+  return bersih.replace(/[&<>]/g, (c) => ESCAPE[c] ?? c)
 }
 
 function elemen(indent: string, nama: string, nilai: string): string {

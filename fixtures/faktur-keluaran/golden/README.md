@@ -40,7 +40,7 @@ Lalu, di Windows:
 
 1. Jalankan `fixtures/djp/unduhan/ConverterEfakturCoretax_v1.6/Converter.Efaktur.Coretax.exe`.
 2. Pilih **Faktur Pajak Keluaran**, klik **Browse**, pilih `kasus.xlsx`, klik **Simpan**.
-3. Simpan hasilnya sebagai `kasus.converter.xml` di folder ini.
+3. Converter tidak menanyakan lokasi simpan: file XML ditulis di **folder kerja saat converter dijalankan** (mis. root repo), bernama sama dengan Excel-nya (`kasus.xml`). Pindahkan dan ganti nama menjadi `kasus.converter.xml` di folder ini.
 4. Ulangi untuk `probe-pembulatan.xlsx` dan simpan sebagai `probe-pembulatan.converter.xml`.
 5. Jalankan `pnpm test`. Test "build() sama dengan XML dari converter resmi DJP" otomatis aktif begitu `kasus.converter.xml` ada.
 

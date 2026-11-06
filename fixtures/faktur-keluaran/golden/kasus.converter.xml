@@ -1,0 +1,396 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TaxInvoiceBulk xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <TIN>0000000000000000</TIN>
+  <ListOfTaxInvoice>
+    <TaxInvoice>
+      <TaxInvoiceDate>2026-10-01</TaxInvoiceDate>
+      <TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+      <TrxCode>01</TrxCode>
+      <AddInfo/>
+      <CustomDoc/>
+      <CustomDocMonthYear/>
+      <RefDesc>GOLD-01</RefDesc>
+      <FacilityStamp/>
+      <SellerIDTKU>0000000000000000000000</SellerIDTKU>
+      <BuyerTin>9999000000000001</BuyerTin>
+      <BuyerDocument>TIN</BuyerDocument>
+      <BuyerCountry>IDN</BuyerCountry>
+      <BuyerDocumentNumber>-</BuyerDocumentNumber>
+      <BuyerName>PT Pembeli Satu</BuyerName>
+      <BuyerAdress>Jl. Satu No. 1, Jakarta</BuyerAdress>
+      <BuyerEmail>satu@contoh.test</BuyerEmail>
+      <BuyerIDTKU>9999000000000001000000</BuyerIDTKU>
+      <ListOfGoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>Kabel Data</Name>
+          <Unit>UM.0021</Unit>
+          <Price>1000000</Price>
+          <Qty>1</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>1000000</TaxBase>
+          <OtherTaxBase>1000000</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>120000</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0</STLG>
+        </GoodService>
+      </ListOfGoodService>
+    </TaxInvoice>
+    <TaxInvoice>
+      <TaxInvoiceDate>2026-10-02</TaxInvoiceDate>
+      <TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+      <TrxCode>04</TrxCode>
+      <AddInfo/>
+      <CustomDoc/>
+      <CustomDocMonthYear/>
+      <RefDesc>GOLD-02</RefDesc>
+      <FacilityStamp/>
+      <SellerIDTKU>0000000000000000000000</SellerIDTKU>
+      <BuyerTin>9999000000000001</BuyerTin>
+      <BuyerDocument>TIN</BuyerDocument>
+      <BuyerCountry>IDN</BuyerCountry>
+      <BuyerDocumentNumber>-</BuyerDocumentNumber>
+      <BuyerName>PT Pembeli Satu</BuyerName>
+      <BuyerAdress>Jl. Satu No. 1, Jakarta</BuyerAdress>
+      <BuyerEmail>satu@contoh.test</BuyerEmail>
+      <BuyerIDTKU>9999000000000001000000</BuyerIDTKU>
+      <ListOfGoodService>
+        <GoodService>
+          <Opt>B</Opt>
+          <Code>000000</Code>
+          <Name>Jasa Konsultasi Sistem</Name>
+          <Unit>UM.0033</Unit>
+          <Price>600000</Price>
+          <Qty>2</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>1200000</TaxBase>
+          <OtherTaxBase>1100000</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>132000</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0</STLG>
+        </GoodService>
+      </ListOfGoodService>
+    </TaxInvoice>
+    <TaxInvoice>
+      <TaxInvoiceDate>2026-10-03</TaxInvoiceDate>
+      <TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+      <TrxCode>04</TrxCode>
+      <AddInfo/>
+      <CustomDoc/>
+      <CustomDocMonthYear/>
+      <RefDesc>GOLD-03 banyak item, diskon, karakter khusus</RefDesc>
+      <FacilityStamp/>
+      <SellerIDTKU>0000000000000000000000</SellerIDTKU>
+      <BuyerTin>9999000000000003</BuyerTin>
+      <BuyerDocument>TIN</BuyerDocument>
+      <BuyerCountry>IDN</BuyerCountry>
+      <BuyerDocumentNumber>-</BuyerDocumentNumber>
+      <BuyerName>CV Kopi &amp; Teh "Jaya"</BuyerName>
+      <BuyerAdress>Jl. &lt;Tiga&gt; No. 3, Surabaya</BuyerAdress>
+      <BuyerEmail/>
+      <BuyerIDTKU>9999000000000003000000</BuyerIDTKU>
+      <ListOfGoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>Kopi &amp; Teh &lt;Premium&gt;</Name>
+          <Unit>UM.0018</Unit>
+          <Price>150000</Price>
+          <Qty>4</Qty>
+          <TotalDiscount>50000</TotalDiscount>
+          <TaxBase>550000</TaxBase>
+          <OtherTaxBase>504166.67</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>60500</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0</STLG>
+        </GoodService>
+        <GoodService>
+          <Opt>B</Opt>
+          <Code>000000</Code>
+          <Name>Jasa Pengiriman</Name>
+          <Unit>UM.0033</Unit>
+          <Price>75000</Price>
+          <Qty>1</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>75000</TaxBase>
+          <OtherTaxBase>68750</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>8250</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0</STLG>
+        </GoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>Gula Pasir</Name>
+          <Unit>UM.0003</Unit>
+          <Price>14500.5</Price>
+          <Qty>10.5</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>152255.25</TaxBase>
+          <OtherTaxBase>139567.81</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>16748.14</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0</STLG>
+        </GoodService>
+      </ListOfGoodService>
+    </TaxInvoice>
+    <TaxInvoice>
+      <TaxInvoiceDate>2026-10-04</TaxInvoiceDate>
+      <TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+      <TrxCode>04</TrxCode>
+      <AddInfo/>
+      <CustomDoc/>
+      <CustomDocMonthYear/>
+      <RefDesc>GOLD-04 pembulatan</RefDesc>
+      <FacilityStamp/>
+      <SellerIDTKU>0000000000000000000000</SellerIDTKU>
+      <BuyerTin>9999000000000001</BuyerTin>
+      <BuyerDocument>TIN</BuyerDocument>
+      <BuyerCountry>IDN</BuyerCountry>
+      <BuyerDocumentNumber>-</BuyerDocumentNumber>
+      <BuyerName>PT Pembeli Satu</BuyerName>
+      <BuyerAdress>Jl. Satu No. 1, Jakarta</BuyerAdress>
+      <BuyerEmail/>
+      <BuyerIDTKU>9999000000000001000000</BuyerIDTKU>
+      <ListOfGoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>Komponen Presisi</Name>
+          <Unit>UM.0021</Unit>
+          <Price>12345.67</Price>
+          <Qty>3</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>37037.01</TaxBase>
+          <OtherTaxBase>33951.43</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>4074.17</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0</STLG>
+        </GoodService>
+      </ListOfGoodService>
+    </TaxInvoice>
+    <TaxInvoice>
+      <TaxInvoiceDate>2026-10-05</TaxInvoiceDate>
+      <TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+      <TrxCode>07</TrxCode>
+      <AddInfo>TD.00502</AddInfo>
+      <CustomDoc>00004092893220241216000270</CustomDoc>
+      <CustomDocMonthYear>122024</CustomDocMonthYear>
+      <RefDesc>GOLD-05 fasilitas</RefDesc>
+      <FacilityStamp>TD.01102</FacilityStamp>
+      <SellerIDTKU>0000000000000000000000</SellerIDTKU>
+      <BuyerTin>9999000000000005</BuyerTin>
+      <BuyerDocument>TIN</BuyerDocument>
+      <BuyerCountry>IDN</BuyerCountry>
+      <BuyerDocumentNumber>-</BuyerDocumentNumber>
+      <BuyerName>PT Berikat Lima</BuyerName>
+      <BuyerAdress>Kawasan Berikat Lima, Bekasi</BuyerAdress>
+      <BuyerEmail>lima@contoh.test</BuyerEmail>
+      <BuyerIDTKU>9999000000000005000000</BuyerIDTKU>
+      <ListOfGoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>Barang</Name>
+          <Unit>UM.0001</Unit>
+          <Price>15000</Price>
+          <Qty>200</Qty>
+          <TotalDiscount>100000</TotalDiscount>
+          <TaxBase>2900000</TaxBase>
+          <OtherTaxBase>2900000</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>348000</VAT>
+          <STLGRate>20</STLGRate>
+          <STLG>580000</STLG>
+        </GoodService>
+      </ListOfGoodService>
+    </TaxInvoice>
+    <TaxInvoice>
+      <TaxInvoiceDate>2026-10-06</TaxInvoiceDate>
+      <TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+      <TrxCode>08</TrxCode>
+      <AddInfo>TD.00501</AddInfo>
+      <CustomDoc/>
+      <CustomDocMonthYear/>
+      <RefDesc>GOLD-06 dibebaskan</RefDesc>
+      <FacilityStamp>TD.01101</FacilityStamp>
+      <SellerIDTKU>0000000000000000000000</SellerIDTKU>
+      <BuyerTin>9999000000000006</BuyerTin>
+      <BuyerDocument>TIN</BuyerDocument>
+      <BuyerCountry>IDN</BuyerCountry>
+      <BuyerDocumentNumber>-</BuyerDocumentNumber>
+      <BuyerName>PT Enam</BuyerName>
+      <BuyerAdress>Jl. Enam No. 6, Medan</BuyerAdress>
+      <BuyerEmail/>
+      <BuyerIDTKU>9999000000000006000000</BuyerIDTKU>
+      <ListOfGoodService>
+        <GoodService>
+          <Opt>B</Opt>
+          <Code>000000</Code>
+          <Name>Jasa Tertentu</Name>
+          <Unit>UM.0033</Unit>
+          <Price>2000000</Price>
+          <Qty>1</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>2000000</TaxBase>
+          <OtherTaxBase>2000000</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>240000</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0</STLG>
+        </GoodService>
+      </ListOfGoodService>
+    </TaxInvoice>
+    <TaxInvoice>
+      <TaxInvoiceDate>2026-10-07</TaxInvoiceDate>
+      <TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+      <TrxCode>04</TrxCode>
+      <AddInfo/>
+      <CustomDoc/>
+      <CustomDocMonthYear/>
+      <RefDesc>GOLD-07 pembeli NIK</RefDesc>
+      <FacilityStamp/>
+      <SellerIDTKU>0000000000000000000000</SellerIDTKU>
+      <BuyerTin>0000000000000000</BuyerTin>
+      <BuyerDocument>National ID</BuyerDocument>
+      <BuyerCountry>IDN</BuyerCountry>
+      <BuyerDocumentNumber>9999000000000007</BuyerDocumentNumber>
+      <BuyerName>Budi Contoh</BuyerName>
+      <BuyerAdress>Jl. Tujuh No. 7, Bandung</BuyerAdress>
+      <BuyerEmail/>
+      <BuyerIDTKU>000000</BuyerIDTKU>
+      <ListOfGoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>Rak Buku</Name>
+          <Unit>UM.0018</Unit>
+          <Price>250000</Price>
+          <Qty>2</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>500000</TaxBase>
+          <OtherTaxBase>458333.33</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>55000</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0</STLG>
+        </GoodService>
+      </ListOfGoodService>
+    </TaxInvoice>
+    <TaxInvoice>
+      <TaxInvoiceDate>2026-10-08</TaxInvoiceDate>
+      <TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+      <TrxCode>06</TrxCode>
+      <AddInfo/>
+      <CustomDoc/>
+      <CustomDocMonthYear/>
+      <RefDesc>GOLD-08 pembeli paspor</RefDesc>
+      <FacilityStamp/>
+      <SellerIDTKU>0000000000000000000000</SellerIDTKU>
+      <BuyerTin>0000000000000000</BuyerTin>
+      <BuyerDocument>Passport</BuyerDocument>
+      <BuyerCountry>SGP</BuyerCountry>
+      <BuyerDocumentNumber>X1234567</BuyerDocumentNumber>
+      <BuyerName>John Contoh</BuyerName>
+      <BuyerAdress>1 Example Road, Singapore</BuyerAdress>
+      <BuyerEmail/>
+      <BuyerIDTKU>000000</BuyerIDTKU>
+      <ListOfGoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>Kerajinan Tangan</Name>
+          <Unit>UM.0021</Unit>
+          <Price>500000</Price>
+          <Qty>1</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>500000</TaxBase>
+          <OtherTaxBase>500000</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>60000</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0</STLG>
+        </GoodService>
+      </ListOfGoodService>
+    </TaxInvoice>
+    <TaxInvoice>
+      <TaxInvoiceDate>2026-10-09</TaxInvoiceDate>
+      <TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+      <TrxCode>04</TrxCode>
+      <AddInfo/>
+      <CustomDoc/>
+      <CustomDocMonthYear/>
+      <RefDesc>GOLD-09 PPnBM</RefDesc>
+      <FacilityStamp/>
+      <SellerIDTKU>0000000000000000000000</SellerIDTKU>
+      <BuyerTin>9999000000000009</BuyerTin>
+      <BuyerDocument>TIN</BuyerDocument>
+      <BuyerCountry>IDN</BuyerCountry>
+      <BuyerDocumentNumber>-</BuyerDocumentNumber>
+      <BuyerName>PT Sembilan</BuyerName>
+      <BuyerAdress>Jl. Sembilan No. 9, Semarang</BuyerAdress>
+      <BuyerEmail/>
+      <BuyerIDTKU>9999000000000009000000</BuyerIDTKU>
+      <ListOfGoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>Barang Mewah</Name>
+          <Unit>UM.0002</Unit>
+          <Price>12000000</Price>
+          <Qty>10</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>120000000</TaxBase>
+          <OtherTaxBase>110000000</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>13200000</VAT>
+          <STLGRate>10</STLGRate>
+          <STLG>11000000</STLG>
+        </GoodService>
+      </ListOfGoodService>
+    </TaxInvoice>
+    <TaxInvoice>
+      <TaxInvoiceDate>2026-10-10</TaxInvoiceDate>
+      <TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+      <TrxCode>09</TrxCode>
+      <AddInfo/>
+      <CustomDoc/>
+      <CustomDocMonthYear/>
+      <RefDesc>GOLD-10 aktiva, angka desimal</RefDesc>
+      <FacilityStamp/>
+      <SellerIDTKU>0000000000000000000000</SellerIDTKU>
+      <BuyerTin>9999000000000010</BuyerTin>
+      <BuyerDocument>TIN</BuyerDocument>
+      <BuyerCountry>IDN</BuyerCountry>
+      <BuyerDocumentNumber>-</BuyerDocumentNumber>
+      <BuyerName>PT Sepuluh</BuyerName>
+      <BuyerAdress>Jl. Sepuluh No. 10, Makassar</BuyerAdress>
+      <BuyerEmail/>
+      <BuyerIDTKU>9999000000000010000000</BuyerIDTKU>
+      <ListOfGoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>Mesin Bekas</Name>
+          <Unit>UM.0018</Unit>
+          <Price>1500.5</Price>
+          <Qty>2.5</Qty>
+          <TotalDiscount>0</TotalDiscount>
+          <TaxBase>3751.25</TaxBase>
+          <OtherTaxBase>3751.25</OtherTaxBase>
+          <VATRate>12</VATRate>
+          <VAT>450.15</VAT>
+          <STLGRate>0</STLGRate>
+          <STLG>0</STLG>
+        </GoodService>
+      </ListOfGoodService>
+    </TaxInvoice>
+  </ListOfTaxInvoice>
+</TaxInvoiceBulk>
