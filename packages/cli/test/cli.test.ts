@@ -332,3 +332,20 @@ describe('umum', () => {
     expect((await cli('template', 'bupot')).kode).toBe(2)
   })
 })
+
+describe('retur: perbandingan dengan converter DJP', () => {
+  it.skipIf(
+    !existsSync(dariRepo('fixtures/djp/unduhan/retur.xlsx')) ||
+      !existsSync(dariRepo('fixtures/retur-masukan/golden/kasus.converter.xml')),
+  )('retur.xlsx asli (template DJP) menghasilkan XML yang sama dengan converter resmi', async () => {
+    const dir = folderSementara()
+    const f = tulis(dir, 'retur.xlsx', readFileSync(dariRepo('fixtures/djp/unduhan/retur.xlsx')))
+    expect((await cli('convert', f)).kode).toBe(0)
+    const normal = (x: string) => {
+      const s = x.replace(/^﻿/, '')
+      return s.slice(s.indexOf('<TIN>')).replace(/>\s+</g, '><').trim()
+    }
+    const resmi = readFileSync(dariRepo('fixtures/retur-masukan/golden/kasus.converter.xml'), 'utf8')
+    expect(normal(readFileSync(f.replace('.xlsx', '.xml'), 'utf8'))).toBe(normal(resmi))
+  })
+})

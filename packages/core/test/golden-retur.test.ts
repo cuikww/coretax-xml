@@ -40,3 +40,19 @@ describe('golden file retur faktur masukan', () => {
     expect(h.errors).toEqual([])
   })
 })
+
+// Probe aturan .50 pada total dokumen: total yang disalin ke Excel persis x,5. Dari hasil converter terbaca
+// apakah pembulatannya ke genap (100/102 dan 102/104), ke atas (101/103 dan 102/104), atau dipotong.
+const probe = JSON.parse(readFileSync(path('probe-pembulatan.json'), 'utf8')) as BatchReturFakturMasukan
+const adaProbe = existsSync(path('probe-pembulatan.converter.xml'))
+
+describe('probe pembulatan total dokumen retur', () => {
+  it('probe-pembulatan.json valid menurut library', () => {
+    expect(returMasukan.validate(probe).errors).toEqual([])
+  })
+
+  it.skipIf(!adaProbe)('build() sama dengan XML converter pada nilai persis .5', () => {
+    const resmi = readFileSync(path('probe-pembulatan.converter.xml'), 'utf8')
+    expect(normal(returMasukan.build(probe))).toBe(normal(resmi))
+  })
+})

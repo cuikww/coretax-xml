@@ -147,6 +147,24 @@ describe('retur faktur masukan: validasi data', () => {
   })
 })
 
+describe('retur faktur masukan: total dokumen dalam rupiah utuh (seperti converter DJP)', () => {
+  it('total dokumen dan FooterRow dibulatkan, nilai per baris tetap berdesimal; tanpa peringatan selisih', () => {
+    const b = padanan()
+    const item = b.retur[0]?.item[0]
+    if (item) Object.assign(item, { jumlah: 10.5, harga: 14500.5, jumlahRetur: 2.5, ppn: 4350.15 })
+    if (b.retur[0]) b.retur[0].item = item ? [item] : []
+    const h = returMasukan.validate(b)
+    expect(h.errors).toEqual([])
+    expect(h.warnings).toEqual([])
+    const xml = returMasukan.build(b)
+    expect(xml).toContain('<ReturnTaxBase>36251.25</ReturnTaxBase>') // baris
+    expect(xml).toContain('<ReturnTaxBase>36251</ReturnTaxBase>') // dokumen
+    expect(xml).toContain('<ReturnVAT>4350</ReturnVAT>')
+    expect(xml).toContain('<ReturnVATTotal>4350</ReturnVATTotal>')
+    expect(returMasukan.check(xml).valid).toBe(true)
+  })
+})
+
 describe('retur faktur masukan: check() pada XML rusak', () => {
   it('FooterRow berbeda dari nilai dokumen', () => {
     const h = returMasukan.check(resmi.replace('<ReturnVATTotal>2200', '<ReturnVATTotal>2300'))

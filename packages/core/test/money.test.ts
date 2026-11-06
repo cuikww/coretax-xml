@@ -2,6 +2,7 @@ import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
 import {
   bagiBulat,
+  bulatRupiahGenap,
   FormatAngkaError,
   formatRupiah,
   formatXml,
@@ -70,5 +71,14 @@ describe('properti', () => {
         return nl <= dpp && ppn * 10000n - eksakX10000 <= 5000n && eksakX10000 - ppn * 10000n <= 5000n
       }),
     )
+  })
+})
+
+describe('bulatRupiahGenap', () => {
+  it('rupiah utuh, setengah ke genap', () => {
+    const h = [57291667n, 3625125n, 435015n, 10050n, 10150n, 10250n, 50n, 150n, 49n, 51n, 0n].map(
+      bulatRupiahGenap,
+    )
+    expect(h).toEqual([57291700n, 3625100n, 435000n, 10000n, 10200n, 10200n, 0n, 200n, 0n, 100n, 0n])
   })
 })

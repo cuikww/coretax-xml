@@ -1,0 +1,59 @@
+{
+  "pembeli": { "npwp": "0000000000000000" },
+  "retur": [
+    {
+      "nomorFaktur": "01002482423782001",
+      "npwpPenjual": "9999000000000005",
+      "tanggal": "2026-10-08",
+      "dpp": 100.5,
+      "dppLain": 100.5,
+      "ppn": 102.5,
+      "ppnbm": 0.5,
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "Probe tie genap",
+          "kode": "000000",
+          "jumlah": 1,
+          "satuan": "UM.0021",
+          "harga": 100.5,
+          "tarifPpnbm": 0,
+          "jumlahRetur": 1,
+          "diskonRetur": 0,
+          "dpp": 100.5,
+          "pakaiDppLain": false,
+          "dppLain": 100.5,
+          "ppn": 102.5,
+          "ppnbm": 0.5
+        }
+      ]
+    },
+    {
+      "nomorFaktur": "01002482423782002",
+      "npwpPenjual": "9999000000000005",
+      "tanggal": "2026-10-08",
+      "dpp": 101.5,
+      "dppLain": 101.5,
+      "ppn": 103.5,
+      "ppnbm": 1.5,
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "Probe tie ganjil",
+          "kode": "000000",
+          "jumlah": 1,
+          "satuan": "UM.0021",
+          "harga": 101.5,
+          "tarifPpnbm": 0,
+          "jumlahRetur": 1,
+          "diskonRetur": 0,
+          "dpp": 101.5,
+          "pakaiDppLain": false,
+          "dppLain": 101.5,
+          "ppn": 103.5,
+          "ppnbm": 1.5
+        }
+      ]
+    }
+  ]
+}

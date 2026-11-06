@@ -7,7 +7,7 @@ import {
   tanggalValid,
   wajibTeks,
 } from './faktur-keluaran.js'
-import { formatRupiah, formatXml, kali, type Sen } from './money.js'
+import { bulatRupiahGenap, formatRupiah, formatXml, kali, type Sen } from './money.js'
 import { satuan as daftarSatuan } from './schemas/faktur-keluaran/v2025-09.js'
 import {
   elemenBaris,
@@ -238,7 +238,8 @@ function analisisRetur(k: Pengumpul, r: ReturFakturMasukan, nr: number): ReturTe
   ) => {
     const hitung = jumlahSen(item.map(dari))
     const sen = bacaAngka(k, input, loc(field, element))
-    if (sen !== null && item.length > 0 && sen !== hitung) {
+    // Total yang diisi dalam rupiah utuh (seperti kolom Total di Excel DJP) tidak dianggap selisih
+    if (sen !== null && item.length > 0 && sen !== hitung && sen !== bulatRupiahGenap(hitung)) {
       k.tambah('warning', 'RETUR_TOTAL_MISMATCH', loc(field, element), {
         nilai: formatRupiah(sen),
         harap: formatRupiah(hitung),
@@ -303,6 +304,9 @@ export function validate(batch: BatchReturFakturMasukan, opsi: OpsiValidasi = {}
   return analisis(batch, opsi).hasil
 }
 
+/** Total dokumen dan FooterRow ditulis dalam rupiah utuh, seperti converter DJP. */
+const rupiah = (s: Sen) => formatXml(bulatRupiahGenap(s))
+
 const ddmmyyyy = (iso: string) => `${iso.slice(8, 10)}-${iso.slice(5, 7)}-${iso.slice(0, 4)}`
 
 function tulisXmlRetur(tin: string, retur: ReturTerhitung[]): string {
@@ -320,10 +324,10 @@ function tulisXmlRetur(tin: string, retur: ReturTerhitung[]): string {
       InvoiceNumber: r.nomorFaktur,
       SellerTIN: r.npwpPenjual,
       ReturnDate: ddmmyyyy(r.tanggal),
-      ReturnTaxBase: formatXml(r.dpp),
-      ReturnOtherTaxBase: formatXml(r.dppLain),
-      ReturnVAT: formatXml(r.ppn),
-      ReturnSTLG: formatXml(r.ppnbm),
+      ReturnTaxBase: rupiah(r.dpp),
+      ReturnOtherTaxBase: rupiah(r.dppLain),
+      ReturnVAT: rupiah(r.ppn),
+      ReturnSTLG: rupiah(r.ppnbm),
     }
     for (const n of elemenDokumen) baris.push(t('        ', n, dok[n]))
     baris.push('      </TransactionDocumentData>', '      <TransactionDetailsData>')
@@ -349,10 +353,10 @@ function tulisXmlRetur(tin: string, retur: ReturTerhitung[]): string {
       baris.push('        </Rows>')
     }
     const footer: Record<(typeof elemenFooter)[number], string> = {
-      ReturnTaxBaseTotal: formatXml(r.dpp),
-      ReturnOtherTaxBaseTotal: formatXml(r.dppLain),
-      ReturnVATTotal: formatXml(r.ppn),
-      ReturnSTLGTotal: formatXml(r.ppnbm),
+      ReturnTaxBaseTotal: rupiah(r.dpp),
+      ReturnOtherTaxBaseTotal: rupiah(r.dppLain),
+      ReturnVATTotal: rupiah(r.ppn),
+      ReturnSTLGTotal: rupiah(r.ppnbm),
     }
     baris.push('        <FooterRow>')
     for (const n of elemenFooter) baris.push(t('          ', n, footer[n]))

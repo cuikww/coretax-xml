@@ -77,3 +77,19 @@ export function formatRupiah(sen: Sen): string {
   const pecahan = (s % 100n).toString().padStart(2, '0').replace(/0+$/, '')
   return `${negatif ? '-' : ''}${bulat}${pecahan ? `,${pecahan}` : ''}`
 }
+
+/**
+ * Bulatkan sen ke rupiah utuh (hasil tetap dalam sen), setengah ke genap. Dipakai untuk total dokumen retur:
+ * converter DJP menulis total dokumen dan FooterRow dalam rupiah utuh (572916,67 -> 572917) sedangkan nilai
+ * per baris tetap berdesimal. Aturan .50 persis (ke genap) mengikuti pembulatan converter pada angka faktur
+ * dan belum dibuktikan untuk retur (lihat fixtures/retur-masukan/golden/probe-pembulatan.json).
+ */
+export function bulatRupiahGenap(sen: Sen): Sen {
+  const negatif = sen < 0n
+  const s = negatif ? -sen : sen
+  const rupiah = s / 100n
+  const sisa = s % 100n
+  const naik = sisa > 50n || (sisa === 50n && rupiah % 2n === 1n)
+  const hasil = (naik ? rupiah + 1n : rupiah) * 100n
+  return negatif ? -hasil : hasil
+}

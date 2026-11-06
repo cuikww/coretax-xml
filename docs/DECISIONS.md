@@ -119,3 +119,15 @@ PRD menyatakan tidak ada jenis dokumen baru sebelum Gerbang 1 (impor Coretax nya
 **Refaktor bersama.** `periksaElemen` dan `pengumpulXml` dipakai faktur dan retur. Pemeriksa urutan menganggap elemen yang berulang berurutan (`<Rows>` banyak kali) sebagai satu; bug ini ketahuan oleh sampel retur resmi. `XML_ROOT` kini menyebut akar yang diharapkan.
 
 **Belum.** Golden file dari converter DJP untuk retur (CLI sudah membaca template retur, tetapi XML-nya baru dibandingkan dengan sampel resmi satu kasus), CSV untuk retur, dan uji impor Coretax. Sampai golden file ada, perlakukan keluaran retur sebagai kandidat, bukan terbukti.
+
+## 2026-11-06: Golden file retur: total dokumen dalam rupiah utuh
+
+`kasus.converter.xml` (3 retur) dari converter DJP sama dengan output library untuk semua nilai per baris, kecuali satu hal yang ketahuan hanya oleh golden file: **converter menulis total dokumen (`ReturnTaxBase`, `ReturnOtherTaxBase`, `ReturnVAT`, `ReturnSTLG`) dan seluruh `FooterRow` dalam rupiah utuh**. Contoh: 572916,67 menjadi 572917, 36251,25 menjadi 36251, 4350,15 menjadi 4350. Nilai di dalam `Rows` tetap berdesimal (504166.67, 36251.25, 4350.15). Library sebelumnya menulis dua desimal di semua tempat.
+
+**Perbaikan.** `bulatRupiahGenap()` di `money.ts`, dipakai penulis XML retur untuk total dokumen dan footer. Peringatan `RETUR_TOTAL_MISMATCH` tidak lagi muncul jika total yang diisi sama dengan jumlah item yang dibulatkan (kolom Total di Excel DJP berisi rupiah utuh). Analisis internal (`analisis().retur[].dpp`) tetap menyimpan jumlah persis.
+
+**Asumsi yang belum terbukti: setengah ke genap pada nilai persis .5.** Data golden tidak memuat nilai persis .5, jadi aturan itu hanya mengikuti pembulatan converter pada angka faktur. `probe-pembulatan.json` (dua retur dengan total x,5) disiapkan untuk menjawabnya; testnya aktif begitu `probe-pembulatan.converter.xml` ada.
+
+**CLI.** `convert retur.xlsx` menghasilkan XML yang sama dengan converter DJP untuk 3 retur (test lokal, dilewati di CI karena file Excel tidak ada di repo).
+
+**Pelajaran.** Perbandingan satu sampel resmi tidak cukup: sampel retur v1.1 hanya berisi angka bulat, jadi aturan rupiah utuh tidak terlihat sampai ada kasus berdesimal. Ini alasan golden file faktur dan retur dengan angka desimal tetap perlu, dan alasan tidak menganggap output kandidat sebagai terbukti.

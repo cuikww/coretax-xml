@@ -35,6 +35,17 @@ Lalu, di Windows:
 
 Kalau converter menampilkan `Error pada baris : N`, salin pesannya apa adanya.
 
+## Probe pembulatan total dokumen (opsional, ± 3 menit)
+
+Golden file pertama menunjukkan converter menulis **total dokumen dan FooterRow dalam rupiah utuh** (572916,67 menjadi 572917), sedangkan nilai per baris tetap berdesimal. Aturan untuk nilai persis `.5` belum diketahui. `probe-pembulatan.json` berisi dua retur dengan total persis x,5:
+
+| Total di Excel | Setengah ke genap | Setengah ke atas | Dipotong |
+| --- | --- | --- | --- |
+| 100,5 / 102,5 / 0,5 (retur 1) | 100 / 102 / 0 | 101 / 103 / 1 | 100 / 102 / 0 |
+| 101,5 / 103,5 / 1,5 (retur 2) | 102 / 104 / 2 | 102 / 104 / 2 | 101 / 103 / 1 |
+
+Jalankan converter dengan `fixtures/djp/unduhan/retur-probe.xlsx` (langkah 2 sampai 3 di atas), simpan sebagai `probe-pembulatan.converter.xml`, lalu `pnpm test`. Library saat ini memakai setengah ke genap; test probe gagal jika converter memakai aturan lain.
+
 ## Yang dicari
 
 - Apakah susunan elemen, penulisan `true`/`false`, dan format tanggal `DD-MM-YYYY` sama dengan output library.
