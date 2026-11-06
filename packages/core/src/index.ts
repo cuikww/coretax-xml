@@ -7,6 +7,7 @@
 import { analisis, build, validate } from './faktur-keluaran.js'
 import * as skema2025_09 from './schemas/faktur-keluaran/v2025-09.js'
 import { daftarSkema } from './schemas/index.js'
+import { check } from './xml-baca.js'
 
 export type {
   Analisis,
@@ -26,6 +27,8 @@ export const fakturKeluaran = {
   build,
   /** Validasi + hasil hitung (DPP, DPP nilai lain, PPN) per item, untuk ditampilkan di aplikasi. */
   analisis,
+  /** Periksa file XML yang sudah ada: struktur, lalu isi dan hitungan (seperti validate mode strict). */
+  check,
   /** Daftar skema yang tersedia. */
   schemas: daftarSkema,
 }

@@ -124,6 +124,21 @@ const id: Katalog = {
       `Tanggal faktur ${p.nilai} lebih awal dari skema tertua (${p.skema}); skema itu tetap dipakai.`,
   },
   FAKTUR_EMPTY: { pesan: () => 'Batch harus berisi minimal 1 faktur.' },
+  XML_PARSE: { pesan: (p) => `XML tidak dapat dibaca (posisi ${p.posisi}): ${p.detail}.` },
+  XML_ROOT: {
+    pesan: (p) => `Elemen akar harus <TaxInvoiceBulk>, ditemukan <${p.nama}>.`,
+    saran: () => 'Ini bukan XML faktur pajak keluaran. Retur dan bukti potong punya akar yang berbeda.',
+  },
+  XML_ELEMENT_MISSING: { pesan: (p) => `${p.lokasi}: elemen <${p.nama}> tidak ada.` },
+  XML_ELEMENT_UNKNOWN: { pesan: (p) => `${p.lokasi}: elemen <${p.nama}> tidak dikenal.` },
+  XML_ELEMENT_ORDER: {
+    pesan: (p) => `${p.lokasi}: urutan elemen tidak sesuai skema.`,
+    saran: (p) => `Urutan yang benar: ${p.urutan}.`,
+  },
+  XML_SELLER_MISMATCH: {
+    pesan: (p) => `SellerIDTKU faktur ke-${p.faktur} berbeda dari faktur pertama.`,
+    saran: () => 'Satu file impor hanya untuk satu penjual (satu TIN).',
+  },
 }
 
 const en: Katalog = {
@@ -205,6 +220,21 @@ const en: Katalog = {
     pesan: (p) => `Invoice date ${p.nilai} is before the oldest schema (${p.skema}); that schema is used.`,
   },
   FAKTUR_EMPTY: { pesan: () => 'A batch needs at least 1 invoice.' },
+  XML_PARSE: { pesan: (p) => `XML cannot be read (position ${p.posisi}): ${p.detail}.` },
+  XML_ROOT: {
+    pesan: (p) => `Root element must be <TaxInvoiceBulk>, found <${p.nama}>.`,
+    saran: () => 'This is not an output tax invoice XML. Returns and withholding slips have different roots.',
+  },
+  XML_ELEMENT_MISSING: { pesan: (p) => `${p.lokasi}: element <${p.nama}> is missing.` },
+  XML_ELEMENT_UNKNOWN: { pesan: (p) => `${p.lokasi}: unknown element <${p.nama}>.` },
+  XML_ELEMENT_ORDER: {
+    pesan: (p) => `${p.lokasi}: element order does not match the schema.`,
+    saran: (p) => `Correct order: ${p.urutan}.`,
+  },
+  XML_SELLER_MISMATCH: {
+    pesan: (p) => `SellerIDTKU of invoice #${p.faktur} differs from the first invoice.`,
+    saran: () => 'One import file is for one seller (one TIN).',
+  },
 }
 
 const katalog: Record<Bahasa, Katalog> = { id, en }
