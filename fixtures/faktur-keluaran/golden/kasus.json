@@ -1,0 +1,289 @@
+{
+  "penjual": { "npwp": "0000000000000000", "nitku": "0000000000000000000000" },
+  "faktur": [
+    {
+      "tanggal": "2026-10-01",
+      "kodeTransaksi": "01",
+      "referensi": "GOLD-01",
+      "pembeli": {
+        "jenisId": "TIN",
+        "npwp": "9999000000000001",
+        "nitku": "9999000000000001000000",
+        "nama": "PT Pembeli Satu",
+        "alamat": "Jl. Satu No. 1, Jakarta",
+        "email": "satu@contoh.test"
+      },
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "Kabel Data",
+          "satuan": "UM.0021",
+          "harga": 1000000,
+          "jumlah": 1,
+          "dpp": 1000000,
+          "dppNilaiLain": 1000000,
+          "ppn": 120000,
+          "ppnbm": 0
+        }
+      ]
+    },
+    {
+      "tanggal": "2026-10-02",
+      "kodeTransaksi": "04",
+      "referensi": "GOLD-02",
+      "pembeli": {
+        "jenisId": "TIN",
+        "npwp": "9999000000000001",
+        "nitku": "9999000000000001000000",
+        "nama": "PT Pembeli Satu",
+        "alamat": "Jl. Satu No. 1, Jakarta",
+        "email": "satu@contoh.test"
+      },
+      "item": [
+        {
+          "jenis": "jasa",
+          "nama": "Jasa Konsultasi Sistem",
+          "satuan": "UM.0033",
+          "harga": 600000,
+          "jumlah": 2,
+          "dpp": 1200000,
+          "dppNilaiLain": 1100000,
+          "ppn": 132000,
+          "ppnbm": 0
+        }
+      ]
+    },
+    {
+      "tanggal": "2026-10-03",
+      "kodeTransaksi": "04",
+      "referensi": "GOLD-03 banyak item, diskon, karakter khusus",
+      "pembeli": {
+        "jenisId": "TIN",
+        "npwp": "9999000000000003",
+        "nitku": "9999000000000003000000",
+        "nama": "CV Kopi & Teh \"Jaya\"",
+        "alamat": "Jl. <Tiga> No. 3, Surabaya"
+      },
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "Kopi & Teh <Premium>",
+          "satuan": "UM.0018",
+          "harga": 150000,
+          "jumlah": 4,
+          "diskon": 50000,
+          "dpp": 550000,
+          "dppNilaiLain": 504166.67,
+          "ppn": 60500,
+          "ppnbm": 0
+        },
+        {
+          "jenis": "jasa",
+          "nama": "Jasa Pengiriman",
+          "satuan": "UM.0033",
+          "harga": 75000,
+          "jumlah": 1,
+          "dpp": 75000,
+          "dppNilaiLain": 68750,
+          "ppn": 8250,
+          "ppnbm": 0
+        },
+        {
+          "jenis": "barang",
+          "nama": "Gula Pasir",
+          "satuan": "UM.0003",
+          "harga": 14500.5,
+          "jumlah": 10.5,
+          "dpp": 152255.25,
+          "dppNilaiLain": 139567.81,
+          "ppn": 16748.14,
+          "ppnbm": 0
+        }
+      ]
+    },
+    {
+      "tanggal": "2026-10-04",
+      "kodeTransaksi": "04",
+      "referensi": "GOLD-04 pembulatan",
+      "pembeli": {
+        "jenisId": "TIN",
+        "npwp": "9999000000000001",
+        "nitku": "9999000000000001000000",
+        "nama": "PT Pembeli Satu",
+        "alamat": "Jl. Satu No. 1, Jakarta"
+      },
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "Komponen Presisi",
+          "satuan": "UM.0021",
+          "harga": 12345.67,
+          "jumlah": 3,
+          "dpp": 37037.01,
+          "dppNilaiLain": 33951.43,
+          "ppn": 4074.17,
+          "ppnbm": 0
+        }
+      ]
+    },
+    {
+      "tanggal": "2026-10-05",
+      "kodeTransaksi": "07",
+      "referensi": "GOLD-05 fasilitas",
+      "keteranganTambahan": "TD.00502",
+      "dokumenPendukung": "00004092893220241216000270",
+      "periodeDokumenPendukung": "122024",
+      "capFasilitas": "TD.01102",
+      "pembeli": {
+        "jenisId": "TIN",
+        "npwp": "9999000000000005",
+        "nitku": "9999000000000005000000",
+        "nama": "PT Berikat Lima",
+        "alamat": "Kawasan Berikat Lima, Bekasi",
+        "email": "lima@contoh.test"
+      },
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "Barang",
+          "satuan": "UM.0001",
+          "harga": 15000,
+          "jumlah": 200,
+          "diskon": 100000,
+          "tarifPpnbm": 20,
+          "dpp": 2900000,
+          "dppNilaiLain": 2900000,
+          "ppn": 348000,
+          "ppnbm": 580000
+        }
+      ]
+    },
+    {
+      "tanggal": "2026-10-06",
+      "kodeTransaksi": "08",
+      "referensi": "GOLD-06 dibebaskan",
+      "keteranganTambahan": "TD.00501",
+      "capFasilitas": "TD.01101",
+      "pembeli": {
+        "jenisId": "TIN",
+        "npwp": "9999000000000006",
+        "nitku": "9999000000000006000000",
+        "nama": "PT Enam",
+        "alamat": "Jl. Enam No. 6, Medan"
+      },
+      "item": [
+        {
+          "jenis": "jasa",
+          "nama": "Jasa Tertentu",
+          "satuan": "UM.0033",
+          "harga": 2000000,
+          "jumlah": 1,
+          "dpp": 2000000,
+          "dppNilaiLain": 2000000,
+          "ppn": 240000,
+          "ppnbm": 0
+        }
+      ]
+    },
+    {
+      "tanggal": "2026-10-07",
+      "kodeTransaksi": "04",
+      "referensi": "GOLD-07 pembeli NIK",
+      "pembeli": {
+        "jenisId": "National ID",
+        "nomorDokumen": "9999000000000007",
+        "nama": "Budi Contoh",
+        "alamat": "Jl. Tujuh No. 7, Bandung"
+      },
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "Rak Buku",
+          "satuan": "UM.0018",
+          "harga": 250000,
+          "jumlah": 2,
+          "dpp": 500000,
+          "dppNilaiLain": 458333.33,
+          "ppn": 55000,
+          "ppnbm": 0
+        }
+      ]
+    },
+    {
+      "tanggal": "2026-10-08",
+      "kodeTransaksi": "06",
+      "referensi": "GOLD-08 pembeli paspor",
+      "pembeli": {
+        "jenisId": "Passport",
+        "nomorDokumen": "X1234567",
+        "negara": "SGP",
+        "nama": "John Contoh",
+        "alamat": "1 Example Road, Singapore"
+      },
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "Kerajinan Tangan",
+          "satuan": "UM.0021",
+          "harga": 500000,
+          "jumlah": 1,
+          "dpp": 500000,
+          "dppNilaiLain": 500000,
+          "ppn": 60000,
+          "ppnbm": 0
+        }
+      ]
+    },
+    {
+      "tanggal": "2026-10-09",
+      "kodeTransaksi": "04",
+      "referensi": "GOLD-09 PPnBM",
+      "pembeli": {
+        "jenisId": "TIN",
+        "npwp": "9999000000000009",
+        "nitku": "9999000000000009000000",
+        "nama": "PT Sembilan",
+        "alamat": "Jl. Sembilan No. 9, Semarang"
+      },
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "Barang Mewah",
+          "satuan": "UM.0002",
+          "harga": 12000000,
+          "jumlah": 10,
+          "tarifPpnbm": 10,
+          "dpp": 120000000,
+          "dppNilaiLain": 110000000,
+          "ppn": 13200000,
+          "ppnbm": 11000000
+        }
+      ]
+    },
+    {
+      "tanggal": "2026-10-10",
+      "kodeTransaksi": "09",
+      "referensi": "GOLD-10 aktiva, angka desimal",
+      "pembeli": {
+        "jenisId": "TIN",
+        "npwp": "9999000000000010",
+        "nitku": "9999000000000010000000",
+        "nama": "PT Sepuluh",
+        "alamat": "Jl. Sepuluh No. 10, Makassar"
+      },
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "Mesin Bekas",
+          "satuan": "UM.0018",
+          "harga": 1500.5,
+          "jumlah": 2.5,
+          "dpp": 3751.25,
+          "dppNilaiLain": 3751.25,
+          "ppn": 450.15,
+          "ppnbm": 0
+        }
+      ]
+    }
+  ]
+}

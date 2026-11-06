@@ -9,7 +9,7 @@ File acuan untuk test. Setiap file XML di sini dibandingkan byte per byte dengan
 ## Rencana golden file (Gerbang 1, lihat `docs/PRD.md`)
 
 1. ~~Unduh paket template dan converter dari halaman resmi DJP~~ Selesai 2026-11-05, lihat [`djp/README.md`](djp/README.md).
-2. Isi template Excel dengan kasus uji (kode 01, 04, 07; pembeli TIN dan National ID; banyak item; diskon).
+2. ~~Isi template Excel dengan kasus uji~~ Disiapkan di [`faktur-keluaran/golden/`](faktur-keluaran/golden/README.md): 10 kasus dan 1 probe pembulatan.
 3. Ubah dengan converter resmi, simpan XML-nya di `faktur-keluaran/golden/`.
 4. Simpan input yang sama sebagai JSON di sebelahnya, lalu tambahkan test yang membandingkan keduanya.
 5. File yang sudah lolos impor di Coretax sungguhan diberi akhiran `.lolos-coretax.xml`.

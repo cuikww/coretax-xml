@@ -4,3 +4,7 @@ dist
 coverage
 *.log
 .DS_Store
+
+# Unduhan DJP (biner dan template, izin redistribusi belum jelas)
+fixtures/djp/unduhan/
+fixtures/faktur-keluaran/golden/*.xlsx

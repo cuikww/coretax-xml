@@ -551,7 +551,7 @@ Gerbang 1 paling penting: tidak ada jenis dokumen baru sebelum XML faktur keluar
 
 - [x] Daftarkan nama `coretax-xml` di npm dan GitHub *(repo GitHub dibuat; nama npm diklaim saat rilis pertama)*
 - [x] Unduh paket template dan converter dari halaman resmi DJP, simpan di `fixtures/` beserta tanggal unduh *(2026-11-05, lihat `fixtures/djp/README.md`)*
-- [ ] Buat 10 golden file dengan converter resmi
+- [ ] Buat 10 golden file dengan converter resmi *(10 kasus dan file Excel-nya sudah siap di `fixtures/faktur-keluaran/golden/`; tinggal dijalankan di converter)*
 - [ ] Cari mitra PKP atau konsultan pajak untuk uji impor nyata
 - [x] Setup monorepo (pnpm, tsup, Vitest, Biome, Changesets)
 

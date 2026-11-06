@@ -47,3 +47,13 @@ Keputusan selama implementasi, pelengkap [PRD](PRD.md). Bagian terbaru di bawah.
 **Sampel resmi v1.4 jadi test.** `build` menghasilkan elemen dan nilai yang sama dengan `Sample Faktur PK Template v.1.4.xml`, kecuali `BuyerDocumentNumber`, `BuyerName`, `BuyerAdress` yang dikosongkan sampel lama tetapi diwajibkan template v1.6.1 (`-` untuk pembeli TIN, nama dan alamat wajib). Indentasi tidak dibandingkan: sampel memakai tab, library 2 spasi.
 
 **Converter tidak bisa dijalankan otomatis.** Converter adalah aplikasi WinForms .NET tanpa mode baris perintah. Golden file harus dibuat manual: isi template Excel, jalankan converter, simpan XML-nya. String di exe menyebut `Round` (pembulatan .NET default adalah ke genap, bukan setengah ke atas) dan `xsi:nil="true"`; keduanya baru bisa dipastikan dari golden file.
+
+## 2026-11-06: Kasus uji golden file
+
+**Satu file Excel, 10 faktur.** Converter menghasilkan satu XML per file Excel, jadi golden file-nya satu XML berisi 10 faktur (`kasus.converter.xml`), bukan 10 file. Kasus dan alasannya ada di `fixtures/faktur-keluaran/golden/README.md`.
+
+**Excel dibuat dari template resmi, bukan dari nol.** `buat-xlsx.mjs` hanya mengganti isi sheet `Faktur` dan `DetailFaktur` di template v1.6.1 (nama sheet, kolom, dan sheet REF utuh) supaya yang dibaca converter sama dengan yang dibaca pengguna. Skrip tidak menghitung: semua angka berasal dari `kasus.json` yang diperiksa library di mode strict. File xlsx tidak masuk git (turunan template DJP).
+
+**Probe pembulatan terpisah.** `probe-pembulatan.json` berisi angka 3 desimal yang sengaja tidak sah untuk library; hanya untuk melihat apakah converter membulatkan ke genap atau setengah ke atas, memotong, atau menolak.
+
+**Test pembanding otomatis aktif.** `golden.test.ts` melewati perbandingan sampai `kasus.converter.xml` ada. Perbandingan mengabaikan indentasi, header XML, dan beda penulisan elemen kosong (`<X/>` vs `xsi:nil`); semua nilai dan urutan elemen dibandingkan.

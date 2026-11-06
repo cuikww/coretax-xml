@@ -1,0 +1,85 @@
+{
+  "penjual": { "npwp": "0000000000000000", "nitku": "0000000000000000000000" },
+  "faktur": [
+    {
+      "tanggal": "2026-10-01",
+      "kodeTransaksi": "01",
+      "referensi": "PROBE pembulatan converter",
+      "pembeli": {
+        "jenisId": "TIN",
+        "npwp": "9999000000000001",
+        "nitku": "9999000000000001000000",
+        "nama": "PT Probe",
+        "alamat": "Jl. Probe No. 1"
+      },
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "p 0.005",
+          "satuan": "UM.0021",
+          "harga": 0.005,
+          "jumlah": 1,
+          "dpp": 0.005,
+          "dppNilaiLain": 0.005,
+          "ppn": 0.005,
+          "ppnbm": 0.005
+        },
+        {
+          "jenis": "barang",
+          "nama": "p 0.015",
+          "satuan": "UM.0021",
+          "harga": 0.015,
+          "jumlah": 1,
+          "dpp": 0.015,
+          "dppNilaiLain": 0.015,
+          "ppn": 0.015,
+          "ppnbm": 0.015
+        },
+        {
+          "jenis": "barang",
+          "nama": "p 0.025",
+          "satuan": "UM.0021",
+          "harga": 0.025,
+          "jumlah": 1,
+          "dpp": 0.025,
+          "dppNilaiLain": 0.025,
+          "ppn": 0.025,
+          "ppnbm": 0.025
+        },
+        {
+          "jenis": "barang",
+          "nama": "p 0.035",
+          "satuan": "UM.0021",
+          "harga": 0.035,
+          "jumlah": 1,
+          "dpp": 0.035,
+          "dppNilaiLain": 0.035,
+          "ppn": 0.035,
+          "ppnbm": 0.035
+        },
+        {
+          "jenis": "barang",
+          "nama": "p 2.675",
+          "satuan": "UM.0021",
+          "harga": 2.675,
+          "jumlah": 1,
+          "dpp": 2.675,
+          "dppNilaiLain": 2.675,
+          "ppn": 2.675,
+          "ppnbm": 2.675
+        },
+        {
+          "jenis": "barang",
+          "nama": "p 100.125",
+          "satuan": "UM.0021",
+          "harga": 100.125,
+          "jumlah": 1,
+          "dpp": 100.125,
+          "dppNilaiLain": 100.125,
+          "ppn": 100.125,
+          "ppnbm": 100.125
+        }
+      ]
+    }
+  ]
+}
