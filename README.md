@@ -101,6 +101,26 @@ Untuk contoh di atas, library menghitung DPP 1.200.000, DPP nilai lain 1.100.000
 
 Aturan pembulatan resmi DJP masih perlu dikonfirmasi (lihat [pertanyaan terbuka](docs/PRD.md#risiko--pertanyaan-terbuka)).
 
+### Nama field berbahasa Inggris
+
+Semua fungsi faktur keluaran (`validate`, `build`, `analisis`, `buildStream`) menerima nama Indonesia atau Inggris, bahkan dicampur per objek:
+
+```ts
+fakturKeluaran.build({
+  seller: { tin: '0000000000000000', idtku: '0000000000000000000000' },
+  invoices: [
+    {
+      date: '2026-10-01',
+      transactionCode: '04',
+      buyer: { idType: 'TIN', tin: '…', idtku: '…', name: 'PT Contoh', address: 'Jl. Contoh' },
+      items: [{ type: 'service', name: 'Jasa', unit: 'UM.0033', price: 600000, quantity: 2 }],
+    },
+  ],
+})
+```
+
+Dengan `bahasa: 'en'`, path field di hasil validasi juga berbahasa Inggris (`buyer.name`, `items[0].price`). Nama padanannya: `pembeli`/`buyer`, `item`/`items`, `npwp`/`tin`, `nitku`/`idtku`, `nama`/`name`, `alamat`/`address`, `harga`/`price`, `jumlah`/`quantity`, `dpp`/`taxBase`, `ppn`/`vat`, `jenis: 'barang'|'jasa'`/`type: 'goods'|'service'`, dan seterusnya (lihat tipe `BatchFakturKeluaranEn`). Retur masukan belum punya alias Inggris.
+
 ### Data besar: streaming dan pemecahan file
 
 ```ts

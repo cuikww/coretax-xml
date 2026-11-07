@@ -13,6 +13,14 @@ import { buildStream } from './stream.js'
 import { check } from './xml-baca.js'
 
 export type {
+  BatchFakturKeluaranCampur,
+  BatchFakturKeluaranEn,
+  FakturKeluaranEn,
+  ItemFakturEn,
+  PembeliEn,
+  PenjualEn,
+} from './alias.js'
+export type {
   Analisis,
   FakturTerhitung,
   ItemTerhitung,

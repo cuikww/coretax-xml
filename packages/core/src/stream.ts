@@ -1,11 +1,12 @@
+import type { FakturKeluaranEn, PenjualEn } from './alias.js'
 import { analisis, CoretaxValidationError } from './faktur-keluaran.js'
 import type { FakturKeluaran, MasalahValidasi, OpsiValidasi, Penjual } from './types.js'
 import { tulisXml } from './xml.js'
 
 export interface SumberFaktur {
-  penjual: Penjual
+  penjual: Penjual | PenjualEn
   /** Array, generator, atau stream: faktur dibaca satu per satu dan tidak pernah ditahan lebih dari satu file. */
-  faktur: Iterable<FakturKeluaran> | AsyncIterable<FakturKeluaran>
+  faktur: Iterable<FakturKeluaran | FakturKeluaranEn> | AsyncIterable<FakturKeluaran | FakturKeluaranEn>
 }
 
 export interface OpsiStream extends OpsiValidasi {
@@ -39,7 +40,7 @@ export async function* buildStream(sumber: SumberFaktur, opsi: OpsiStream = {}):
   const maks = opsi.maksPerFile ?? 1000
   if (!Number.isInteger(maks) || maks < 1) throw new RangeError('maksPerFile harus bilangan bulat >= 1')
   const awalan = opsi.awalanNama ?? 'faktur-keluaran'
-  let buf: FakturKeluaran[] = []
+  let buf: (FakturKeluaran | FakturKeluaranEn)[] = []
   let nomor = 0
   let terkirim = 0
 

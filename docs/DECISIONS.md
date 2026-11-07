@@ -157,3 +157,11 @@ PRD menyatakan tidak ada jenis dokumen baru sebelum Gerbang 1 (impor Coretax nya
 **CLI.** `convert --maks-per-file N` memecah faktur keluaran menjadi `<nama>-0001.xml`, `-0002.xml`, ... bila jumlah faktur melebihi N; jika tidak, tetap satu file bernama biasa. Retur menolak opsi ini (retur belum punya `buildStream`). Di JSON laporan, `keluaran` sekarang daftar nama file (sebelumnya satu string; belum ada rilis).
 
 **Belum.** Pembacaan Excel/CSV di CLI tetap memuat seluruh berkas ke memori; streaming sungguhan dari sumber besar baru ada di API library.
+
+## 2026-11-07: Nama field berbahasa Inggris (F1.1)
+
+**Lapisan normalisasi di depan analisis.** `normalisasi()` (`src/alias.ts`) menyalin tiap objek (batch, penjual, faktur, pembeli, item) dan mengganti kunci Inggris dengan kunci Indonesia; seluruh logika validasi, hitungan, dan penulisan XML tetap satu, memakai model Indonesia. Dipanggil di awal `analisis()`, jadi `validate`, `build`, `analisis`, dan `buildStream` semua menerimanya. Tiap objek diterjemahkan sendiri-sendiri, jadi campuran diizinkan; jika kunci Indonesia dan Inggris sama-sama ada di satu objek, **kunci Indonesia menang** (supaya hasil tidak bergantung urutan kunci).
+
+**Path field mengikuti bahasa pesan.** Dengan `bahasa: 'en'`, `MasalahValidasi.field` berbentuk `buyer.name` dan `items[0].price`; dengan `id` tetap `pembeli.nama` dan `item[0].harga`. Label di pesan selalu diambil dari path Indonesia, lalu path hasilnya diterjemahkan. `bahasa` mengendalikan pesan dan path sekaligus; belum ada opsi terpisah untuk path saja.
+
+**Cakupan.** Hanya faktur pajak keluaran, sesuai PRD F1.1. Retur masukan memakai nama Indonesia saja karena belum ada permintaan; menambahkannya pola yang sama (satu kamus tambahan). `check()` membaca XML, bukan objek, jadi tidak terpengaruh. Nilai `type` item adalah `goods`/`service` (padanan `barang`/`jasa`).

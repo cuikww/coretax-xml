@@ -1,10 +1,10 @@
+import { fieldInggris, type MasukanBatchFaktur, normalisasi } from './alias.js'
 import { labelField, type Param, teks } from './messages.js'
 import { FormatAngkaError, formatRupiah, kali, keSen, persen, rasio, type Sen } from './money.js'
 import { pilihSkema, type SkemaFakturKeluaran } from './schemas/index.js'
 import type {
   Angka,
   Bahasa,
-  BatchFakturKeluaran,
   FakturKeluaran,
   HasilValidasi,
   ItemFaktur,
@@ -77,6 +77,8 @@ export class Pengumpul {
   constructor(
     private readonly bahasa: Bahasa,
     private readonly sembunyikan: boolean,
+    /** Menerjemahkan path field di hasil (mis. ke Inggris); label pesan tetap dari path asli. */
+    private readonly terjemahField: (field: string) => string = (x) => x,
   ) {}
 
   tambah(
@@ -89,7 +91,13 @@ export class Pengumpul {
   ) {
     const p: Param = { label: labelField(this.bahasa, lokasi.field), ...param }
     const { pesan, saran } = teks(this.bahasa, code, p)
-    const masalah: MasalahValidasi = { code, level, ...lokasi, pesan }
+    const masalah: MasalahValidasi = {
+      code,
+      level,
+      ...lokasi,
+      field: this.terjemahField(lokasi.field),
+      pesan,
+    }
     if (nilai !== undefined) masalah.nilai = rahasia && this.sembunyikan ? samarkan(nilai) : nilai
     if (saran) masalah.saran = saran
     ;(level === 'error' ? this.errors : this.warnings).push(masalah)
@@ -429,9 +437,10 @@ function analisisFaktur(
 }
 
 /** `offset` (internal, dipakai buildStream): jumlah faktur sebelumnya, supaya nomor faktur di error tetap global. */
-export function analisis(batch: BatchFakturKeluaran, opsi: OpsiValidasi = {}, offset = 0): Analisis {
+export function analisis(masukan: MasukanBatchFaktur, opsi: OpsiValidasi = {}, offset = 0): Analisis {
+  const batch = normalisasi(masukan)
   const bahasa = opsi.bahasa ?? 'id'
-  const k = new Pengumpul(bahasa, opsi.samarkan ?? true)
+  const k = new Pengumpul(bahasa, opsi.samarkan ?? true, bahasa === 'en' ? fieldInggris : undefined)
   const daftar = Array.isArray(batch?.faktur) ? batch.faktur : []
   const { skema, sebelumBerlaku } = pilihSkema(opsi.schema ?? 'auto', daftar[0]?.tanggal)
   const idSkema = skema ? `faktur-keluaran@${skema.meta.id}` : `faktur-keluaran@${opsi.schema}`
@@ -480,12 +489,12 @@ export function analisis(batch: BatchFakturKeluaran, opsi: OpsiValidasi = {}, of
 }
 
 /** Validasi batch faktur tanpa membuat XML. Selalu mengembalikan semua error sekaligus. */
-export function validate(batch: BatchFakturKeluaran, opsi: OpsiValidasi = {}): HasilValidasi {
+export function validate(batch: MasukanBatchFaktur, opsi: OpsiValidasi = {}): HasilValidasi {
   return analisis(batch, opsi).hasil
 }
 
 /** Buat XML impor Coretax. Melempar CoretaxValidationError jika data tidak valid. */
-export function build(batch: BatchFakturKeluaran, opsi: OpsiValidasi = {}): string {
+export function build(batch: MasukanBatchFaktur, opsi: OpsiValidasi = {}): string {
   const a = analisis(batch, opsi)
   if (!a.hasil.valid) throw new CoretaxValidationError(a.hasil)
   return tulisXml(a.tin, a.faktur)
