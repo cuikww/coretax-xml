@@ -175,3 +175,9 @@ PRD menyatakan tidak ada jenis dokumen baru sebelum Gerbang 1 (impor Coretax nya
 **Dijaga agar tidak basi.** Test `katalog.test.ts` membandingkan file dengan `katalogError()` dan memeriksa tiap kode punya tingkat dan pesan dua bahasa; CI menjalankan skrip lalu `git diff --exit-code errors/`. Menambah kode error berarti menjalankan `pnpm katalog` dan meng-commit hasilnya (tercatat di CONTRIBUTING.md).
 
 **Batas.** Template hanya mencakup teks yang dihasilkan fungsi pesan dengan parameter apa adanya. Pesan yang kelak memakai logika (percabangan, format angka di dalam fungsi pesan) akan tertangkap sebagai satu bentuk saja; format angka sudah dilakukan sebelum pesan dibuat (parameter `{nilai}` sudah berupa teks Rupiah), jadi port tidak perlu mengulang logika itu.
+
+## 2026-11-07: Retur di paket uji impor
+
+`scripts/siapkan-uji-impor.mjs` sekarang punya dua bagian yang bisa dipakai sendiri-sendiri atau bersama: faktur keluaran (10 kasus rekaan, seperti sebelumnya) dan retur masukan lewat `--retur <file.json>`. Retur tidak memakai kasus rekaan karena Coretax mencocokkannya dengan faktur masukan yang nyata (nomor faktur, penjual, barang, saldo); jadi mitra mengisi satu file JSON dari faktur di akunnya (contoh: `fixtures/retur-masukan/contoh-uji-impor.json`), dan skrip memvalidasi, membuat satu XML per retur, serta menambah barisnya ke `lembar-hasil.md`. Langkah menu impor retur di Coretax belum diketahui dan sengaja tidak ditebak di panduan.
+
+Pesan error retur kini memakai istilah retur untuk field yang namanya sama dengan faktur ("Tanggal retur wajib diisi", bukan "Tanggal faktur"): `Pengumpul` menerima label khusus per dokumen.

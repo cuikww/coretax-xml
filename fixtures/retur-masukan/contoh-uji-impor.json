@@ -1,0 +1,22 @@
+{
+  "pembeli": { "npwp": "0000000000000000" },
+  "retur": [
+    {
+      "nomorFaktur": "04002500000348920",
+      "npwpPenjual": "0000000000000000",
+      "tanggal": "2026-11-05",
+      "item": [
+        {
+          "jenis": "barang",
+          "nama": "Barang",
+          "kode": "000000",
+          "jumlah": 1,
+          "satuan": "UM.0033",
+          "harga": 10000,
+          "jumlahRetur": 1,
+          "ppn": 1100
+        }
+      ]
+    }
+  ]
+}

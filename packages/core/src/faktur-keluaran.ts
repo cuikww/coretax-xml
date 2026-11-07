@@ -79,6 +79,8 @@ export class Pengumpul {
     private readonly sembunyikan: boolean,
     /** Menerjemahkan path field di hasil (mis. ke Inggris); label pesan tetap dari path asli. */
     private readonly terjemahField: (field: string) => string = (x) => x,
+    /** Label khusus dokumen (mis. "Tanggal retur") yang didahulukan dari label umum. */
+    private readonly labelKhusus: Partial<Record<Bahasa, Record<string, string>>> = {},
   ) {}
 
   tambah(
@@ -89,7 +91,11 @@ export class Pengumpul {
     nilai?: string,
     rahasia = false,
   ) {
-    const p: Param = { label: labelField(this.bahasa, lokasi.field), ...param }
+    const kunci = lokasi.field.replace(/^item\[\d+\]\./, '')
+    const p: Param = {
+      label: this.labelKhusus[this.bahasa]?.[kunci] ?? labelField(this.bahasa, lokasi.field),
+      ...param,
+    }
     const { pesan, saran } = teks(this.bahasa, code, p)
     const masalah: MasalahValidasi = {
       code,

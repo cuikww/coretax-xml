@@ -101,6 +101,12 @@ export interface AnalisisRetur {
   retur: ReturTerhitung[]
 }
 
+/** Label yang berbeda dari faktur keluaran untuk field yang namanya sama. */
+const LABEL_RETUR = {
+  id: { tanggal: 'Tanggal retur', jumlah: 'Jumlah pada faktur asal' },
+  en: { tanggal: 'Return date', jumlah: 'Quantity on the original invoice' },
+}
+
 const jumlahSen = (daftar: Sen[]) => daftar.reduce((a, b) => a + b, 0n)
 
 function analisisItem(k: Pengumpul, it: ItemRetur, nr: number, ni: number): ItemTerhitung | null {
@@ -260,7 +266,7 @@ function analisisRetur(k: Pengumpul, r: ReturFakturMasukan, nr: number): ReturTe
 }
 
 export function analisis(batch: BatchReturFakturMasukan, opsi: OpsiValidasi = {}): AnalisisRetur {
-  const k = new Pengumpul(opsi.bahasa ?? 'id', opsi.samarkan ?? true)
+  const k = new Pengumpul(opsi.bahasa ?? 'id', opsi.samarkan ?? true, undefined, LABEL_RETUR)
   const idSkema = `retur-masukan@${meta.id}`
   if (opsi.schema !== undefined && opsi.schema !== 'auto' && opsi.schema !== meta.id) {
     k.tambah(

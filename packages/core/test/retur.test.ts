@@ -135,6 +135,13 @@ describe('retur faktur masukan: validasi data', () => {
     expect(() => returMasukan.build(b)).toThrow(CoretaxValidationError)
   })
 
+  it('pesan memakai istilah retur untuk field yang namanya sama dengan faktur', () => {
+    const b = padanan()
+    Object.assign(b.retur[0] ?? {}, { tanggal: '' })
+    expect(returMasukan.validate(b).errors[0]?.pesan).toBe('Tanggal retur wajib diisi.')
+    expect(returMasukan.validate(b, { bahasa: 'en' }).errors[0]?.pesan).toBe('Return date is required.')
+  })
+
   it('skema yang tidak ada dan pesan bahasa Inggris', () => {
     expect(returMasukan.validate(padanan(), { schema: '1999.01' }).errors.map((e) => e.code)).toEqual([
       'SCHEMA_UNKNOWN',
