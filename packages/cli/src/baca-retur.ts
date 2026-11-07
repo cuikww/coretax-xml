@@ -1,6 +1,15 @@
 import type { BatchReturFakturMasukan, ItemRetur, ReturFakturMasukan } from 'coretax-xml'
 import { bulat2, tanggalIso } from './angka.js'
-import { barisData, FormatBerkasError, jenisItem, type OpsiBaca, pad, type Sumber } from './baca-faktur.js'
+import {
+  barisData,
+  FormatBerkasError,
+  jenisItem,
+  norm,
+  type OpsiBaca,
+  pad,
+  type Sumber,
+} from './baca-faktur.js'
+import { parseCsv } from './csv.js'
 import type { Lembar } from './xlsx.js'
 
 const KOLOM_RETUR: Record<string, string> = {
@@ -99,6 +108,150 @@ export function dariExcelRetur(
   if (yatim.length > 0) {
     throw new FormatBerkasError(
       `Sheet DetailRetur baris ${yatim.join(', ')}: nilai kolom Baris tidak ada di sheet Retur.`,
+    )
+  }
+  return { batch, sumber }
+}
+
+// ---------- CSV sederhana untuk retur: satu baris = satu barang, data retur diulang di tiap baris ----------
+
+export const KOLOM_CSV_RETUR = [
+  'no_retur',
+  'nomor_faktur',
+  'npwp_penjual',
+  'tanggal',
+  'dpp_total',
+  'dpp_lain_total',
+  'ppn_total',
+  'ppnbm_total',
+  'jenis_item',
+  'kode_barang',
+  'nama_barang',
+  'satuan',
+  'jumlah_faktur',
+  'harga',
+  'tarif_ppnbm',
+  'jumlah_retur',
+  'diskon_retur',
+  'dpp',
+  'pakai_dpp_lain',
+  'dpp_lain',
+  'ppn',
+  'ppnbm',
+  'npwp_pembeli',
+] as const
+
+const WAJIB_CSV_RETUR = [
+  'no_retur',
+  'nomor_faktur',
+  'npwp_penjual',
+  'tanggal',
+  'nama_barang',
+  'jumlah_faktur',
+  'harga',
+  'jumlah_retur',
+  'ppn',
+  'npwp_pembeli',
+]
+
+/** true jika baris judul CSV milik retur (kolom no_retur). */
+export const adalahCsvRetur = (teks: string) =>
+  (teks.replace(/^﻿/, '').split(/\r?\n/, 1)[0] ?? '')
+    .split(/[,;]/)
+    .some((k) => k.trim().toLowerCase() === 'no_retur')
+
+/** Contoh CSV retur dengan satu baris isi (nomor faktur dari sampel DJP; NPWP nol). */
+export function templateCsvRetur(): string {
+  const contoh: Record<string, string> = {
+    no_retur: 'RETUR-001',
+    nomor_faktur: '04002500000348920',
+    npwp_penjual: '0000000000000000',
+    tanggal: '2025-02-27',
+    jenis_item: 'barang',
+    kode_barang: '000000',
+    nama_barang: 'Barang',
+    satuan: 'UM.0033',
+    jumlah_faktur: '1',
+    harga: '10000',
+    jumlah_retur: '1',
+    ppn: '1100',
+    npwp_pembeli: '0000000000000000',
+  }
+  return `${KOLOM_CSV_RETUR.join(',')}\n${KOLOM_CSV_RETUR.map((k) => contoh[k] ?? '').join(',')}\n`
+}
+
+export function dariCsvRetur(
+  teks: string,
+  opsi: OpsiBaca,
+): { batch: BatchReturFakturMasukan; sumber: Sumber } {
+  const rows = parseCsv(teks)
+  const judul = (rows[0] ?? []).map(norm)
+  const hilang = WAJIB_CSV_RETUR.filter((k) => !judul.includes(k))
+  if (hilang.length > 0) {
+    throw new FormatBerkasError(
+      `Kolom wajib tidak ada di CSV retur: ${hilang.join(', ')}. Buat contoh dengan: coretax-xml template retur-masukan`,
+    )
+  }
+  const ambil = (b: string[], nama: string) => b[judul.indexOf(nama)]?.trim()
+  const strict = opsi.hitung === 'strict'
+
+  const batch: BatchReturFakturMasukan = { pembeli: { npwp: '' }, retur: [] }
+  const sumber: Sumber = { jenis: 'CSV', faktur: [], item: [] }
+  const indeks = new Map<string, number>()
+  const pembeliBeda: number[] = []
+  let pertama = true
+  rows.forEach((b, i) => {
+    if (i === 0 || b.every((x) => !x.trim())) return
+    const nomor = i + 1
+    const npwp = pad(ambil(b, 'npwp_pembeli'), 16) ?? ''
+    if (pertama) batch.pembeli.npwp = npwp
+    else if (npwp !== batch.pembeli.npwp) pembeliBeda.push(nomor)
+    pertama = false
+
+    const kunci = ambil(b, 'no_retur') ?? ''
+    let ri = indeks.get(kunci)
+    if (ri === undefined) {
+      ri = batch.retur.length
+      indeks.set(kunci, ri)
+      const r: ReturFakturMasukan = {
+        nomorFaktur: pad(ambil(b, 'nomor_faktur'), 17) as string,
+        npwpPenjual: pad(ambil(b, 'npwp_penjual'), 16) as string,
+        tanggal: tanggalIso(ambil(b, 'tanggal')),
+        item: [],
+      }
+      if (strict) {
+        r.dpp = bulat2(ambil(b, 'dpp_total'))
+        r.dppLain = bulat2(ambil(b, 'dpp_lain_total'))
+        r.ppn = bulat2(ambil(b, 'ppn_total'))
+        r.ppnbm = bulat2(ambil(b, 'ppnbm_total'))
+      }
+      batch.retur.push(r)
+      sumber.faktur.push(nomor)
+      sumber.item.push([])
+    }
+    const pakai = /^(yes|ya|true|1)$/i.test(ambil(b, 'pakai_dpp_lain') ?? '')
+    const item: ItemRetur = {
+      jenis: jenisItem(ambil(b, 'jenis_item')),
+      nama: ambil(b, 'nama_barang') as string,
+      kode: pad(ambil(b, 'kode_barang'), 6),
+      jumlah: bulat2(ambil(b, 'jumlah_faktur')) as string,
+      satuan: ambil(b, 'satuan') as string,
+      harga: bulat2(ambil(b, 'harga')) as string,
+      tarifPpnbm: bulat2(ambil(b, 'tarif_ppnbm')),
+      jumlahRetur: bulat2(ambil(b, 'jumlah_retur')) as string,
+      diskonRetur: bulat2(ambil(b, 'diskon_retur')),
+      pakaiDppLain: pakai,
+      ppn: bulat2(ambil(b, 'ppn')) as string,
+      ppnbm: bulat2(ambil(b, 'ppnbm')),
+    }
+    if (strict) item.dpp = bulat2(ambil(b, 'dpp'))
+    if (strict || pakai) item.dppLain = bulat2(ambil(b, 'dpp_lain'))
+    batch.retur[ri]?.item.push(item)
+    sumber.item[ri]?.push(nomor)
+  })
+  if (pembeliBeda.length > 0) {
+    throw new FormatBerkasError(
+      `npwp_pembeli harus sama di semua baris (satu pelapor per file). Berbeda di baris ${pembeliBeda.join(', ')}.`,
     )
   }
   return { batch, sumber }

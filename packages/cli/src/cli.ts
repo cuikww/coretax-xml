@@ -18,7 +18,7 @@ import {
   type Sumber,
   templateCsv,
 } from './baca-faktur.js'
-import { dariExcelRetur } from './baca-retur.js'
+import { adalahCsvRetur, dariCsvRetur, dariExcelRetur, templateCsvRetur } from './baca-retur.js'
 import { formatLaporan, type Laporan } from './laporan.js'
 import { bacaXlsx } from './xlsx.js'
 
@@ -36,10 +36,11 @@ Pemakaian:
       .xlsx = template Excel DJP: faktur pajak keluaran (sheet Faktur + DetailFaktur) atau retur faktur pajak
               masukan (sheet Retur + DetailRetur), dikenali otomatis; angka dibaca dari file
               (default --hitung strict: dicocokkan dengan hitungan library)
-      .csv  = format sederhana, satu baris per item (default --hitung otomatis; lihat perintah template)
+      .csv  = format sederhana, satu baris per item; faktur keluaran atau retur masukan (kolom no_retur), dikenali
+              dari judul kolom (default --hitung otomatis; lihat perintah template)
   coretax-xml check <file.xml|folder> [--format teks|json|html] [-o laporan.html]
       memeriksa XML faktur pajak keluaran atau retur faktur pajak masukan yang sudah ada (dikenali dari elemen akar)
-  coretax-xml template faktur-keluaran [-o contoh.csv]
+  coretax-xml template faktur-keluaran|retur-masukan [-o contoh.csv]
       mencetak contoh CSV dengan kolom yang benar
   coretax-xml schemas
       daftar versi skema
@@ -87,7 +88,11 @@ function bacaBerkas(
       return { dokumen: 'faktur-keluaran', ...dariExcel(sheets, { hitung: h }), hitung: h }
     }
     const h = hitung ?? 'otomatis'
-    return { dokumen: 'faktur-keluaran', ...dariCsv(data.toString('utf8'), { hitung: h }), hitung: h }
+    const teksCsv = data.toString('utf8')
+    if (adalahCsvRetur(teksCsv)) {
+      return { dokumen: 'retur-masukan', ...dariCsvRetur(teksCsv, { hitung: h }), hitung: h }
+    }
+    return { dokumen: 'faktur-keluaran', ...dariCsv(teksCsv, { hitung: h }), hitung: h }
   } catch (e) {
     if (e instanceof FormatBerkasError || e instanceof Error) throw new SalahPakai(`${berkas}: ${e.message}`)
     throw e
@@ -158,9 +163,10 @@ export async function jalankan(
     }
 
     if (perintah === 'template') {
-      if (sisa[0] !== 'faktur-keluaran') throw new SalahPakai('Jenis template yang tersedia: faktur-keluaran')
-      if (v.output) writeFileSync(v.output, templateCsv())
-      else io.stdout(templateCsv())
+      const templat = { 'faktur-keluaran': templateCsv, 'retur-masukan': templateCsvRetur }[sisa[0] ?? '']
+      if (!templat) throw new SalahPakai('Jenis template yang tersedia: faktur-keluaran, retur-masukan')
+      if (v.output) writeFileSync(v.output, templat())
+      else io.stdout(templat())
       return 0
     }
 

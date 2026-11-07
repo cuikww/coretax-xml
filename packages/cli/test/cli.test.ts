@@ -276,6 +276,70 @@ describe('convert retur faktur masukan dari template Excel DJP', () => {
   })
 })
 
+describe('CSV retur faktur masukan', () => {
+  const sampel = () =>
+    readFileSync(dariRepo('fixtures/djp/Sample Retur Faktur PM Template v.1.1.xml'), 'utf8')
+  const normal = (x: string) =>
+    x
+      .replace(/^\ufeff/, '')
+      .replace(/>\s+</g, '><')
+      .trim()
+
+  it('template retur-masukan -> convert menghasilkan XML yang sama dengan sampel resmi DJP', async () => {
+    const dir = folderSementara()
+    const t = await cli('template', 'retur-masukan')
+    expect(t.kode).toBe(0)
+    const [judul, contoh] = t.out.replaceAll('0000000000000000', '1091031210912281').trim().split('\n') as [
+      string,
+      string,
+    ]
+    const f = tulis(dir, 'retur.csv', `${judul}\n${contoh}\n${contoh}\n`)
+    const r = await cli('convert', f)
+    expect(r.kode).toBe(0)
+    expect(r.out).toContain('skema retur-masukan@2025.03')
+    expect(normal(readFileSync(f.replace('.csv', '.xml'), 'utf8'))).toBe(normal(sampel()))
+  })
+
+  it('error menunjuk baris CSV; kolom wajib hilang dan pelapor berbeda = kode 2', async () => {
+    const dir = folderSementara()
+    const [judul, contoh] = (await cli('template', 'retur-masukan')).out.trim().split('\n') as [
+      string,
+      string,
+    ]
+    const salah = tulis(dir, 'salah.csv', `${judul}\n${contoh.replace(',10000,,1,', ',10000,,5,')}\n`)
+    const r = await cli('convert', salah)
+    expect(r.kode).toBe(1)
+    expect(r.out).toContain('Retur ke-1 (baris CSV 2), item 1 (baris CSV 2) <ReturnQuantity>')
+    const tanpaKolom = tulis(dir, 'k.csv', 'no_retur,nomor_faktur\nA,1\n')
+    expect((await cli('convert', tanpaKolom)).err).toContain('Kolom wajib tidak ada di CSV retur')
+    const beda = tulis(
+      dir,
+      'b.csv',
+      `${judul}\n${contoh}\n${contoh.replace(/,0000000000000000$/, ',1111222233334444')}\n`,
+    )
+    const rb = await cli('convert', beda)
+    expect(rb.kode).toBe(2)
+    expect(rb.err).toContain('npwp_pembeli harus sama di semua baris')
+    expect((await cli('template', 'bupot')).err).toContain('faktur-keluaran, retur-masukan')
+  })
+
+  it('--hitung strict membaca total dokumen dan DPP dari CSV; total rupiah utuh tidak dianggap selisih', async () => {
+    const dir = folderSementara()
+    const csv = [
+      'no_retur,nomor_faktur,npwp_penjual,tanggal,dpp_total,ppn_total,jenis_item,nama_barang,satuan,jumlah_faktur,harga,jumlah_retur,dpp,ppn,npwp_pembeli',
+      'A,04002500000348920,0000000000000000,27/02/2025,36251,4350,barang,Gula,UM.0003,10.5,14500.5,2.5,36251.25,4350.15,0000000000000000',
+    ].join('\n')
+    const f = tulis(dir, 'strict.csv', csv)
+    const r = await cli('convert', f, '--hitung', 'strict', '--format', 'json')
+    const j = JSON.parse(r.out)
+    expect(j[0].warnings).toEqual([])
+    expect(j[0].valid).toBe(true)
+    const xml = readFileSync(f.replace('.csv', '.xml'), 'utf8')
+    expect(xml).toContain('<ReturnTaxBase>36251</ReturnTaxBase>')
+    expect(xml).toContain('<ReturnTaxBase>36251.25</ReturnTaxBase>')
+  })
+})
+
 describe('convert dari CSV', () => {
   it('template -> convert: lolos, hitung otomatis, 2 baris satu faktur menjadi 2 item', async () => {
     const dir = folderSementara()

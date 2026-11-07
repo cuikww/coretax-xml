@@ -13,9 +13,9 @@ coretax-xml convert penjualan.xlsx
 coretax-xml convert penjualan.xlsx -o faktur-oktober.xml
 coretax-xml convert penjualan.xlsx --maks-per-file 1000   # pecah: penjualan-0001.xml, penjualan-0002.xml, ...
 
-# CSV sederhana: satu baris per item, data faktur diulang di tiap baris
-coretax-xml template faktur-keluaran -o contoh.csv
-coretax-xml convert contoh.csv
+# CSV sederhana: satu baris per item, data faktur atau retur diulang di tiap baris
+coretax-xml template faktur-keluaran -o contoh.csv     # atau: template retur-masukan
+coretax-xml convert contoh.csv                          # jenisnya dikenali dari judul kolom (no_retur = retur)
 
 # Periksa XML yang sudah ada (buatan converter DJP atau aplikasi lain), satu file atau satu folder.
 # Faktur keluaran dan retur masukan dikenali dari elemen akar.
@@ -49,7 +49,7 @@ Excel menyimpan rumus beserta hasil terakhir yang dihitungnya. CLI hanya membaca
 
 ## Keterbatasan
 
-- Faktur pajak keluaran (Excel dan CSV) dan retur faktur pajak masukan (hanya Excel). Bukti potong menyusul.
+- Faktur pajak keluaran dan retur faktur pajak masukan (Excel dan CSV). Bukti potong menyusul. Di CSV retur, `ppn` wajib diisi per baris (tarifnya tidak ada di template DJP, jadi tidak bisa dihitung).
 - `.xls` lama tidak didukung; simpan sebagai `.xlsx`.
 - Angka CSV memakai titik desimal tanpa pemisah ribuan (`1500.50`, bukan `1.500,50`).
 - Kode barang dan kode transaksi yang kehilangan nol di depan karena Excel (`4`, `0`) dipulihkan menjadi `04` dan `000000`.
