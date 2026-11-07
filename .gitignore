@@ -10,3 +10,6 @@ fixtures/djp/unduhan/
 fixtures/faktur-keluaran/golden/*.xlsx
 uji-impor-keluar/
 fixtures/retur-masukan/golden/*.xlsx
+
+tools/watch-djp/laporan-djp.md
+laporan-djp.md

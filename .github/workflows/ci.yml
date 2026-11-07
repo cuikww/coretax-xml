@@ -22,6 +22,8 @@ jobs:
       - run: pnpm test
       # Paket hasil pack harus bisa dipasang dan dipakai (ESM dan CJS)
       - run: node scripts/smoke-paket.mjs
+      # Pemantau halaman template DJP (tools/watch-djp)
+      - run: node --test tools/watch-djp/lib.test.mjs
 
   # engines paket menjanjikan Node >= 20, jadi test dijalankan juga di sana.
   # pnpm tidak bisa jalan di Node 20, jadi install dan build di Node 24, test lewat vitest langsung.

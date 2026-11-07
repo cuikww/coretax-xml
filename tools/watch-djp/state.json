@@ -1,0 +1,246 @@
+{
+  "diperiksa": "2026-11-07",
+  "sumber": "https://www.pajak.go.id/id/reformdjp/coretax/template-xml-dan-converter-excel-ke-xml",
+  "berkas": {
+    "https://pajak.go.id/sites/default/files/2024-11/Bea%20Meterai%20Lampiran%20L3.xml_0.zip": {
+      "sha256": "f8bc94862f840c2eb1dba094c937b1ff0f65fc8be2076bc22eeadcddfe865ec1",
+      "ukuran": 897
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/Bea%20Meterai%20Lampiran%20L4.xml_0.zip": {
+      "sha256": "d5c9f9aab7ea1091553429a41351e6d7a4a10ef42e0c585dc0960ad3a0f5516a",
+      "ukuran": 894
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/Create%20DOk%20Lain%20Keluaran_0.xlsx": {
+      "sha256": "e6ccbc8450ac07bd9c1fecdd01da9d99cb0c65822e3add9a0c6d78f22ffdf7bd",
+      "ukuran": 25825
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/Create%20DOk%20Lain%20Masukan_0.xlsx": {
+      "sha256": "cae5f5087f1317d5602ba94486e9cc4728cfb5d318d84a25b40b28149e99deab",
+      "ukuran": 23197
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/Dok%20Lain%20Keluaran.xml.zip": {
+      "sha256": "bb35902da4e468beced3b1cbdba1d8972fdb21c7a111f82a6b233ecd1155d465",
+      "ukuran": 944
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/Dok%20Lain%20Masukan.xml.zip": {
+      "sha256": "0a8c0cffd06a9876edf8ec1244f03346152a4303bea5682acbed3bbb4156d3a2",
+      "ukuran": 921
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/DRKB_0.xlsx": {
+      "sha256": "ac0f2b7e5e43add541839dc781d029ee4f770d85dcdd20f1d43bdeda23b88cde",
+      "ukuran": 21254
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/DRKB.xml.zip": {
+      "sha256": "a25f2b2813121269ad272bcd73e41058abb46f46fe8bf080eaf1ea75fd73cb1b",
+      "ukuran": 1001
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/PIT_L3C_Depreciation_And_Amortization_Template%20VALID.xml.zip": {
+      "sha256": "3e8c919dd4fd39e4d7fba31d5afd62503fb118502123a41aa26084ad2bd299c3",
+      "ukuran": 1384
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/PIT_L3D_Bad_Debt_Template.xlsx": {
+      "sha256": "cad23968e984fc36c9408078f59d7fcb05841f281af7429051ea0571cedaed1b",
+      "ukuran": 19046
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/PIT_L3D_Bad_Debt_Template%20VALID.xml.zip": {
+      "sha256": "bbe874b4b179eb52053ad2af17d35850b2900d7082962ded294d0d825cb0b660",
+      "ukuran": 1020
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/PIT_L3D_Entertainment_Expense_Template.xlsx": {
+      "sha256": "0da75e8dca7391c7995858ce6d4257009c1eaa594da3bcea32417b6cfcba3d4a",
+      "ukuran": 18075
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/PIT_L3D_Entertainment_Expense_Template%20VALID.xml.zip": {
+      "sha256": "c053dba95d6eaa01f2c0177b2f1f61c4ef056140409e17498284f22260db6568",
+      "ukuran": 1102
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/PIT_L3D_Promotion_Expense_Template.xlsx": {
+      "sha256": "9daa1f407228ad5253f5e37c41911e40d8f5435dfdaa8d928d965d980314e7d0",
+      "ukuran": 19361
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/PIT_L3D_Promotion_Expense_Template%20VALID.xml.zip": {
+      "sha256": "5f5ff4fb0b96b53a43e1d5b5d52cf910c9b19adeac854e9baaabfce051916b9b",
+      "ukuran": 1124
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/Retur%20DOk%20Lain%20Keluaran_0.xlsx": {
+      "sha256": "78319cb33a2c1151b032ad63eca82d47db531ac0568cc9d8ffcc5e539f8acfd6",
+      "ukuran": 24714
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/Retur%20Dok%20Lain%20Keluaran.xml.zip": {
+      "sha256": "6dde2c40e9d45f1282bfc926ce1ddcad27dcfecd1d996ba2e849675b6f606669",
+      "ukuran": 946
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/Retur%20DOk%20Lain%20Masukan_0.xlsx": {
+      "sha256": "96bb3c4b4057529148871ea452b641fbd2d29313805433678c088bd852f91678",
+      "ukuran": 23999
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/Retur%20Dok%20Lain%20Masukan.xml.zip": {
+      "sha256": "1c5cf840c1072ee4caf571febf6f6891ce57e73be0a66a5bd604be30d307d2d0",
+      "ukuran": 887
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/SPT%20PPN%20Digunggung.xml.zip": {
+      "sha256": "423e2b402cfa760171645103071133c33707fd74c801304684931ea41219edab",
+      "ukuran": 966
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/Stamp%20Duty%20L3_0.xlsx": {
+      "sha256": "7ae415ab935f8bd83b5b9fcf6a6c19ebe9a804657a9dc7a32ac34a7d3dd9eedb",
+      "ukuran": 22036
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/Stamp%20Duty%20L4_0.xlsx": {
+      "sha256": "67320ffdca36fa774fb55613a0ce27e0478f7d9c230ef353b89bf8ecd77b87a6",
+      "ukuran": 21870
+    },
+    "https://pajak.go.id/sites/default/files/2024-11/User%20manual%20convert%20Excel%20to%20XML.pdf": {
+      "sha256": "47ed6a4406317ee8862a6c5466542a93c9bca6ce365d15417807541a6400deae",
+      "ukuran": 253605
+    },
+    "https://pajak.go.id/sites/default/files/2024-12/bp21.zip": {
+      "sha256": "0cda03753cf7c9985358ed68c302e86c53c88a4e7640db55bc8b5504a1aa6f12",
+      "ukuran": 764
+    },
+    "https://pajak.go.id/sites/default/files/2024-12/bp26.zip": {
+      "sha256": "fd4e052ef9a38ca0e3e261e241b642d4011f6bafe50e253fac07252e8d963759",
+      "ukuran": 949
+    },
+    "https://pajak.go.id/sites/default/files/2024-12/BP26%20Excel%20to%20XML.xlsx": {
+      "sha256": "26a1ccee4597d3d26cc357fb6567fd6f47509e2c6a9c0372f3898744ca658815",
+      "ukuran": 33105
+    },
+    "https://pajak.go.id/sites/default/files/2024-12/bpa1.zip": {
+      "sha256": "8b76a89fa89c1c1d8ded0d37da2d2f0fe8ff937370cf9055bd352a0e9f61d4db",
+      "ukuran": 890
+    },
+    "https://pajak.go.id/sites/default/files/2024-12/BPA1%20Excel%20to%20XML.xlsx": {
+      "sha256": "db04e44a78b0f0411b647e2f927665c2e606bc19318e5027268119ce51ff4284",
+      "ukuran": 24485
+    },
+    "https://pajak.go.id/sites/default/files/2024-12/bpa2.zip": {
+      "sha256": "f4a965bdb0954f0da46fd809b9a8d3c5842fde56a7a9acf0ba5e57884b1097a7",
+      "ukuran": 892
+    },
+    "https://pajak.go.id/sites/default/files/2024-12/bpcy.zip": {
+      "sha256": "157f04ef1ee0c99212c1f460de12c1bf3c3f25a64707909470cb04f6f9ea06fe",
+      "ukuran": 622
+    },
+    "https://pajak.go.id/sites/default/files/2024-12/bpmp.zip": {
+      "sha256": "d4973f18262cef8a0548be1e9b6e7c05fa844ae18360a15c456bc95cd27cbfb3",
+      "ukuran": 643
+    },
+    "https://pajak.go.id/sites/default/files/2024-12/bpnr.zip": {
+      "sha256": "8ea08d28dc2c05fb7e5cfa74f493c53001f3d82f17374ab43e84011475829c53",
+      "ukuran": 928
+    },
+    "https://pajak.go.id/sites/default/files/2024-12/bppu.zip": {
+      "sha256": "8a90ea38737bd8d5f0563c12c11ec076b91138f0865ac9f46fd0d4414b004deb",
+      "ukuran": 745
+    },
+    "https://pajak.go.id/sites/default/files/2024-12/bpsp.zip": {
+      "sha256": "197b5e5d69403b9d1eabc88567f17a3a2c4b9663e2da66353585d33d5636dd8f",
+      "ukuran": 743
+    },
+    "https://pajak.go.id/sites/default/files/2024-12/ddbu.zip": {
+      "sha256": "640f14ce5895e4ed18c54918cb4b577a23092e5c0a5a88fde2e66b247f724e6e",
+      "ukuran": 752
+    },
+    "https://pajak.go.id/sites/default/files/2025-01/BPNR%20Excel%20to%20XML%20v.2.xlsx": {
+      "sha256": "b24d41e904cae6d8d3ffdf26de5908becee504cedd1553763bfe64748fb9369c",
+      "ukuran": 36469
+    },
+    "https://pajak.go.id/sites/default/files/2025-02/DJPDomestikBaruVERSI_1_1.zip": {
+      "sha256": "5f140566de9f58f5b8a4eb2aa71d2260b682ab6bcb7746b4cceec6090f71bdb7",
+      "ukuran": 9160
+    },
+    "https://pajak.go.id/sites/default/files/2025-02/TataCaraPerubahanEmail_LembagaKeuangan_Eksternal.pdf": {
+      "sha256": "a7cbb16f2a093afc1c37180d3091a36278a24135214f161a9bcdefaab0a61692",
+      "ukuran": 212591
+    },
+    "https://pajak.go.id/sites/default/files/2025-02/TemplateDomestikBaru%20Versi%201_4.zip": {
+      "sha256": "8053cfd0beff87715f964d2a66335663f021cffff52a5b0a5b1d1fff689848f0",
+      "ukuran": 97142
+    },
+    "https://pajak.go.id/sites/default/files/2025-03/Sample%20Faktur%20PK%20Template%20v.1.4.xml.zip": {
+      "sha256": "a71d6c004f7d0979b9f33eedc7f669daf3238e6820d2decd13525f2cc32b9beb",
+      "ukuran": 781
+    },
+    "https://pajak.go.id/sites/default/files/2025-03/Sample%20Lampiran%20C%20Template%20v.1.1.xml.zip": {
+      "sha256": "d0c1f08ab0cd7fde16d24becc5879550f056e61a1ee083acf0551114f831145d",
+      "ukuran": 719
+    },
+    "https://pajak.go.id/sites/default/files/2025-03/Sample%20Retur%20Faktur%20PM%20Template%20v.1.1.xml.zip": {
+      "sha256": "87ede35c832e794b14fa5c269c0fd2f06f4bd353c4f71c93c54a0d6c8c50b52e",
+      "ukuran": 668
+    },
+    "https://pajak.go.id/sites/default/files/2025-04/BP21%20Excel%20to%20XML%20v.4.xlsx": {
+      "sha256": "511bec3d57f61f2273112fdbae66b373be372df12c3ae13146d8373d1ca840cf",
+      "ukuran": 30613
+    },
+    "https://pajak.go.id/sites/default/files/2025-04/BPMP%20Excel%20to%20XML%20v.3.xlsx": {
+      "sha256": "2170302c6a210a98ef5edacf32c803d3b4c413a8a18a8abcc0c338e6fdd52b09",
+      "ukuran": 21955
+    },
+    "https://pajak.go.id/sites/default/files/2025-09/BPCY%20Excel%20to%20XML%20v.3.xlsx": {
+      "sha256": "aaf5a74638f48e1cf036e4a5903b708e8069e655ea07eb973526b5a4672f4093",
+      "ukuran": 25958
+    },
+    "https://pajak.go.id/sites/default/files/2025-09/BPPU%20Excel%20to%20XML%20v.3.xlsx": {
+      "sha256": "b59813365bccdf9d63a47051d4d2b0b58c53351b8c981a6f33144be05b429089",
+      "ukuran": 35719
+    },
+    "https://pajak.go.id/sites/default/files/2025-09/BPSP%20Excel%20to%20XML%20v.3.xlsx": {
+      "sha256": "cbae6d9e40d024cd765fe82d5c3def981c97adadb50d6845eebd4ef83eb1ab6b",
+      "ukuran": 30624
+    },
+    "https://pajak.go.id/sites/default/files/2025-09/DDBU%20Excel%20to%20XML%20v.2%20%281%29.xlsx": {
+      "sha256": "80e7afdd469a44bdf700511e87339c6ff9000c575b8342fbd10204dfd4b7fd2b",
+      "ukuran": 25448
+    },
+    "https://pajak.go.id/sites/default/files/2025-09/Detil%20Transaksi%20PMSE%20v.1.xlsx": {
+      "sha256": "357efde64ba6bfae7e6ac7409563241ba97e99c8e4aa074efeb1d3ec1df7ae66",
+      "ukuran": 13690
+    },
+    "https://pajak.go.id/sites/default/files/2025-10/Retail_XML%20Induk%20IA5%20IA9%20dan%20IB.xlsx": {
+      "sha256": "44863a31e623e01108bb7e9d0680da1c0c4f4bc9e38cf0ec84a4a8aa8b29eef7",
+      "ukuran": 31394
+    },
+    "https://pajak.go.id/sites/default/files/2026-01/BPA2%20Excel%20to%20XML.xlsx": {
+      "sha256": "f36335271c12369f23ac2fe81a4f8b36b4733076219a886c993ae4c0ea8a5854",
+      "ukuran": 24469
+    },
+    "https://pajak.go.id/sites/default/files/2026-01/ConverterEfakturCoretax__v1.6.zip": {
+      "sha256": "ef5957af98ed06d7aee3c0fed6a67b56fe6f515bf776788194b2acd9a005b791",
+      "ukuran": 1806579
+    },
+    "https://pajak.go.id/sites/default/files/2026-02/OP_ConverterPenyusutanAmortisasi_0.zip": {
+      "sha256": "75c5329117e1d9b6de97f9cb40a365b52f51666e86b1cedc2a509553ff7897b8",
+      "ukuran": 3400200
+    },
+    "https://pajak.go.id/sites/default/files/2026-03/Lampiran%20SPT%20OP_Daftar%20Harta.zip": {
+      "sha256": "5fc680a01af7ed3c20e779233469ea6aa03bf407b2b5d3d8c90d6c314b4dc40c",
+      "ukuran": 86315
+    },
+    "https://pajak.go.id/sites/default/files/2026-04/Converter%20Excel%20to%20XML%20L7%20SPOP%20v.1.zip": {
+      "sha256": "46bec260f53987152765f1689394396ba3141d5e6af92a327818a9696209acdb",
+      "ukuran": 26932
+    },
+    "https://pajak.go.id/sites/default/files/2026-04/KonverterXML_SPTBadan%20v1.1.zip": {
+      "sha256": "5fd6c26821d0e153a901b776faf4591041d23126830b20eb9ae55448bd4c027a",
+      "ukuran": 3370995
+    },
+    "https://pajak.go.id/sites/default/files/2026-04/Template%20XML%20L7%20SPOP%20PBB.zip": {
+      "sha256": "d5c44d0705d750e8fc0eeb5659b73295f5a554b316f259093cfa95f923d08ff5",
+      "ukuran": 1423
+    },
+    "https://www.pajak.go.id/sites/default/files/2024-11/Memilih%20File%20XML%20untuk%20Download.pdf": {
+      "sha256": "87861f1d9ecdbe4ebff697306a9c496b4dd36207539fede3e23d8b4a8a0b9957",
+      "ukuran": 611479
+    },
+    "https://www.pajak.go.id/sites/default/files/2024-11/Menggunakan%20Converter%20dan%20Impor%20Data.pdf": {
+      "sha256": "5da8720c6501c3f0e035aaed3bb0a3705139f67fd5b2a05ac1dc089e7f706543",
+      "ukuran": 609634
+    },
+    "https://www.pajak.go.id/sites/default/files/2025-01/Mekanisme%20Upload%20Faktur%20via%20XML.pdf": {
+      "sha256": "727e5c90d423d85599662fd4f87e456831b70c24e2fe3d05eea1cec790cf54b2",
+      "ukuran": 685259
+    }
+  }
+}

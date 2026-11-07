@@ -1,0 +1,37 @@
+name: Pantau DJP
+# Setiap Senin: unduh semua berkas di halaman template DJP, bandingkan hash dengan tools/watch-djp/state.json,
+# dan buka issue (label format-djp) jika ada yang berubah, bertambah, atau hilang. Lihat docs/PRD.md#distribusi.
+on:
+  schedule:
+    - cron: '17 1 * * 1' # Senin 08:17 WIB
+  workflow_dispatch:
+
+permissions:
+  contents: write # commit state.json
+  issues: write # buka issue
+
+jobs:
+  pantau:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - id: cek
+        run: node tools/watch-djp/watch.mjs
+      - name: Buka issue jika ada perubahan
+        if: steps.cek.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create format-djp --description "Perubahan template atau converter DJP" --color B60205 || true
+          gh issue create --label format-djp --title "DJP: perubahan di halaman template XML ($(date -u +%F))" --body-file laporan-djp.md
+      - name: Simpan state baru
+        if: steps.cek.outputs.changed == 'true' || steps.cek.outputs.baseline == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/watch-djp/state.json
+          git commit -m "chore(pantau-djp): perbarui state.json"
+          git push

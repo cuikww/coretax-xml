@@ -135,3 +135,13 @@ PRD menyatakan tidak ada jenis dokumen baru sebelum Gerbang 1 (impor Coretax nya
 ## 2026-11-07: Probe pembulatan total retur terjawab
 
 `probe-pembulatan.converter.xml` (2 retur dengan total persis x,5) menunjukkan converter membulatkan total dokumen dan FooterRow **setengah ke genap**: 100,5 → 100; 102,5 → 102; 0,5 → 0; 101,5 → 102; 103,5 → 104; 1,5 → 2. Nilai per baris tetap apa adanya (100.5, 102.5, 0.5). Sama dengan asumsi `bulatRupiahGenap()` dan dengan pembulatan converter pada angka faktur, jadi library tidak berubah. Dua aturan pembulatan converter yang kini terbukti: angka masukan Excel dibulatkan ke 2 desimal setengah ke genap (faktur dan retur), dan total dokumen retur dibulatkan ke rupiah utuh setengah ke genap. Aturan di server Coretax tetap belum diketahui sampai uji impor nyata.
+
+## 2026-11-07: Pemantau halaman template DJP
+
+**Cara kerja.** `tools/watch-djp/watch.mjs` (Node saja, tanpa dependensi) mengambil halaman template DJP, mengambil semua tautan berkas (zip, xlsx, xml, pdf, ...), mengunduh tiap berkas dan menghitung SHA-256, lalu membandingkannya dengan `tools/watch-djp/state.json`. Workflow `pantau-djp.yml` berjalan tiap Senin dan bisa dijalankan manual; jika ada berkas yang isinya berubah, bertambah, atau hilang, ia membuka issue berlabel `format-djp` berisi tabel perbedaan dan daftar tindakan, lalu menyimpan state baru. Baseline pertama: 60 berkas (2026-11-07).
+
+**Dijaga supaya tidak berisik atau salah paham.** Hash yang gagal diunduh tidak dianggap perubahan (hash lama dipertahankan dan kegagalannya dilaporkan di issue jika ada perubahan lain). Jika halaman hanya menghasilkan kurang dari 10 tautan, skrip gagal keras: itu tanda halaman berubah bentuk atau diblokir, bukan "semua berkas dihapus". `state.json` hanya ditulis saat ada perubahan, jadi tidak ada commit kosong tiap minggu. Commit state memakai `GITHUB_TOKEN`, yang tidak memicu workflow lain.
+
+**Identitas jujur.** Skrip memperkenalkan diri sebagai `Mozilla/5.0 (compatible; coretax-xml-pemantau)`, hanya membaca halaman dan berkas publik, dan tidak mengirim data apa pun. Server DJP sesekali mereset koneksi (terlihat 2 kali saat pengembangan, selalu berhasil pada percobaan ulang); skrip mencoba 3 kali dengan jeda. Jika suatu saat DJP memblokir klien ini atau IP GitHub Actions, workflow akan gagal secara kasat mata. Itu keputusan untuk pemelihara (mis. minta izin ke DJP atau pantau manual), bukan untuk diakali dengan menyamar sebagai browser.
+
+**Yang tidak dilakukan.** Skrip tidak membaca isi berkas (mis. mengurai catatan rilis) dan tidak membuat skema baru; ia hanya memberi tahu. Memutuskan apakah perubahan memengaruhi format XML tetap pekerjaan manusia dalam target 7 hari yang tertulis di PRD.
