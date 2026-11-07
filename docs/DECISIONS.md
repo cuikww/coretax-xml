@@ -131,3 +131,7 @@ PRD menyatakan tidak ada jenis dokumen baru sebelum Gerbang 1 (impor Coretax nya
 **CLI.** `convert retur.xlsx` menghasilkan XML yang sama dengan converter DJP untuk 3 retur (test lokal, dilewati di CI karena file Excel tidak ada di repo).
 
 **Pelajaran.** Perbandingan satu sampel resmi tidak cukup: sampel retur v1.1 hanya berisi angka bulat, jadi aturan rupiah utuh tidak terlihat sampai ada kasus berdesimal. Ini alasan golden file faktur dan retur dengan angka desimal tetap perlu, dan alasan tidak menganggap output kandidat sebagai terbukti.
+
+## 2026-11-07: Probe pembulatan total retur terjawab
+
+`probe-pembulatan.converter.xml` (2 retur dengan total persis x,5) menunjukkan converter membulatkan total dokumen dan FooterRow **setengah ke genap**: 100,5 → 100; 102,5 → 102; 0,5 → 0; 101,5 → 102; 103,5 → 104; 1,5 → 2. Nilai per baris tetap apa adanya (100.5, 102.5, 0.5). Sama dengan asumsi `bulatRupiahGenap()` dan dengan pembulatan converter pada angka faktur, jadi library tidak berubah. Dua aturan pembulatan converter yang kini terbukti: angka masukan Excel dibulatkan ke 2 desimal setengah ke genap (faktur dan retur), dan total dokumen retur dibulatkan ke rupiah utuh setengah ke genap. Aturan di server Coretax tetap belum diketahui sampai uji impor nyata.
