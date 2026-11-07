@@ -428,7 +428,8 @@ function analisisFaktur(
   return { header, item: items }
 }
 
-export function analisis(batch: BatchFakturKeluaran, opsi: OpsiValidasi = {}): Analisis {
+/** `offset` (internal, dipakai buildStream): jumlah faktur sebelumnya, supaya nomor faktur di error tetap global. */
+export function analisis(batch: BatchFakturKeluaran, opsi: OpsiValidasi = {}, offset = 0): Analisis {
   const bahasa = opsi.bahasa ?? 'id'
   const k = new Pengumpul(bahasa, opsi.samarkan ?? true)
   const daftar = Array.isArray(batch?.faktur) ? batch.faktur : []
@@ -469,7 +470,7 @@ export function analisis(batch: BatchFakturKeluaran, opsi: OpsiValidasi = {}): A
   if (daftar.length === 0) k.tambah('error', 'FAKTUR_EMPTY', lokBatch('faktur', 'ListOfTaxInvoice'))
 
   const strict = opsi.hitung === 'strict'
-  const faktur = daftar.map((f, i) => analisisFaktur(k, skema, f, i + 1, nitkuPenjual, strict))
+  const faktur = daftar.map((f, i) => analisisFaktur(k, skema, f, i + 1 + offset, nitkuPenjual, strict))
 
   return {
     hasil: { valid: k.errors.length === 0, schema: idSkema, errors: k.errors, warnings: k.warnings },

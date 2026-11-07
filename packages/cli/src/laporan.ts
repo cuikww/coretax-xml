@@ -7,7 +7,7 @@ export interface Laporan {
   /** Asal baris Excel/CSV, ada untuk `convert`. */
   sumber?: Sumber
   /** Path XML hasil `convert` yang berhasil. */
-  keluaran?: string
+  keluaran?: string[]
 }
 
 /** Baris di file asal untuk sebuah masalah. */
@@ -52,7 +52,7 @@ export function formatTeks(daftar: Laporan[]): string {
         if (m.saran) keluar.push(`      saran: ${m.saran}`)
       }
     }
-    if (l.keluaran) keluar.push(`  XML ditulis ke ${l.keluaran}`)
+    for (const f of l.keluaran ?? []) keluar.push(`  XML ditulis ke ${f}`)
   }
   if (daftar.length > 1) {
     const lolos = daftar.filter((l) => l.hasil.valid).length

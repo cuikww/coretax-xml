@@ -101,6 +101,19 @@ Untuk contoh di atas, library menghitung DPP 1.200.000, DPP nilai lain 1.100.000
 
 Aturan pembulatan resmi DJP masih perlu dikonfirmasi (lihat [pertanyaan terbuka](docs/PRD.md#risiko--pertanyaan-terbuka)).
 
+### Data besar: streaming dan pemecahan file
+
+```ts
+for await (const file of fakturKeluaran.buildStream(
+  { penjual, faktur: bacaFakturDariDatabase() }, // array, generator, atau stream
+  { maksPerFile: 1000 },
+)) {
+  await simpan(file.nama, file.isi) // faktur-keluaran-0001.xml, -0002.xml, ...
+}
+```
+
+Faktur dibaca satu per satu dan hanya satu file yang ditahan di memori. Nomor faktur di pesan error tetap nomor dalam seluruh sumber. Batas jumlah faktur per impor di Coretax belum diketahui; 1000 hanyalah angka aman.
+
 ### Retur faktur pajak masukan
 
 ```ts

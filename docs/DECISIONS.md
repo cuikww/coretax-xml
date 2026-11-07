@@ -145,3 +145,15 @@ PRD menyatakan tidak ada jenis dokumen baru sebelum Gerbang 1 (impor Coretax nya
 **Identitas jujur.** Skrip memperkenalkan diri sebagai `Mozilla/5.0 (compatible; coretax-xml-pemantau)`, hanya membaca halaman dan berkas publik, dan tidak mengirim data apa pun. Server DJP sesekali mereset koneksi (terlihat 2 kali saat pengembangan, selalu berhasil pada percobaan ulang); skrip mencoba 3 kali dengan jeda. Jika suatu saat DJP memblokir klien ini atau IP GitHub Actions, workflow akan gagal secara kasat mata. Itu keputusan untuk pemelihara (mis. minta izin ke DJP atau pantau manual), bukan untuk diakali dengan menyamar sebagai browser.
 
 **Yang tidak dilakukan.** Skrip tidak membaca isi berkas (mis. mengurai catatan rilis) dan tidak membuat skema baru; ia hanya memberi tahu. Memutuskan apakah perubahan memengaruhi format XML tetap pekerjaan manusia dalam target 7 hari yang tertulis di PRD.
+
+## 2026-11-07: Streaming dan pemecahan file (F1.5, F1.6)
+
+**`fakturKeluaran.buildStream(sumber, { maksPerFile, awalanNama })`** adalah generator asinkron yang menghasilkan `{ nama, isi, nomor, jumlahFaktur, nomorFakturAwal, peringatan }` per file. Sumber boleh array, generator, atau stream; hanya `maksPerFile` faktur (default 1000) yang ditahan sekaligus. Setiap file divalidasi dan dihitung sendiri-sendiri; satu file dengan `maksPerFile` besar menghasilkan isi yang sama persis seperti `build()`.
+
+**Nomor error tetap global.** `analisis()` menerima parameter internal `offset` sehingga error di faktur ke-4 dari sumber tetap bernomor 4 walau ada di file kedua. File sebelum yang bermasalah sudah diserahkan ke pemanggil saat error dilempar (pemanggil memutuskan apakah file itu dipakai); itu sengaja, karena menahan semuanya sampai selesai menghilangkan manfaat streaming.
+
+**Default 1000 bukan aturan DJP.** Batas faktur atau ukuran file per impor XML masih pertanyaan terbuka di PRD; panduan uji impor tidak memeriksanya. Sampai terjawab, pemakai yang punya ribuan faktur sebaiknya memecah sendiri ke angka yang terbukti diterima.
+
+**CLI.** `convert --maks-per-file N` memecah faktur keluaran menjadi `<nama>-0001.xml`, `-0002.xml`, ... bila jumlah faktur melebihi N; jika tidak, tetap satu file bernama biasa. Retur menolak opsi ini (retur belum punya `buildStream`). Di JSON laporan, `keluaran` sekarang daftar nama file (sebelumnya satu string; belum ada rilis).
+
+**Belum.** Pembacaan Excel/CSV di CLI tetap memuat seluruh berkas ke memori; streaming sungguhan dari sumber besar baru ada di API library.

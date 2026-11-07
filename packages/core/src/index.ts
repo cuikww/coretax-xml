@@ -9,6 +9,7 @@ import * as retur from './retur-masukan.js'
 import * as skema2025_09 from './schemas/faktur-keluaran/v2025-09.js'
 import { daftarSkema } from './schemas/index.js'
 import * as skemaRetur from './schemas/retur-masukan/v2025-03.js'
+import { buildStream } from './stream.js'
 import { check } from './xml-baca.js'
 
 export type {
@@ -19,6 +20,7 @@ export type {
 export { CoretaxValidationError, samarkan } from './faktur-keluaran.js'
 export { formatRupiah, formatXml, keSen } from './money.js'
 export type { MetaSkema } from './schemas/faktur-keluaran/v2025-09.js'
+export type { BerkasXml, OpsiStream, SumberFaktur } from './stream.js'
 export type * from './types.js'
 
 /** Faktur pajak keluaran (root XML `TaxInvoiceBulk`). */
@@ -29,6 +31,8 @@ export const fakturKeluaran = {
   build,
   /** Validasi + hasil hitung (DPP, DPP nilai lain, PPN) per item, untuk ditampilkan di aplikasi. */
   analisis,
+  /** Buat XML per potongan (maksPerFile faktur) dari sumber yang bisa sangat besar; lihat OpsiStream. */
+  buildStream,
   /** Periksa file XML yang sudah ada: struktur, lalu isi dan hitungan (seperti validate mode strict). */
   check,
   /** Daftar skema yang tersedia. */

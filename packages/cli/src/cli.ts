@@ -32,6 +32,7 @@ Bukan produk DJP dan bukan nasihat pajak. Berjalan lokal, tanpa internet.
 
 Pemakaian:
   coretax-xml convert <file.xlsx|file.csv> [-o hasil.xml] [--hitung strict|otomatis] [--format teks|json|html]
+                      [--maks-per-file N]   pecah faktur keluaran menjadi beberapa file @ N faktur (hasil-0001.xml, ...)
       .xlsx = template Excel DJP: faktur pajak keluaran (sheet Faktur + DetailFaktur) atau retur faktur pajak
               masukan (sheet Retur + DetailRetur), dikenali otomatis; angka dibaca dari file
               (default --hitung strict: dicocokkan dengan hitungan library)
@@ -121,6 +122,7 @@ export async function jalankan(
         output: { type: 'string', short: 'o' },
         format: { type: 'string', short: 'f', default: 'teks' },
         hitung: { type: 'string' },
+        'maks-per-file': { type: 'string' },
         schema: { type: 'string' },
         bahasa: { type: 'string', default: 'id' },
         help: { type: 'boolean', short: 'h' },
@@ -174,14 +176,31 @@ export async function jalankan(
           : fakturKeluaran.validate(dibaca.batch, opsi)
       const laporan: Laporan = { berkas, hasil, sumber }
       if (hasil.valid) {
-        const keluaran = v.output ?? `${berkas.slice(0, berkas.length - extname(berkas).length)}.xml`
-        writeFileSync(
-          keluaran,
-          dibaca.dokumen === 'retur-masukan'
-            ? returMasukan.build(dibaca.batch, opsi)
-            : fakturKeluaran.build(dibaca.batch, opsi),
-        )
-        laporan.keluaran = keluaran
+        const dasarKeluaran = (
+          v.output ?? `${berkas.slice(0, berkas.length - extname(berkas).length)}.xml`
+        ).replace(/\.xml$/i, '')
+        const maks = v['maks-per-file'] === undefined ? undefined : Number(v['maks-per-file'])
+        if (maks !== undefined && (!Number.isInteger(maks) || maks < 1)) {
+          throw new SalahPakai('--maks-per-file harus bilangan bulat >= 1.')
+        }
+        if (dibaca.dokumen === 'retur-masukan') {
+          if (maks !== undefined) throw new SalahPakai('--maks-per-file hanya untuk faktur pajak keluaran.')
+          laporan.keluaran = [`${dasarKeluaran}.xml`]
+          writeFileSync(laporan.keluaran[0] as string, returMasukan.build(dibaca.batch, opsi))
+        } else if (maks === undefined || dibaca.batch.faktur.length <= maks) {
+          laporan.keluaran = [`${dasarKeluaran}.xml`]
+          writeFileSync(laporan.keluaran[0] as string, fakturKeluaran.build(dibaca.batch, opsi))
+        } else {
+          // Terlalu banyak untuk satu file: pecah menjadi <nama>-0001.xml, <nama>-0002.xml, ...
+          laporan.keluaran = []
+          for await (const b of fakturKeluaran.buildStream(
+            { penjual: dibaca.batch.penjual, faktur: dibaca.batch.faktur },
+            { ...opsi, maksPerFile: maks, awalanNama: dasarKeluaran },
+          )) {
+            writeFileSync(b.nama, b.isi)
+            laporan.keluaran.push(b.nama)
+          }
+        }
       }
       io.stdout(formatLaporan(format, [laporan]))
       if (hasil.valid && format === 'teks') io.stdout(PENAFIAN)

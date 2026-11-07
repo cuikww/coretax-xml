@@ -11,6 +11,7 @@ Ubah template Excel faktur pajak keluaran DJP (atau CSV sederhana) menjadi XML i
 #   Faktur + DetailFaktur = faktur pajak keluaran; Retur + DetailRetur = retur faktur pajak masukan
 coretax-xml convert penjualan.xlsx
 coretax-xml convert penjualan.xlsx -o faktur-oktober.xml
+coretax-xml convert penjualan.xlsx --maks-per-file 1000   # pecah: penjualan-0001.xml, penjualan-0002.xml, ...
 
 # CSV sederhana: satu baris per item, data faktur diulang di tiap baris
 coretax-xml template faktur-keluaran -o contoh.csv

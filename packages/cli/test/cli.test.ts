@@ -168,6 +168,34 @@ describe('convert dari template Excel DJP', () => {
   )
 })
 
+describe('convert --maks-per-file', () => {
+  it('memecah faktur keluaran menjadi beberapa file yang masing-masing lolos check', async () => {
+    const dir = folderSementara()
+    const faktur = [1, 2, 3, 4, 5].map((n) => barisFaktur(n))
+    const detail = [1, 2, 3, 4, 5].map((n) => barisDetail(n))
+    const f = tulis(dir, 'banyak.xlsx', templateExcel(faktur, detail))
+    const r = await cli('convert', f, '--maks-per-file', '2')
+    expect(r.kode).toBe(0)
+    const nama = [1, 2, 3].map((n) => f.replace('.xlsx', `-000${n}.xml`))
+    for (const n of nama) expect(r.out).toContain(`XML ditulis ke ${n}`)
+    expect(existsSync(f.replace('.xlsx', '.xml'))).toBe(false)
+    expect((readFileSync(nama[2] as string, 'utf8').match(/<TaxInvoice>/g) ?? []).length).toBe(1)
+    expect((await cli('check', dir)).out).toContain('3 dari 3 berkas lolos.')
+  })
+
+  it('jumlah faktur tidak melebihi batas = satu file biasa; JSON memuat daftar file; nilai salah ditolak', async () => {
+    const dir = folderSementara()
+    const f = tulis(dir, 'kecil.xlsx', templateExcel([barisFaktur(1)], [barisDetail(1)]))
+    const j = JSON.parse((await cli('convert', f, '--maks-per-file', '10', '--format', 'json')).out)
+    expect(j[0].keluaran).toEqual([f.replace('.xlsx', '.xml')])
+    expect((await cli('convert', f, '--maks-per-file', '0')).err).toContain('bilangan bulat')
+    const r = tulis(dir, 'r.xlsx', templateRetur([barisRetur(1)], [barisDetailRetur(1)]))
+    expect((await cli('convert', r, '--maks-per-file', '2')).err).toContain(
+      'hanya untuk faktur pajak keluaran',
+    )
+  })
+})
+
 describe('convert retur faktur masukan dari template Excel DJP', () => {
   it('dikenali dari sheet Retur + DetailRetur; XML sama dengan sampel resmi DJP (selain indentasi)', async () => {
     const dir = folderSementara()
