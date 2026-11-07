@@ -5,6 +5,7 @@
  * library ini tidak melakukan panggilan jaringan.
  */
 import { analisis, build, validate } from './faktur-keluaran.js'
+import { type EntriKatalog, katalogError } from './messages.js'
 import * as retur from './retur-masukan.js'
 import * as skema2025_09 from './schemas/faktur-keluaran/v2025-09.js'
 import { daftarSkema } from './schemas/index.js'
@@ -30,6 +31,8 @@ export { formatRupiah, formatXml, keSen } from './money.js'
 export type { MetaSkema } from './schemas/faktur-keluaran/v2025-09.js'
 export type { BerkasXml, OpsiStream, SumberFaktur } from './stream.js'
 export type * from './types.js'
+export type { EntriKatalog }
+export { katalogError }
 
 /** Faktur pajak keluaran (root XML `TaxInvoiceBulk`). */
 export const fakturKeluaran = {

@@ -1,0 +1,820 @@
+{
+  "REQUIRED": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "label"
+    ],
+    "id": {
+      "pesan": "{label} wajib diisi.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "{label} is required.",
+      "saran": null
+    }
+  },
+  "NPWP_FORMAT": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "label",
+      "panjang"
+    ],
+    "id": {
+      "pesan": "{label} harus 16 digit angka, ditemukan {panjang} karakter.",
+      "saran": "Hapus titik, strip, dan spasi. NPWP 15 digit lama perlu diubah ke format 16 digit."
+    },
+    "en": {
+      "pesan": "{label} must be 16 digits, found {panjang} characters.",
+      "saran": "Remove dots, dashes and spaces. Convert old 15-digit NPWP to the 16-digit format."
+    }
+  },
+  "NITKU_FORMAT": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "label",
+      "panjang"
+    ],
+    "id": {
+      "pesan": "{label} harus 22 digit angka, ditemukan {panjang} karakter.",
+      "saran": "NITKU adalah NPWP 16 digit diikuti 6 digit nomor tempat kegiatan usaha."
+    },
+    "en": {
+      "pesan": "{label} must be 22 digits, found {panjang} characters.",
+      "saran": "NITKU is the 16-digit NPWP followed by a 6-digit place-of-business number."
+    }
+  },
+  "DATE_FORMAT": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "label",
+      "nilai"
+    ],
+    "id": {
+      "pesan": "{label} \"{nilai}\" bukan tanggal yang valid. Gunakan format YYYY-MM-DD.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "{label} \"{nilai}\" is not a valid date. Use YYYY-MM-DD.",
+      "saran": null
+    }
+  },
+  "TRX_CODE_UNKNOWN": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Kode transaksi \"{nilai}\" tidak dikenal.",
+      "saran": "Gunakan kode 01 sampai 10."
+    },
+    "en": {
+      "pesan": "Unknown transaction code \"{nilai}\".",
+      "saran": "Use a code from 01 to 10."
+    }
+  },
+  "BUYER_DOC_UNKNOWN": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Jenis ID pembeli \"{nilai}\" tidak dikenal.",
+      "saran": "Gunakan salah satu: \"TIN\", \"National ID\", \"Passport\", \"Other ID\"."
+    },
+    "en": {
+      "pesan": "Unknown buyer ID type \"{nilai}\".",
+      "saran": "Use one of: \"TIN\", \"National ID\", \"Passport\", \"Other ID\"."
+    }
+  },
+  "BUYER_IDTKU_MISMATCH": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "jenisId"
+    ],
+    "id": {
+      "pesan": "Jenis ID pembeli \"{jenisId}\" harus memakai ID TKU \"000000\".",
+      "saran": "Kosongkan pembeli.nitku (akan diisi \"000000\"), atau ubah jenisId ke \"TIN\" jika pembeli sudah terdaftar di Coretax."
+    },
+    "en": {
+      "pesan": "Buyer ID type \"{jenisId}\" must use ID TKU \"000000\".",
+      "saran": "Leave pembeli.nitku empty (it becomes \"000000\"), or set jenisId to \"TIN\" if the buyer is registered in Coretax."
+    }
+  },
+  "BUYER_TIN_NOT_ALLOWED": {
+    "tingkat": [
+      "warning"
+    ],
+    "params": [
+      "jenisId"
+    ],
+    "id": {
+      "pesan": "NPWP pembeli tidak dipakai untuk jenis ID \"{jenisId}\"; nilainya akan diabaikan.",
+      "saran": "Isi NIK atau nomor paspor di pembeli.nomorDokumen."
+    },
+    "en": {
+      "pesan": "The buyer NPWP is not used for ID type \"{jenisId}\" and will be ignored.",
+      "saran": "Put the NIK or passport number in pembeli.nomorDokumen."
+    }
+  },
+  "BUYER_DOC_NUMBER_REQUIRED": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "jenisId"
+    ],
+    "id": {
+      "pesan": "Nomor dokumen pembeli wajib diisi untuk jenis ID \"{jenisId}\".",
+      "saran": "Isi pembeli.nomorDokumen dengan NIK, nomor paspor, atau nomor dokumen lain."
+    },
+    "en": {
+      "pesan": "A buyer document number is required for ID type \"{jenisId}\".",
+      "saran": null
+    }
+  },
+  "COUNTRY_UNKNOWN": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Kode negara \"{nilai}\" tidak ada di daftar negara DJP.",
+      "saran": "Pakai kode 3 huruf dari referensi.negara(), mis. \"IDN\" untuk Indonesia."
+    },
+    "en": {
+      "pesan": "Country code \"{nilai}\" is not in the DJP country list.",
+      "saran": null
+    }
+  },
+  "COUNTRY_IND": {
+    "tingkat": [
+      "warning"
+    ],
+    "params": [],
+    "id": {
+      "pesan": "Kode negara \"IND\" adalah India, bukan Indonesia.",
+      "saran": "Gunakan \"IDN\" untuk Indonesia."
+    },
+    "en": {
+      "pesan": "Country code \"IND\" is India, not Indonesia.",
+      "saran": "Use \"IDN\" for Indonesia."
+    }
+  },
+  "EMAIL_FORMAT": {
+    "tingkat": [
+      "warning"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Email pembeli \"{nilai}\" tidak tampak valid.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "Buyer email \"{nilai}\" does not look valid.",
+      "saran": null
+    }
+  },
+  "ADDINFO_REQUIRED": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "kode"
+    ],
+    "id": {
+      "pesan": "Kode transaksi {kode} wajib mengisi keterangan tambahan.",
+      "saran": "Isi keteranganTambahan dengan kode TD.005xx dari sheet REF template DJP."
+    },
+    "en": {
+      "pesan": "Transaction code {kode} requires additional information (TD.005xx).",
+      "saran": null
+    }
+  },
+  "ADDINFO_UNKNOWN": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "kode",
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Keterangan tambahan \"{nilai}\" tidak ada di daftar untuk kode transaksi {kode}.",
+      "saran": "Pakai kode dari referensi.keteranganTambahan(kodeTransaksi)."
+    },
+    "en": {
+      "pesan": "Additional information \"{nilai}\" is not listed for transaction code {kode}.",
+      "saran": null
+    }
+  },
+  "FACILITY_REQUIRED": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "kode"
+    ],
+    "id": {
+      "pesan": "Kode transaksi {kode} wajib mengisi cap fasilitas.",
+      "saran": "Isi capFasilitas dengan kode TD.011xx dari sheet REF template DJP."
+    },
+    "en": {
+      "pesan": "Transaction code {kode} requires a facility stamp (TD.011xx).",
+      "saran": null
+    }
+  },
+  "FACILITY_UNKNOWN": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "kode",
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Cap fasilitas \"{nilai}\" tidak ada di daftar untuk kode transaksi {kode}.",
+      "saran": "Pakai kode dari referensi.capFasilitas(kodeTransaksi)."
+    },
+    "en": {
+      "pesan": "Facility stamp \"{nilai}\" is not listed for transaction code {kode}.",
+      "saran": null
+    }
+  },
+  "CUSTOM_DOC_PERIOD_FORMAT": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Periode dokumen pendukung \"{nilai}\" harus berformat MMYYYY, mis. \"012025\".",
+      "saran": null
+    },
+    "en": {
+      "pesan": "Supporting document period \"{nilai}\" must be MMYYYY.",
+      "saran": null
+    }
+  },
+  "ITEMS_EMPTY": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [],
+    "id": {
+      "pesan": "Faktur harus berisi minimal 1 item barang/jasa.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "An invoice needs at least 1 item.",
+      "saran": null
+    }
+  },
+  "ITEM_TYPE_UNKNOWN": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Jenis item \"{nilai}\" tidak dikenal.",
+      "saran": "Gunakan \"barang\" atau \"jasa\"."
+    },
+    "en": {
+      "pesan": "Unknown item type \"{nilai}\". Use \"barang\" or \"jasa\".",
+      "saran": null
+    }
+  },
+  "UNIT_UNKNOWN": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai",
+      "skema"
+    ],
+    "id": {
+      "pesan": "Satuan \"{nilai}\" tidak ada di skema {skema}.",
+      "saran": "Gunakan kode satuan UM.0001 sampai UM.0039 dari sheet REF template DJP."
+    },
+    "en": {
+      "pesan": "Unit \"{nilai}\" is not in schema {skema}.",
+      "saran": null
+    }
+  },
+  "GOODS_CODE_FORMAT": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Kode barang/jasa \"{nilai}\" harus 6 digit angka.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "Goods/service code \"{nilai}\" must be 6 digits.",
+      "saran": null
+    }
+  },
+  "GOODS_CODE_DEFAULT": {
+    "tingkat": [
+      "warning"
+    ],
+    "params": [],
+    "id": {
+      "pesan": "Kode barang/jasa tidak diisi, dipakai \"000000\".",
+      "saran": "Isi kode barang/jasa yang sesuai referensi DJP jika tersedia."
+    },
+    "en": {
+      "pesan": "No goods/service code given, \"000000\" is used.",
+      "saran": null
+    }
+  },
+  "NUMBER_FORMAT": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "label",
+      "nilai"
+    ],
+    "id": {
+      "pesan": "{label} \"{nilai}\" bukan angka yang valid.",
+      "saran": "Gunakan angka dengan titik sebagai pemisah desimal, tanpa pemisah ribuan, mis. 1250000.5."
+    },
+    "en": {
+      "pesan": "{label} \"{nilai}\" is not a valid number.",
+      "saran": null
+    }
+  },
+  "NUMBER_DECIMALS": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "label",
+      "nilai"
+    ],
+    "id": {
+      "pesan": "{label} \"{nilai}\" punya lebih dari 2 desimal.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "{label} \"{nilai}\" has more than 2 decimals.",
+      "saran": null
+    }
+  },
+  "NUMBER_NEGATIVE": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "label"
+    ],
+    "id": {
+      "pesan": "{label} tidak boleh negatif.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "{label} cannot be negative.",
+      "saran": null
+    }
+  },
+  "QTY_ZERO": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [],
+    "id": {
+      "pesan": "Jumlah barang/jasa harus lebih dari 0.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "Quantity must be greater than 0.",
+      "saran": null
+    }
+  },
+  "DISCOUNT_TOO_LARGE": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "diskon",
+      "total"
+    ],
+    "id": {
+      "pesan": "Diskon {diskon} lebih besar dari harga x jumlah {total}.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "Discount {diskon} is larger than price x quantity {total}.",
+      "saran": null
+    }
+  },
+  "DPP_MISMATCH": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "harap",
+      "nilai"
+    ],
+    "id": {
+      "pesan": "DPP {nilai} tidak sama dengan harga x jumlah - diskon = {harap}.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "Tax base {nilai} differs from price x quantity - discount = {harap}.",
+      "saran": null
+    }
+  },
+  "DPP_NL_TOO_LARGE": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "dpp",
+      "nilai"
+    ],
+    "id": {
+      "pesan": "DPP nilai lain {nilai} lebih besar dari DPP {dpp}.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "Other tax base {nilai} is larger than tax base {dpp}.",
+      "saran": null
+    }
+  },
+  "VAT_MISMATCH": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "dppNl",
+      "harap",
+      "nilai",
+      "tarif"
+    ],
+    "id": {
+      "pesan": "PPN {nilai} tidak sama dengan {tarif}% x DPP nilai lain {dppNl} = {harap}.",
+      "saran": "Kosongkan ppn supaya dihitung otomatis, atau periksa DPP nilai lain dan tarif."
+    },
+    "en": {
+      "pesan": "VAT {nilai} differs from {tarif}% x other tax base {dppNl} = {harap}.",
+      "saran": null
+    }
+  },
+  "STLG_MISMATCH": {
+    "tingkat": [
+      "warning"
+    ],
+    "params": [
+      "dpp",
+      "harap",
+      "nilai",
+      "tarif"
+    ],
+    "id": {
+      "pesan": "PPnBM {nilai} tidak sama dengan {tarif}% x DPP nilai lain {dpp} = {harap}.",
+      "saran": "Rumus template DJP. Nilai lain tetap boleh dipakai jika memang benar."
+    },
+    "en": {
+      "pesan": "Luxury tax {nilai} differs from {tarif}% x other tax base {dpp} = {harap}.",
+      "saran": null
+    }
+  },
+  "STRICT_VALUE_MISSING": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "label"
+    ],
+    "id": {
+      "pesan": "Mode strict: {label} wajib diisi.",
+      "saran": "Isi semua angka (dpp, dppNilaiLain, ppn, ppnbm), atau pakai hitung: \"otomatis\"."
+    },
+    "en": {
+      "pesan": "Strict mode: {label} is required.",
+      "saran": null
+    }
+  },
+  "SCHEMA_UNKNOWN": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Skema \"{nilai}\" tidak tersedia.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "Schema \"{nilai}\" is not available.",
+      "saran": null
+    }
+  },
+  "SCHEMA_DATE_BEFORE": {
+    "tingkat": [
+      "warning"
+    ],
+    "params": [
+      "nilai",
+      "skema"
+    ],
+    "id": {
+      "pesan": "Tanggal faktur {nilai} lebih awal dari skema tertua ({skema}); skema itu tetap dipakai.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "Invoice date {nilai} is before the oldest schema ({skema}); that schema is used.",
+      "saran": null
+    }
+  },
+  "FAKTUR_EMPTY": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [],
+    "id": {
+      "pesan": "Batch harus berisi minimal 1 faktur.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "A batch needs at least 1 invoice.",
+      "saran": null
+    }
+  },
+  "INVOICE_NUMBER_FORMAT": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Nomor faktur \"{nilai}\" harus 17 digit angka.",
+      "saran": "Hapus titik dan strip dari nomor faktur pajak masukan yang diretur."
+    },
+    "en": {
+      "pesan": "Invoice number \"{nilai}\" must be 17 digits.",
+      "saran": null
+    }
+  },
+  "RETUR_EMPTY": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [],
+    "id": {
+      "pesan": "Batch harus berisi minimal 1 retur.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "A batch needs at least 1 return.",
+      "saran": null
+    }
+  },
+  "RETUR_QTY_EXCEEDS": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "jumlah",
+      "retur"
+    ],
+    "id": {
+      "pesan": "Jumlah barang retur {retur} melebihi jumlah pada faktur asal ({jumlah}).",
+      "saran": null
+    },
+    "en": {
+      "pesan": "Returned quantity {retur} exceeds the original invoice quantity ({jumlah}).",
+      "saran": null
+    }
+  },
+  "RETUR_OTHER_BASE_MISMATCH": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "dpp",
+      "dppLain"
+    ],
+    "id": {
+      "pesan": "Flag DPP lain = tidak, tetapi DPP lain retur {dppLain} berbeda dari DPP retur {dpp}.",
+      "saran": "Isi sama dengan DPP retur, atau set pakaiDppLain: true jika faktur asal memakai DPP nilai lain."
+    },
+    "en": {
+      "pesan": "Other-tax-base flag is off, but return other tax base {dppLain} differs from return tax base {dpp}.",
+      "saran": "Use the same value as the tax base, or set pakaiDppLain: true."
+    }
+  },
+  "RETUR_DPP_MISMATCH": {
+    "tingkat": [
+      "warning"
+    ],
+    "params": [
+      "harap",
+      "nilai"
+    ],
+    "id": {
+      "pesan": "DPP retur {nilai} tidak sama dengan jumlah retur x harga - diskon = {harap}.",
+      "saran": "Template DJP menghitung jumlah retur x harga tanpa diskon. Pastikan nilai sesuai faktur asal."
+    },
+    "en": {
+      "pesan": "Return tax base {nilai} differs from returned quantity x price - discount = {harap}.",
+      "saran": null
+    }
+  },
+  "RETUR_TOTAL_MISMATCH": {
+    "tingkat": [
+      "warning"
+    ],
+    "params": [
+      "harap",
+      "label",
+      "nilai"
+    ],
+    "id": {
+      "pesan": "{label} dokumen {nilai} tidak sama dengan jumlah semua item ({harap}).",
+      "saran": null
+    },
+    "en": {
+      "pesan": "Document {label} {nilai} differs from the sum of all items ({harap}).",
+      "saran": null
+    }
+  },
+  "RETUR_FOOTER_MISMATCH": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "elemen",
+      "harap",
+      "nilai"
+    ],
+    "id": {
+      "pesan": "<{elemen}> {nilai} tidak sama dengan nilai pada TransactionDocumentData ({harap}).",
+      "saran": "Total di FooterRow harus diisi sama dengan nilai dokumen."
+    },
+    "en": {
+      "pesan": "<{elemen}> {nilai} differs from TransactionDocumentData ({harap}).",
+      "saran": null
+    }
+  },
+  "RETUR_BOOL_FORMAT": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "ReturnOtherTaxBaseCheck harus true atau false, ditemukan \"{nilai}\".",
+      "saran": null
+    },
+    "en": {
+      "pesan": "ReturnOtherTaxBaseCheck must be true or false, found \"{nilai}\".",
+      "saran": null
+    }
+  },
+  "RETUR_DATE_FORMAT": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "ReturnDate \"{nilai}\" harus berformat DD-MM-YYYY di XML retur, mis. \"27-02-2025\".",
+      "saran": null
+    },
+    "en": {
+      "pesan": "ReturnDate \"{nilai}\" must be DD-MM-YYYY in return XML, e.g. \"27-02-2025\".",
+      "saran": null
+    }
+  },
+  "XML_PARSE": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "detail",
+      "posisi"
+    ],
+    "id": {
+      "pesan": "XML tidak dapat dibaca (posisi {posisi}): {detail}.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "XML cannot be read (position {posisi}): {detail}.",
+      "saran": null
+    }
+  },
+  "XML_ROOT": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "harap",
+      "nama"
+    ],
+    "id": {
+      "pesan": "Elemen akar harus <{harap}>, ditemukan <{nama}>.",
+      "saran": "Dokumen ini bukan jenis yang diperiksa. Faktur keluaran, retur masukan, dan bukti potong punya akar yang berbeda."
+    },
+    "en": {
+      "pesan": "Root element must be <{harap}>, found <{nama}>.",
+      "saran": "This is not the document type being checked. Output invoices, input returns and withholding slips have different roots."
+    }
+  },
+  "XML_ELEMENT_MISSING": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "lokasi",
+      "nama"
+    ],
+    "id": {
+      "pesan": "{lokasi}: elemen <{nama}> tidak ada.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "{lokasi}: element <{nama}> is missing.",
+      "saran": null
+    }
+  },
+  "XML_ELEMENT_UNKNOWN": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "lokasi",
+      "nama"
+    ],
+    "id": {
+      "pesan": "{lokasi}: elemen <{nama}> tidak dikenal.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "{lokasi}: unknown element <{nama}>.",
+      "saran": null
+    }
+  },
+  "XML_ELEMENT_ORDER": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "lokasi",
+      "urutan"
+    ],
+    "id": {
+      "pesan": "{lokasi}: urutan elemen tidak sesuai skema.",
+      "saran": "Urutan yang benar: {urutan}."
+    },
+    "en": {
+      "pesan": "{lokasi}: element order does not match the schema.",
+      "saran": "Correct order: {urutan}."
+    }
+  },
+  "XML_SELLER_MISMATCH": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "faktur"
+    ],
+    "id": {
+      "pesan": "SellerIDTKU faktur ke-{faktur} berbeda dari faktur pertama.",
+      "saran": "Satu file impor hanya untuk satu penjual (satu TIN)."
+    },
+    "en": {
+      "pesan": "SellerIDTKU of invoice #{faktur} differs from the first invoice.",
+      "saran": "One import file is for one seller (one TIN)."
+    }
+  }
+}

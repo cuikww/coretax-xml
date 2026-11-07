@@ -22,7 +22,7 @@ Node.js 20 atau lebih baru.
 ## Aturan
 
 - Setiap aturan validasi punya test lolos dan gagal.
-- Setiap kode error baru punya pesan Bahasa Indonesia dan Inggris di `packages/core/src/messages.ts`.
+- Setiap kode error baru punya pesan Bahasa Indonesia dan Inggris di `packages/core/src/messages.ts`, lalu jalankan `pnpm katalog` dan commit `errors/katalog.json` (CI gagal jika katalog basi).
 - Skema yang sudah dirilis tidak diubah. Template DJP baru = file skema baru (`schemas/faktur-keluaran/vYYYY-MM.ts`).
 - Core tetap tanpa dependensi runtime dan tanpa akses jaringan.
 - Catat perubahan dengan `pnpm changeset`. Skema baru = minor, perbaikan aturan = patch.

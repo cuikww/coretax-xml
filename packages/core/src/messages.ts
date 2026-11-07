@@ -304,6 +304,34 @@ export function teks(bahasa: Bahasa, kode: KodeError, p: Param): { pesan: string
   return saran ? { pesan: t.pesan(p), saran } : { pesan: t.pesan(p) }
 }
 
+export interface EntriKatalog {
+  /** Parameter yang diisi ke template, mis. ["label", "nilai"]. `label` selalu diisi dari nama field. */
+  params: string[]
+  id: { pesan: string; saran: string | null }
+  en: { pesan: string; saran: string | null }
+}
+
+/**
+ * Katalog kode error sebagai data: template pesan dengan {parameter}, untuk dokumentasi dan port ke bahasa lain
+ * (errors/katalog.json). Template dibuat dengan memanggil fungsi pesan memakai parameter pengganti.
+ */
+export function katalogError(): Record<string, EntriKatalog> {
+  const hasil: Record<string, EntriKatalog> = {}
+  for (const kode of Object.keys(id) as KodeError[]) {
+    const dipakai = new Set<string>()
+    const p = new Proxy({} as Param, {
+      get: (_, kunci) => {
+        dipakai.add(String(kunci))
+        return `{${String(kunci)}}`
+      },
+    })
+    const bentuk = (k: Katalog) => ({ pesan: k[kode].pesan(p), saran: k[kode].saran?.(p) ?? null })
+    const entri = { id: bentuk(id), en: bentuk(en) }
+    hasil[kode] = { params: [...dipakai].sort(), ...entri }
+  }
+  return hasil
+}
+
 /** Label field yang dikenal pengguna, per bahasa. */
 const label: Record<Bahasa, Record<string, string>> = {
   id: {

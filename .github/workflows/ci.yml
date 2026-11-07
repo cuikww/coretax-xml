@@ -22,6 +22,8 @@ jobs:
       - run: pnpm test
       # Paket hasil pack harus bisa dipasang dan dipakai (ESM dan CJS)
       - run: node scripts/smoke-paket.mjs
+      # Katalog kode error (errors/katalog.json) harus selaras dengan pesan di kode; jika gagal: pnpm katalog
+      - run: node scripts/buat-katalog-error.mjs && git diff --exit-code errors/
       # Pemantau halaman template DJP (tools/watch-djp)
       - run: node --test tools/watch-djp/lib.test.mjs
 

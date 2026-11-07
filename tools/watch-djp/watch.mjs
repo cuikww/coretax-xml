@@ -14,9 +14,11 @@ const { values: a } = parseArgs({
   },
 })
 const UA = 'Mozilla/5.0 (compatible; coretax-xml-pemantau)'
+// biome-ignore lint/suspicious/noUndeclaredEnvVars: skrip mandiri di luar tugas turbo; variabel disediakan GitHub Actions
+const fileKeluaranGh = process.env.GITHUB_OUTPUT
 const keluaran = (k, v) => {
   console.log(`${k}=${v}`)
-  if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, `${k}=${v}\n`)
+  if (fileKeluaranGh) appendFileSync(fileKeluaranGh, `${k}=${v}\n`)
 }
 
 async function ambil(url, percobaan = 3) {

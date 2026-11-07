@@ -165,3 +165,13 @@ PRD menyatakan tidak ada jenis dokumen baru sebelum Gerbang 1 (impor Coretax nya
 **Path field mengikuti bahasa pesan.** Dengan `bahasa: 'en'`, `MasalahValidasi.field` berbentuk `buyer.name` dan `items[0].price`; dengan `id` tetap `pembeli.nama` dan `item[0].harga`. Label di pesan selalu diambil dari path Indonesia, lalu path hasilnya diterjemahkan. `bahasa` mengendalikan pesan dan path sekaligus; belum ada opsi terpisah untuk path saja.
 
 **Cakupan.** Hanya faktur pajak keluaran, sesuai PRD F1.1. Retur masukan memakai nama Indonesia saja karena belum ada permintaan; menambahkannya pola yang sama (satu kamus tambahan). `check()` membaca XML, bukan objek, jadi tidak terpengaruh. Nilai `type` item adalah `goods`/`service` (padanan `barang`/`jasa`).
+
+## 2026-11-07: Katalog kode error (errors/katalog.json)
+
+**Isi.** 50 kode error dengan template pesan dan saran dalam Indonesia dan Inggris (`{parameter}` sebagai pengisi), daftar parameter yang dipakai, dan tingkat (`error` atau `warning`). Tujuannya dokumentasi dan sumber tunggal untuk port ke bahasa lain (PHP setelah v1.0), supaya pesan dan kode tidak dikarang ulang.
+
+**Cara dibuat.** Pesan di kode tetap fungsi TypeScript. `katalogError()` (di core, diekspor) memanggil tiap fungsi dengan objek `Proxy` yang mencatat parameter yang dibaca dan mengembalikan `{nama}`, sehingga template tidak perlu ditulis dua kali. `scripts/buat-katalog-error.mjs` menambahkan tingkat dengan membaca sumber (`k.tambah('warning', 'KODE', ...)`), lalu menulis `errors/katalog.json`; `pnpm katalog` menjalankannya. Empat kode yang dipilih lewat variabel (`NPWP_FORMAT`, `NITKU_FORMAT`, `NUMBER_FORMAT`, `NUMBER_DECIMALS`) didaftarkan eksplisit di skrip; skrip gagal bila ada kode yang tidak pernah dilaporkan, yang membuat kode mati ketahuan.
+
+**Dijaga agar tidak basi.** Test `katalog.test.ts` membandingkan file dengan `katalogError()` dan memeriksa tiap kode punya tingkat dan pesan dua bahasa; CI menjalankan skrip lalu `git diff --exit-code errors/`. Menambah kode error berarti menjalankan `pnpm katalog` dan meng-commit hasilnya (tercatat di CONTRIBUTING.md).
+
+**Batas.** Template hanya mencakup teks yang dihasilkan fungsi pesan dengan parameter apa adanya. Pesan yang kelak memakai logika (percabangan, format angka di dalam fungsi pesan) akan tertangkap sebagai satu bentuk saja; format angka sudah dilakukan sebelum pesan dibuat (parameter `{nilai}` sudah berupa teks Rupiah), jadi port tidak perlu mengulang logika itu.
