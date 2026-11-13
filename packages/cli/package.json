@@ -1,6 +1,6 @@
 {
   "name": "@coretax-xml/cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "CLI coretax-xml: ubah Excel/CSV menjadi XML impor Coretax DJP, dan periksa XML sebelum diunggah",
   "license": "MIT",
   "type": "module",
