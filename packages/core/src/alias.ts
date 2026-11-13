@@ -1,3 +1,4 @@
+import type { BatchReturFakturMasukan } from './retur-masukan.js'
 import type { Angka, BatchFakturKeluaran, FakturKeluaran, JenisId, KodeTransaksi, Penjual } from './types.js'
 
 /**
@@ -169,4 +170,100 @@ export function fieldInggris(path: string): string {
     return path
   }
   return KE_EN.faktur[path] ?? KE_EN.batch[path] ?? path
+}
+
+// --- Retur faktur pajak masukan ---
+
+export interface ItemReturEn {
+  type: 'goods' | 'service'
+  name: string
+  code?: string
+  /** Jumlah pada faktur asal. */
+  quantity: Angka
+  unit: string
+  /** Harga satuan pada faktur asal. */
+  price: Angka
+  luxuryTaxRate?: Angka
+  returnQuantity: Angka
+  returnDiscount?: Angka
+  taxBase?: Angka
+  useOtherTaxBase?: boolean
+  otherTaxBase?: Angka
+  vat: Angka
+  luxuryTax?: Angka
+}
+
+export interface ReturFakturMasukanEn {
+  invoiceNumber: string
+  sellerTin: string
+  /** YYYY-MM-DD */
+  date: string
+  taxBase?: Angka
+  otherTaxBase?: Angka
+  vat?: Angka
+  luxuryTax?: Angka
+  items: ItemReturEn[]
+}
+
+export interface BatchReturFakturMasukanEn {
+  buyer: { tin: string }
+  returns: ReturFakturMasukanEn[]
+}
+
+const BATCH_R = { buyer: 'pembeli', returns: 'retur' }
+const PEMBELI_R = { tin: 'npwp' }
+const RETUR = {
+  invoiceNumber: 'nomorFaktur',
+  sellerTin: 'npwpPenjual',
+  date: 'tanggal',
+  taxBase: 'dpp',
+  otherTaxBase: 'dppLain',
+  vat: 'ppn',
+  luxuryTax: 'ppnbm',
+  items: 'item',
+}
+const ITEM_R = {
+  type: 'jenis',
+  name: 'nama',
+  code: 'kode',
+  quantity: 'jumlah',
+  unit: 'satuan',
+  price: 'harga',
+  luxuryTaxRate: 'tarifPpnbm',
+  returnQuantity: 'jumlahRetur',
+  returnDiscount: 'diskonRetur',
+  taxBase: 'dpp',
+  useOtherTaxBase: 'pakaiDppLain',
+  otherTaxBase: 'dppLain',
+  vat: 'ppn',
+  luxuryTax: 'ppnbm',
+}
+
+export type MasukanBatchRetur = BatchReturFakturMasukan | BatchReturFakturMasukanEn
+
+function normRetur(retur: unknown): unknown {
+  const m = peta(retur, RETUR)
+  if (!adaObjek(m)) return m
+  return { ...m, item: Array.isArray(m.item) ? m.item.map((i) => normItem(peta(i, ITEM_R))) : m.item }
+}
+
+/** Seperti `normalisasi`, untuk batch retur masukan (nama Inggris atau campuran). */
+export function normalisasiRetur(batch: unknown): BatchReturFakturMasukan {
+  const b = peta(batch, BATCH_R)
+  if (!adaObjek(b)) return b as BatchReturFakturMasukan
+  return {
+    ...b,
+    pembeli: peta(b.pembeli, PEMBELI_R),
+    retur: Array.isArray(b.retur) ? b.retur.map(normRetur) : b.retur,
+  } as BatchReturFakturMasukan
+}
+
+const KE_EN_R = { batch: balik(BATCH_R), pembeli: balik(PEMBELI_R), retur: balik(RETUR), item: balik(ITEM_R) }
+
+/** Path field retur Indonesia ke Inggris: `item[0].jumlahRetur` -> `items[0].returnQuantity`. */
+export function fieldInggrisRetur(path: string): string {
+  const item = /^item\[(\d+)\]\.(.+)$/.exec(path)
+  if (item) return `items[${item[1]}].${KE_EN_R.item[item[2] as string] ?? item[2]}`
+  if (path.startsWith('pembeli.')) return `buyer.${KE_EN_R.pembeli[path.slice(8)] ?? path.slice(8)}`
+  return KE_EN_R.retur[path] ?? KE_EN_R.batch[path] ?? path
 }

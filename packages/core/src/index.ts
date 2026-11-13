@@ -16,10 +16,13 @@ import { check } from './xml-baca.js'
 export type {
   BatchFakturKeluaranCampur,
   BatchFakturKeluaranEn,
+  BatchReturFakturMasukanEn,
   FakturKeluaranEn,
   ItemFakturEn,
+  ItemReturEn,
   PembeliEn,
   PenjualEn,
+  ReturFakturMasukanEn,
 } from './alias.js'
 export type {
   Analisis,

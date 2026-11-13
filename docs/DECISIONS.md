@@ -189,3 +189,7 @@ Pesan error retur kini memakai istilah retur untuk field yang namanya sama denga
 ## 2026-11-13: buildStream dan --maks-per-file untuk retur masukan
 
 `returMasukan.buildStream({ pembeli, retur }, { maksPerFile, awalanNama })` memakai pemotong yang sama dengan faktur keluaran (`potong()` di `stream.ts`); awalan default `retur-masukan`. `analisis()` retur menerima `offset` internal, jadi nomor retur di error tetap global. CLI: `convert --maks-per-file N` kini berlaku untuk retur juga (sebelumnya ditolak).
+
+## 2026-11-13: nama field Inggris untuk retur masukan
+
+`returMasukan.build/validate/analisis` menerima `{ buyer: { tin }, returns: [{ invoiceNumber, sellerTin, date, taxBase, otherTaxBase, vat, luxuryTax, items: [{ type, name, code, quantity, unit, price, luxuryTaxRate, returnQuantity, returnDiscount, taxBase, useOtherTaxBase, otherTaxBase, vat, luxuryTax }] }] }` (tipe `BatchReturFakturMasukanEn`), atau campuran; pola sama dengan faktur keluaran (kamus di `alias.ts`). Dengan `bahasa: 'en'`, path field di hasil ikut Inggris (`items[1].returnQuantity`). `buildStream` retur masih menerima nama Indonesia saja.

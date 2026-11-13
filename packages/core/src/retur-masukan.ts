@@ -1,3 +1,4 @@
+import { fieldInggrisRetur, type MasukanBatchRetur, normalisasiRetur } from './alias.js'
 import {
   bacaAngka,
   CoretaxValidationError,
@@ -266,8 +267,15 @@ function analisisRetur(k: Pengumpul, r: ReturFakturMasukan, nr: number): ReturTe
 }
 
 /** `offset` (internal, dipakai buildStream): jumlah retur sebelumnya, supaya nomor retur di error tetap global. */
-export function analisis(batch: BatchReturFakturMasukan, opsi: OpsiValidasi = {}, offset = 0): AnalisisRetur {
-  const k = new Pengumpul(opsi.bahasa ?? 'id', opsi.samarkan ?? true, undefined, LABEL_RETUR)
+export function analisis(masukan: MasukanBatchRetur, opsi: OpsiValidasi = {}, offset = 0): AnalisisRetur {
+  const batch = normalisasiRetur(masukan)
+  const bahasa = opsi.bahasa ?? 'id'
+  const k = new Pengumpul(
+    bahasa,
+    opsi.samarkan ?? true,
+    bahasa === 'en' ? fieldInggrisRetur : undefined,
+    LABEL_RETUR,
+  )
   const idSkema = `retur-masukan@${meta.id}`
   if (opsi.schema !== undefined && opsi.schema !== 'auto' && opsi.schema !== meta.id) {
     k.tambah(
@@ -307,7 +315,7 @@ export function analisis(batch: BatchReturFakturMasukan, opsi: OpsiValidasi = {}
   }
 }
 
-export function validate(batch: BatchReturFakturMasukan, opsi: OpsiValidasi = {}): HasilValidasi {
+export function validate(batch: MasukanBatchRetur, opsi: OpsiValidasi = {}): HasilValidasi {
   return analisis(batch, opsi).hasil
 }
 
@@ -374,7 +382,7 @@ export function tulisXmlRetur(tin: string, retur: ReturTerhitung[]): string {
 }
 
 /** Buat XML retur faktur pajak masukan. Melempar CoretaxValidationError jika data tidak valid. */
-export function build(batch: BatchReturFakturMasukan, opsi: OpsiValidasi = {}): string {
+export function build(batch: MasukanBatchRetur, opsi: OpsiValidasi = {}): string {
   const a = analisis(batch, opsi)
   if (!a.hasil.valid) throw new CoretaxValidationError(a.hasil)
   return tulisXmlRetur(a.tin, a.retur)

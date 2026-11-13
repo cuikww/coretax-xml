@@ -210,3 +210,38 @@ describe('retur faktur masukan: check() pada XML rusak', () => {
     expect(fakturKeluaran.check(resmi).errors.map((e) => e.code)).toEqual(['XML_ROOT'])
   })
 })
+
+describe('nama field Inggris (retur)', () => {
+  const en = {
+    buyer: { tin: '1091031210912281' },
+    returns: [
+      {
+        invoiceNumber: '04002500000348920',
+        sellerTin: '1091031210912281',
+        date: '2025-02-27',
+        items: [1, 2].map(() => ({
+          type: 'goods' as const,
+          name: 'Barang',
+          code: '000000',
+          quantity: 1,
+          unit: 'UM.0033',
+          price: 10000,
+          returnQuantity: 1,
+          vat: 1100,
+        })),
+      },
+    ],
+  }
+
+  it('menghasilkan XML yang sama dengan nama Indonesia', () => {
+    expect(returMasukan.build(en)).toBe(returMasukan.build(padanan()))
+  })
+
+  it('path field error ikut bahasa en', () => {
+    const rusak = structuredClone(en)
+    const item = rusak.returns[0]?.items[1]
+    if (item) item.returnQuantity = 5
+    const h = returMasukan.validate(rusak, { bahasa: 'en' })
+    expect(h.errors.map((e) => e.field)).toContain('items[1].returnQuantity')
+  })
+})

@@ -119,7 +119,7 @@ fakturKeluaran.build({
 })
 ```
 
-Dengan `bahasa: 'en'`, path field di hasil validasi juga berbahasa Inggris (`buyer.name`, `items[0].price`). Nama padanannya: `pembeli`/`buyer`, `item`/`items`, `npwp`/`tin`, `nitku`/`idtku`, `nama`/`name`, `alamat`/`address`, `harga`/`price`, `jumlah`/`quantity`, `dpp`/`taxBase`, `ppn`/`vat`, `jenis: 'barang'|'jasa'`/`type: 'goods'|'service'`, dan seterusnya (lihat tipe `BatchFakturKeluaranEn`). Retur masukan belum punya alias Inggris.
+Dengan `bahasa: 'en'`, path field di hasil validasi juga berbahasa Inggris (`buyer.name`, `items[0].price`). Nama padanannya: `pembeli`/`buyer`, `item`/`items`, `npwp`/`tin`, `nitku`/`idtku`, `nama`/`name`, `alamat`/`address`, `harga`/`price`, `jumlah`/`quantity`, `dpp`/`taxBase`, `ppn`/`vat`, `jenis: 'barang'|'jasa'`/`type: 'goods'|'service'`, dan seterusnya (lihat tipe `BatchFakturKeluaranEn`). Retur masukan juga punya alias Inggris (`buyer`, `returns`, `invoiceNumber`, `returnQuantity`, ...; lihat `BatchReturFakturMasukanEn`).
 
 ### Data besar: streaming dan pemecahan file
 
