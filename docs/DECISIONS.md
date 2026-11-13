@@ -154,7 +154,7 @@ PRD menyatakan tidak ada jenis dokumen baru sebelum Gerbang 1 (impor Coretax nya
 
 **Default 1000 bukan aturan DJP.** Batas faktur atau ukuran file per impor XML masih pertanyaan terbuka di PRD; panduan uji impor tidak memeriksanya. Sampai terjawab, pemakai yang punya ribuan faktur sebaiknya memecah sendiri ke angka yang terbukti diterima.
 
-**CLI.** `convert --maks-per-file N` memecah faktur keluaran menjadi `<nama>-0001.xml`, `-0002.xml`, ... bila jumlah faktur melebihi N; jika tidak, tetap satu file bernama biasa. Retur menolak opsi ini (retur belum punya `buildStream`). Di JSON laporan, `keluaran` sekarang daftar nama file (sebelumnya satu string; belum ada rilis).
+**CLI.** `convert --maks-per-file N` memecah faktur keluaran menjadi `<nama>-0001.xml`, `-0002.xml`, ... bila jumlah faktur melebihi N; jika tidak, tetap satu file bernama biasa. Sejak 2026-11-13 retur juga mendukungnya. Di JSON laporan, `keluaran` sekarang daftar nama file (sebelumnya satu string; belum ada rilis).
 
 **Belum.** Pembacaan Excel/CSV di CLI tetap memuat seluruh berkas ke memori; streaming sungguhan dari sumber besar baru ada di API library.
 
@@ -185,3 +185,7 @@ Pesan error retur kini memakai istilah retur untuk field yang namanya sama denga
 ## 2026-11-07: CSV untuk retur masukan
 
 `coretax-xml template retur-masukan` mencetak CSV dengan kolom `no_retur, nomor_faktur, npwp_penjual, tanggal, dpp_total, dpp_lain_total, ppn_total, ppnbm_total, jenis_item, kode_barang, nama_barang, satuan, jumlah_faktur, harga, tarif_ppnbm, jumlah_retur, diskon_retur, dpp, pakai_dpp_lain, dpp_lain, ppn, ppnbm, npwp_pembeli`. Satu baris = satu barang; baris dengan `no_retur` sama menjadi satu retur. `convert file.csv` mengenali CSV retur dari judul kolom `no_retur` (CSV faktur memakai `no_faktur`), jadi tidak ada opsi jenis dokumen. Default `--hitung otomatis` (DPP dan total dokumen dihitung), kecuali `ppn` yang tetap wajib diisi per baris: tarif PPN tidak ada di template retur DJP. `npwp_pembeli` (pelapor retur, ditulis ke `TIN`) harus sama di semua baris, karena satu file impor hanya untuk satu pelapor. Nomor baris error menunjuk baris CSV seperti pada faktur.
+
+## 2026-11-13: buildStream dan --maks-per-file untuk retur masukan
+
+`returMasukan.buildStream({ pembeli, retur }, { maksPerFile, awalanNama })` memakai pemotong yang sama dengan faktur keluaran (`potong()` di `stream.ts`); awalan default `retur-masukan`. `analisis()` retur menerima `offset` internal, jadi nomor retur di error tetap global. CLI: `convert --maks-per-file N` kini berlaku untuk retur juga (sebelumnya ditolak).

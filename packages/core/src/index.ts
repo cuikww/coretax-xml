@@ -10,7 +10,7 @@ import * as retur from './retur-masukan.js'
 import * as skema2025_09 from './schemas/faktur-keluaran/v2025-09.js'
 import { daftarSkema } from './schemas/index.js'
 import * as skemaRetur from './schemas/retur-masukan/v2025-03.js'
-import { buildStream } from './stream.js'
+import { buildStream, buildStreamRetur } from './stream.js'
 import { check } from './xml-baca.js'
 
 export type {
@@ -29,7 +29,7 @@ export type {
 export { CoretaxValidationError, samarkan } from './faktur-keluaran.js'
 export { formatRupiah, formatXml, keSen } from './money.js'
 export type { MetaSkema } from './schemas/faktur-keluaran/v2025-09.js'
-export type { BerkasXml, OpsiStream, SumberFaktur } from './stream.js'
+export type { BerkasXml, OpsiStream, SumberFaktur, SumberRetur } from './stream.js'
 export type * from './types.js'
 export type { EntriKatalog }
 export { katalogError }
@@ -65,6 +65,8 @@ export type { MetaSkemaRetur } from './schemas/retur-masukan/v2025-03.js'
 export const returMasukan = {
   validate: retur.validate,
   build: retur.build,
+  /** Buat XML per potongan (maksPerFile retur); lihat OpsiStream. */
+  buildStream: buildStreamRetur,
   analisis: retur.analisis,
   check: retur.check,
   schemas: () => [skemaRetur.meta],

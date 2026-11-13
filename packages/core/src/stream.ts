@@ -1,6 +1,12 @@
 import type { FakturKeluaranEn, PenjualEn } from './alias.js'
 import { analisis, CoretaxValidationError } from './faktur-keluaran.js'
-import type { FakturKeluaran, MasalahValidasi, OpsiValidasi, Penjual } from './types.js'
+import {
+  analisis as analisisRetur,
+  type BatchReturFakturMasukan,
+  type ReturFakturMasukan,
+  tulisXmlRetur,
+} from './retur-masukan.js'
+import type { FakturKeluaran, HasilValidasi, MasalahValidasi, OpsiValidasi, Penjual } from './types.js'
 import { tulisXml } from './xml.js'
 
 export interface SumberFaktur {
@@ -23,34 +29,35 @@ export interface BerkasXml {
   /** Nomor file, mulai dari 1. */
   nomor: number
   jumlahFaktur: number
-  /** Nomor faktur pertama di file ini dalam seluruh sumber, mulai dari 1. */
+  /** Nomor faktur (atau retur) pertama di file ini dalam seluruh sumber, mulai dari 1. */
   nomorFakturAwal: number
   peringatan: MasalahValidasi[]
 }
 
-/**
- * Buat XML faktur pajak keluaran dalam potongan, tanpa memuat seluruh sumber ke memori. Setiap file divalidasi
- * dan dihitung sendiri; nomor faktur di error tetap nomor dalam seluruh sumber. Melempar CoretaxValidationError
- * saat file yang bermasalah tiba: file sebelumnya sudah diserahkan ke pemanggil.
- *
- * Batas jumlah faktur per impor di Coretax belum diketahui (pertanyaan terbuka di docs/PRD.md), jadi default
- * 1000 hanyalah angka aman, bukan aturan DJP.
- */
-export async function* buildStream(sumber: SumberFaktur, opsi: OpsiStream = {}): AsyncGenerator<BerkasXml> {
-  const maks = opsi.maksPerFile ?? 1000
+export interface SumberRetur {
+  pembeli: BatchReturFakturMasukan['pembeli']
+  retur: Iterable<ReturFakturMasukan> | AsyncIterable<ReturFakturMasukan>
+}
+
+/** Potong sumber menjadi file @ maks butir; `buat(buf, offset)` memvalidasi dan menulis satu file. */
+async function* potong<T>(
+  butir: Iterable<T> | AsyncIterable<T>,
+  maks: number,
+  awalan: string,
+  buat: (buf: T[], offset: number) => { hasil: HasilValidasi; isi: () => string },
+): AsyncGenerator<BerkasXml> {
   if (!Number.isInteger(maks) || maks < 1) throw new RangeError('maksPerFile harus bilangan bulat >= 1')
-  const awalan = opsi.awalanNama ?? 'faktur-keluaran'
-  let buf: (FakturKeluaran | FakturKeluaranEn)[] = []
+  let buf: T[] = []
   let nomor = 0
   let terkirim = 0
 
   const keluarkan = (): BerkasXml => {
-    const a = analisis({ penjual: sumber.penjual, faktur: buf }, opsi, terkirim)
+    const a = buat(buf, terkirim)
     if (!a.hasil.valid) throw new CoretaxValidationError(a.hasil)
     nomor++
     const berkas: BerkasXml = {
       nama: `${awalan}-${String(nomor).padStart(4, '0')}.xml`,
-      isi: tulisXml(a.tin, a.faktur),
+      isi: a.isi(),
       nomor,
       jumlahFaktur: buf.length,
       nomorFakturAwal: terkirim + 1,
@@ -61,10 +68,38 @@ export async function* buildStream(sumber: SumberFaktur, opsi: OpsiStream = {}):
     return berkas
   }
 
-  for await (const f of sumber.faktur) {
+  for await (const f of butir) {
     buf.push(f)
     if (buf.length >= maks) yield keluarkan()
   }
-  // Sisa, atau sumber kosong (nomor = 0): analisis melaporkan FAKTUR_EMPTY dan melempar
+  // Sisa, atau sumber kosong (nomor = 0): analisis melaporkan *_EMPTY dan melempar
   if (buf.length > 0 || nomor === 0) yield keluarkan()
+}
+
+/**
+ * Buat XML faktur pajak keluaran dalam potongan, tanpa memuat seluruh sumber ke memori. Setiap file divalidasi
+ * dan dihitung sendiri; nomor faktur di error tetap nomor dalam seluruh sumber. Melempar CoretaxValidationError
+ * saat file yang bermasalah tiba: file sebelumnya sudah diserahkan ke pemanggil.
+ *
+ * Batas jumlah faktur per impor di Coretax belum diketahui (pertanyaan terbuka di docs/PRD.md), jadi default
+ * 1000 hanyalah angka aman, bukan aturan DJP.
+ */
+export function buildStream(sumber: SumberFaktur, opsi: OpsiStream = {}): AsyncGenerator<BerkasXml> {
+  return potong(
+    sumber.faktur,
+    opsi.maksPerFile ?? 1000,
+    opsi.awalanNama ?? 'faktur-keluaran',
+    (buf, offset) => {
+      const a = analisis({ penjual: sumber.penjual, faktur: buf }, opsi, offset)
+      return { hasil: a.hasil, isi: () => tulisXml(a.tin, a.faktur) }
+    },
+  )
+}
+
+/** Seperti buildStream, untuk retur faktur pajak masukan. Awalan nama default "retur-masukan". */
+export function buildStreamRetur(sumber: SumberRetur, opsi: OpsiStream = {}): AsyncGenerator<BerkasXml> {
+  return potong(sumber.retur, opsi.maksPerFile ?? 1000, opsi.awalanNama ?? 'retur-masukan', (buf, offset) => {
+    const a = analisisRetur({ pembeli: sumber.pembeli, retur: buf }, opsi, offset)
+    return { hasil: a.hasil, isi: () => tulisXmlRetur(a.tin, a.retur) }
+  })
 }

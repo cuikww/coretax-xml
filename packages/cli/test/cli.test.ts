@@ -189,10 +189,22 @@ describe('convert --maks-per-file', () => {
     const j = JSON.parse((await cli('convert', f, '--maks-per-file', '10', '--format', 'json')).out)
     expect(j[0].keluaran).toEqual([f.replace('.xlsx', '.xml')])
     expect((await cli('convert', f, '--maks-per-file', '0')).err).toContain('bilangan bulat')
-    const r = tulis(dir, 'r.xlsx', templateRetur([barisRetur(1)], [barisDetailRetur(1)]))
-    expect((await cli('convert', r, '--maks-per-file', '2')).err).toContain(
-      'hanya untuk faktur pajak keluaran',
+  })
+
+  it('retur masukan ikut dipecah; tiap file lolos check', async () => {
+    const dir = folderSementara()
+    const f = tulis(
+      dir,
+      'r.xlsx',
+      templateRetur(
+        [1, 2, 3].map((n) => barisRetur(n)),
+        [1, 2, 3].map((n) => barisDetailRetur(n)),
+      ),
     )
+    const r = await cli('convert', f, '--maks-per-file', '2')
+    expect(r.kode).toBe(0)
+    expect(existsSync(f.replace('.xlsx', '-0002.xml'))).toBe(true)
+    expect((await cli('check', dir)).out).toContain('2 dari 2 berkas lolos.')
   })
 })
 

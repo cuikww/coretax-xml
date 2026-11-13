@@ -32,7 +32,7 @@ Bukan produk DJP dan bukan nasihat pajak. Berjalan lokal, tanpa internet.
 
 Pemakaian:
   coretax-xml convert <file.xlsx|file.csv> [-o hasil.xml] [--hitung strict|otomatis] [--format teks|json|html]
-                      [--maks-per-file N]   pecah faktur keluaran menjadi beberapa file @ N faktur (hasil-0001.xml, ...)
+                      [--maks-per-file N]   pecah faktur/retur menjadi beberapa file @ N faktur (hasil-0001.xml, ...)
       .xlsx = template Excel DJP: faktur pajak keluaran (sheet Faktur + DetailFaktur) atau retur faktur pajak
               masukan (sheet Retur + DetailRetur), dikenali otomatis; angka dibaca dari file
               (default --hitung strict: dicocokkan dengan hitungan library)
@@ -189,20 +189,23 @@ export async function jalankan(
         if (maks !== undefined && (!Number.isInteger(maks) || maks < 1)) {
           throw new SalahPakai('--maks-per-file harus bilangan bulat >= 1.')
         }
-        if (dibaca.dokumen === 'retur-masukan') {
-          if (maks !== undefined) throw new SalahPakai('--maks-per-file hanya untuk faktur pajak keluaran.')
+        const tunggal =
+          dibaca.dokumen === 'retur-masukan' ? dibaca.batch.retur.length : dibaca.batch.faktur.length
+        if (maks === undefined || tunggal <= maks) {
           laporan.keluaran = [`${dasarKeluaran}.xml`]
-          writeFileSync(laporan.keluaran[0] as string, returMasukan.build(dibaca.batch, opsi))
-        } else if (maks === undefined || dibaca.batch.faktur.length <= maks) {
-          laporan.keluaran = [`${dasarKeluaran}.xml`]
-          writeFileSync(laporan.keluaran[0] as string, fakturKeluaran.build(dibaca.batch, opsi))
+          writeFileSync(
+            laporan.keluaran[0] as string,
+            dibaca.dokumen === 'retur-masukan'
+              ? returMasukan.build(dibaca.batch, opsi)
+              : fakturKeluaran.build(dibaca.batch, opsi),
+          )
         } else {
           // Terlalu banyak untuk satu file: pecah menjadi <nama>-0001.xml, <nama>-0002.xml, ...
           laporan.keluaran = []
-          for await (const b of fakturKeluaran.buildStream(
-            { penjual: dibaca.batch.penjual, faktur: dibaca.batch.faktur },
-            { ...opsi, maksPerFile: maks, awalanNama: dasarKeluaran },
-          )) {
+          const o = { ...opsi, maksPerFile: maks, awalanNama: dasarKeluaran }
+          for await (const b of dibaca.dokumen === 'retur-masukan'
+            ? returMasukan.buildStream({ pembeli: dibaca.batch.pembeli, retur: dibaca.batch.retur }, o)
+            : fakturKeluaran.buildStream({ penjual: dibaca.batch.penjual, faktur: dibaca.batch.faktur }, o)) {
             writeFileSync(b.nama, b.isi)
             laporan.keluaran.push(b.nama)
           }

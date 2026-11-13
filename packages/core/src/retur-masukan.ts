@@ -265,7 +265,8 @@ function analisisRetur(k: Pengumpul, r: ReturFakturMasukan, nr: number): ReturTe
   }
 }
 
-export function analisis(batch: BatchReturFakturMasukan, opsi: OpsiValidasi = {}): AnalisisRetur {
+/** `offset` (internal, dipakai buildStream): jumlah retur sebelumnya, supaya nomor retur di error tetap global. */
+export function analisis(batch: BatchReturFakturMasukan, opsi: OpsiValidasi = {}, offset = 0): AnalisisRetur {
   const k = new Pengumpul(opsi.bahasa ?? 'id', opsi.samarkan ?? true, undefined, LABEL_RETUR)
   const idSkema = `retur-masukan@${meta.id}`
   if (opsi.schema !== undefined && opsi.schema !== 'auto' && opsi.schema !== meta.id) {
@@ -298,7 +299,7 @@ export function analisis(batch: BatchReturFakturMasukan, opsi: OpsiValidasi = {}
       element: 'InputReturnDataList',
     })
   }
-  const retur = daftar.map((r, i) => analisisRetur(k, r, i + 1))
+  const retur = daftar.map((r, i) => analisisRetur(k, r, offset + i + 1))
   return {
     hasil: { valid: k.errors.length === 0, schema: idSkema, errors: k.errors, warnings: k.warnings },
     tin,
@@ -315,7 +316,7 @@ const rupiah = (s: Sen) => formatXml(bulatRupiahGenap(s))
 
 const ddmmyyyy = (iso: string) => `${iso.slice(8, 10)}-${iso.slice(5, 7)}-${iso.slice(0, 4)}`
 
-function tulisXmlRetur(tin: string, retur: ReturTerhitung[]): string {
+export function tulisXmlRetur(tin: string, retur: ReturTerhitung[]): string {
   const t = (indent: string, nama: string, isi: string) =>
     isi === '' ? `${indent}<${nama}/>` : `${indent}<${nama}>${escapeXml(isi)}</${nama}>`
   const baris: string[] = [
