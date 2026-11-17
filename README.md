@@ -5,24 +5,30 @@
 
 **Buat dan validasi file XML impor Coretax DJP langsung dari data aplikasi**, tanpa template Excel dan aplikasi converter. Pesan error per faktur dan per field dalam Bahasa Indonesia.
 
-> **Status: v0.1 pra-rilis.** Urutan elemen dan tabel referensi sudah dicocokkan dengan paket resmi DJP (converter v1.6, template v1.6.1), tetapi **belum** dibandingkan dengan output converter resmi maupun diuji impor di Coretax sungguhan. DJP tidak menerbitkan file XSD. Jangan dipakai untuk produksi sebelum Gerbang 1 di [roadmap](docs/PRD.md#roadmap) lolos.
+> **Status: 0.2 pra-rilis.** Output sama dengan converter resmi DJP v1.6 untuk 10 kasus faktur dan 3 kasus retur (golden file), tetapi **belum** diuji impor di Coretax sungguhan. DJP tidak menerbitkan file XSD. Bandingkan dengan converter DJP sebelum dipakai untuk produksi; Gerbang 1 di [roadmap](docs/PRD.md#roadmap) belum lolos.
 
-*English: a TypeScript library that builds and validates Indonesian DJP Coretax XML import files (tax invoices) from application data, with field-level error messages. Indonesian-first; English messages via `bahasa: 'en'`.*
+*English: a TypeScript library that builds and validates Indonesian DJP Coretax XML import files (output tax invoices, input-invoice returns) from application data, with field-level error messages. Indonesian-first; English messages via `bahasa: 'en'`.*
 
-- **Faktur pajak keluaran** (root `TaxInvoiceBulk`). Retur dan bukti potong menyusul.
+- **Faktur pajak keluaran** (root `TaxInvoiceBulk`) dan **retur faktur pajak masukan** (root `InputTaxInvoiceReturn`). Bukti potong menyusul.
 - **Hitung otomatis**: DPP, DPP nilai lain 11/12, PPN, PPnBM, dengan aritmetika sen (`BigInt`), bukan floating point.
 - **Validasi lengkap sekaligus**: format, kode referensi, aturan antar-field, dan hitungan. Semua error dikembalikan, tidak berhenti di yang pertama.
 - **Skema berversi**: setiap versi template DJP menjadi skema sendiri yang tidak pernah diubah.
 - **Privasi**: tanpa panggilan jaringan (diuji di CI), NPWP/NIK disamarkan di pesan error.
 - **Tanpa dependensi runtime.** Node.js 20+, Bun, Deno, browser.
 
+## Untuk siapa
+
+- **Developer** aplikasi penjualan, kasir, e-commerce, ERP, atau akuntansi untuk PKP: tombol "Ekspor faktur Coretax" dari data pesanan, dengan validasi sebelum diunggah.
+- **Staf pajak dan konsultan**: CLI mengubah template Excel DJP atau CSV menjadi XML dan menunjuk baris Excel yang salah.
+
+Library tidak login atau mengunggah ke Coretax, tidak menerbitkan nomor seri faktur, dan tidak menentukan kode transaksi untuk Anda.
+
 ## Instalasi
 
 ```sh
-npm install coretax-xml
+npm install coretax-xml          # library
+npm install -g @coretax-xml/cli  # CLI untuk Excel/CSV
 ```
-
-Belum terbit di npm. Untuk mencoba sekarang, clone repo ini lalu jalankan `pnpm install && pnpm build`.
 
 ## Pemakaian
 
@@ -89,7 +95,7 @@ Untuk contoh di atas, library menghitung DPP 1.200.000, DPP nilai lain 1.100.000
 | `bahasa` | `'id'` atau `'en'` | `'id'` |
 | `samarkan` | Samarkan NPWP/NIK/NITKU di pesan error | `true` |
 
-### Aturan hitung (v0.1)
+### Aturan hitung
 
 | Nilai | Rumus |
 | --- | --- |
@@ -103,7 +109,7 @@ Aturan pembulatan resmi DJP masih perlu dikonfirmasi (lihat [pertanyaan terbuka]
 
 ### Nama field berbahasa Inggris
 
-Semua fungsi faktur keluaran (`validate`, `build`, `analisis`, `buildStream`) menerima nama Indonesia atau Inggris, bahkan dicampur per objek:
+Semua fungsi faktur keluaran dan retur masukan (`validate`, `build`, `analisis`, `buildStream`) menerima nama Indonesia atau Inggris, bahkan dicampur per objek:
 
 ```ts
 fakturKeluaran.build({
@@ -169,7 +175,7 @@ coretax-xml convert penjualan.xlsx   # template Excel DJP atau CSV -> XML
 coretax-xml check faktur.xml         # periksa XML (satu file atau folder)
 ```
 
-Error menunjuk baris Excel, bukan baris XML. Lihat [packages/cli](packages/cli/README.md). Biner mandiri tanpa Node.js bisa dibuat dengan workflow *Biner CLI* (manual).
+Error menunjuk baris Excel, bukan baris XML. Lihat [packages/cli](packages/cli/README.md). Instal dengan `npm install -g @coretax-xml/cli`. Biner mandiri tanpa Node.js bisa dibuat dengan workflow *Biner CLI* (manual).
 
 ## Dokumentasi
 

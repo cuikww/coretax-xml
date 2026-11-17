@@ -193,3 +193,11 @@ Pesan error retur kini memakai istilah retur untuk field yang namanya sama denga
 ## 2026-11-13: nama field Inggris untuk retur masukan
 
 `returMasukan.build/validate/analisis` menerima `{ buyer: { tin }, returns: [{ invoiceNumber, sellerTin, date, taxBase, otherTaxBase, vat, luxuryTax, items: [{ type, name, code, quantity, unit, price, luxuryTaxRate, returnQuantity, returnDiscount, taxBase, useOtherTaxBase, otherTaxBase, vat, luxuryTax }] }] }` (tipe `BatchReturFakturMasukanEn`), atau campuran; pola sama dengan faktur keluaran (kamus di `alias.ts`). Dengan `bahasa: 'en'`, path field di hasil ikut Inggris (`items[1].returnQuantity`). `buildStream` retur masih menerima nama Indonesia saja.
+
+## 2026-11-17: rilis npm 0.2.0 sebelum Gerbang 1
+
+Maintainer memutuskan menerbitkan `coretax-xml` dan `@coretax-xml/cli` 0.2.0 ke npm sebelum uji impor Coretax nyata, karena belum ada mitra PKP. Dasarnya: output sama dengan converter resmi DJP v1.6 (10 faktur, 3 retur, dan probe pembulatan). Konsekuensi: README di repo dan di tiap paket tetap menandai "pra-rilis, belum diuji impor", versi tetap 0.x, dan Gerbang 1 tetap terbuka. Rilis pertama dilakukan manual dari mesin maintainer (`pnpm publish`, tanpa provenance); rilis berikutnya lewat `release.yml` setelah Trusted Publisher aktif dan `RILIS_NPM=true`.
+
+`returMasukan.buildStream` sekarang juga menerima nama field Inggris (`{ pembeli: { tin }, retur: [{ invoiceNumber, ... }] }`).
+
+Sebelum publish, tarball dari `pnpm pack` diinstal di proyek kosong: `import` (ESM), `require` (CJS), dan `npx coretax-xml` (template, convert, check) berjalan; dependensi `workspace:*` di CLI menjadi `0.2.0`.

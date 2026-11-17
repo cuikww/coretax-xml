@@ -16,6 +16,7 @@ import { check } from './xml-baca.js'
 export type {
   BatchFakturKeluaranCampur,
   BatchFakturKeluaranEn,
+  BatchReturFakturMasukanCampur,
   BatchReturFakturMasukanEn,
   FakturKeluaranEn,
   ItemFakturEn,

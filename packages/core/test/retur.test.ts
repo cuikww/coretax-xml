@@ -244,4 +244,24 @@ describe('nama field Inggris (retur)', () => {
     const h = returMasukan.validate(rusak, { bahasa: 'en' })
     expect(h.errors.map((e) => e.field)).toContain('items[1].returnQuantity')
   })
+
+  it('buildStream menerima nama Inggris; nomor retur di error tetap global', async () => {
+    const r = en.returns[0]
+    if (!r) throw new Error('tidak ada retur')
+    const berkas: string[] = []
+    for await (const b of returMasukan.buildStream(
+      { pembeli: en.buyer, retur: [r, r, r] },
+      { maksPerFile: 2 },
+    )) {
+      berkas.push(b.nama)
+      expect(returMasukan.check(b.isi).errors).toEqual([])
+    }
+    expect(berkas).toEqual(['retur-masukan-0001.xml', 'retur-masukan-0002.xml'])
+    const rusak = { ...r, invoiceNumber: '123' }
+    const gen = returMasukan.buildStream({ pembeli: en.buyer, retur: [r, r, rusak] }, { maksPerFile: 2 })
+    await gen.next()
+    const err = await gen.next().catch((e) => e)
+    expect(err).toBeInstanceOf(CoretaxValidationError)
+    expect(err.hasil.errors[0].faktur).toBe(3)
+  })
 })

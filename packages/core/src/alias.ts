@@ -1,4 +1,4 @@
-import type { BatchReturFakturMasukan } from './retur-masukan.js'
+import type { BatchReturFakturMasukan, ReturFakturMasukan } from './retur-masukan.js'
 import type { Angka, BatchFakturKeluaran, FakturKeluaran, JenisId, KodeTransaksi, Penjual } from './types.js'
 
 /**
@@ -239,7 +239,16 @@ const ITEM_R = {
   luxuryTax: 'ppnbm',
 }
 
-export type MasukanBatchRetur = BatchReturFakturMasukan | BatchReturFakturMasukanEn
+/** Campuran: tiap objek boleh memakai nama Indonesia atau Inggris. */
+export interface BatchReturFakturMasukanCampur {
+  pembeli: { npwp: string } | { tin: string }
+  retur: (ReturFakturMasukan | ReturFakturMasukanEn)[]
+}
+
+export type MasukanBatchRetur =
+  | BatchReturFakturMasukan
+  | BatchReturFakturMasukanEn
+  | BatchReturFakturMasukanCampur
 
 function normRetur(retur: unknown): unknown {
   const m = peta(retur, RETUR)

@@ -6,7 +6,7 @@
 
 ## Status implementasi
 
-Per 6 November 2026: `coretax-xml` dan `@coretax-xml/cli` 0.1.0 (draf, belum terbit di npm). v0.2 dikerjakan sebelum Gerbang 1 lolos atas keputusan maintainer; rilis publik tetap menunggu Gerbang 1.
+Per 17 November 2026: `coretax-xml` dan `@coretax-xml/cli` 0.2.0 siap terbit di npm sebagai pra-rilis. v0.2 dan rilis npm dikerjakan sebelum Gerbang 1 lolos atas keputusan maintainer (lihat DECISIONS.md, 2026-11-17).
 
 | Fase | Status |
 | --- | --- |

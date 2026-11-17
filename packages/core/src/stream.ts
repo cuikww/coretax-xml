@@ -1,11 +1,6 @@
-import type { FakturKeluaranEn, PenjualEn } from './alias.js'
+import type { FakturKeluaranEn, PenjualEn, ReturFakturMasukanEn } from './alias.js'
 import { analisis, CoretaxValidationError } from './faktur-keluaran.js'
-import {
-  analisis as analisisRetur,
-  type BatchReturFakturMasukan,
-  type ReturFakturMasukan,
-  tulisXmlRetur,
-} from './retur-masukan.js'
+import { analisis as analisisRetur, type ReturFakturMasukan, tulisXmlRetur } from './retur-masukan.js'
 import type { FakturKeluaran, HasilValidasi, MasalahValidasi, OpsiValidasi, Penjual } from './types.js'
 import { tulisXml } from './xml.js'
 
@@ -35,8 +30,11 @@ export interface BerkasXml {
 }
 
 export interface SumberRetur {
-  pembeli: BatchReturFakturMasukan['pembeli']
-  retur: Iterable<ReturFakturMasukan> | AsyncIterable<ReturFakturMasukan>
+  /** Pelapor retur: `{ npwp }` atau `{ tin }`. */
+  pembeli: { npwp: string } | { tin: string }
+  retur:
+    | Iterable<ReturFakturMasukan | ReturFakturMasukanEn>
+    | AsyncIterable<ReturFakturMasukan | ReturFakturMasukanEn>
 }
 
 /** Potong sumber menjadi file @ maks butir; `buat(buf, offset)` memvalidasi dan menulis satu file. */
