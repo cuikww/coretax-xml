@@ -1,0 +1,12 @@
+{
+  "name": "contoh-express-coretax",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "@coretax-xml/core": "^0.2.0",
+    "express": "^5.1.0"
+  }
+}

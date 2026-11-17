@@ -208,6 +208,7 @@ Error menunjuk baris Excel, bukan baris XML. Lihat [packages/cli](packages/cli/R
 
 ## Dokumentasi
 
+- [Contoh integrasi Express](examples/express/README.md): endpoint yang mengembalikan XML faktur atau error 422 per field
 - [PRD](docs/PRD.md): tujuan, cakupan, arsitektur, stack, roadmap
 - [Keputusan teknis](docs/DECISIONS.md)
 - [Panduan uji impor Coretax](docs/UJI-IMPOR.md) (untuk mitra PKP atau konsultan pajak)
