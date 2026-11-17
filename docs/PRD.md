@@ -367,7 +367,7 @@ API publik hanya punya tiga langkah: siapkan data, validasi, buat XML; semuanya 
 ### Library
 
 ```ts
-import { fakturKeluaran } from 'coretax-xml'
+import { fakturKeluaran } from '@coretax-xml/core'
 
 const batch = {
   penjual: { npwp: '0000000000000000', nitku: '0000000000000000000000' },
@@ -406,7 +406,7 @@ for await (const file of fakturKeluaran.buildStream(sumberData, { maksPerFile: 1
 }
 
 // Tabel referensi untuk UI aplikasi
-import { referensi } from 'coretax-xml/refs'
+import { referensi } from '@coretax-xml/core/refs'
 referensi.satuan('2025.09')        // [{ kode: 'UM.0018', nama: '...' }, ...]
 
 // Memeriksa XML buatan pihak lain

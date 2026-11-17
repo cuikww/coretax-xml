@@ -31,8 +31,8 @@ try {
   const cek = `const xml = fakturKeluaran.build(${batch})
     if (!xml.includes('<VAT>132000</VAT>')) throw new Error('hasil build tidak sesuai')
     if (fakturKeluaran.validate(${batch}).valid !== true) throw new Error('validate gagal')`
-  writeFileSync(join(app, 'esm.mjs'), `import { fakturKeluaran } from 'coretax-xml'\n${cek}\n`)
-  writeFileSync(join(app, 'cjs.cjs'), `const { fakturKeluaran } = require('coretax-xml')\n${cek}\n`)
+  writeFileSync(join(app, 'esm.mjs'), `import { fakturKeluaran } from '@coretax-xml/core'\n${cek}\n`)
+  writeFileSync(join(app, 'cjs.cjs'), `const { fakturKeluaran } = require('@coretax-xml/core')\n${cek}\n`)
   jalan('node', ['esm.mjs'], app)
   jalan('node', ['cjs.cjs'], app)
   console.log(`Paket ${tgz}: ESM dan CJS jalan.`)

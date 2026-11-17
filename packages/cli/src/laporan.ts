@@ -1,4 +1,4 @@
-import type { HasilValidasi, MasalahValidasi } from 'coretax-xml'
+import type { HasilValidasi, MasalahValidasi } from '@coretax-xml/core'
 import type { Sumber } from './baca-faktur.js'
 
 export interface Laporan {

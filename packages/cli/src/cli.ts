@@ -8,7 +8,7 @@ import {
   type HasilValidasi,
   type OpsiValidasi,
   returMasukan,
-} from 'coretax-xml'
+} from '@coretax-xml/core'
 import pkg from '../package.json' with { type: 'json' }
 import {
   dariCsv,

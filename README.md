@@ -26,14 +26,14 @@ Library tidak login atau mengunggah ke Coretax, tidak menerbitkan nomor seri fak
 ## Instalasi
 
 ```sh
-npm install coretax-xml          # library
+npm install @coretax-xml/core    # library
 npm install -g @coretax-xml/cli  # CLI untuk Excel/CSV
 ```
 
 ## Pemakaian
 
 ```ts
-import { CoretaxValidationError, fakturKeluaran } from 'coretax-xml'
+import { CoretaxValidationError, fakturKeluaran } from '@coretax-xml/core'
 
 const batch = {
   penjual: { npwp: '0000000000000000', nitku: '0000000000000000000000' },
@@ -143,7 +143,7 @@ Faktur dibaca satu per satu dan hanya satu file yang ditahan di memori. Nomor fa
 ### Retur faktur pajak masukan
 
 ```ts
-import { returMasukan } from 'coretax-xml'
+import { returMasukan } from '@coretax-xml/core'
 
 const xml = returMasukan.build({
   pembeli: { npwp: '0000000000000000' }, // pelapor retur (TIN)

@@ -1,4 +1,4 @@
-import type { BatchReturFakturMasukan, ItemRetur, ReturFakturMasukan } from 'coretax-xml'
+import type { BatchReturFakturMasukan, ItemRetur, ReturFakturMasukan } from '@coretax-xml/core'
 import { bulat2, tanggalIso } from './angka.js'
 import {
   barisData,

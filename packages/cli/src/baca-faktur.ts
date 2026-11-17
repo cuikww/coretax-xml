@@ -1,4 +1,4 @@
-import type { BatchFakturKeluaran, FakturKeluaran, ItemFaktur, JenisId } from 'coretax-xml'
+import type { BatchFakturKeluaran, FakturKeluaran, ItemFaktur, JenisId } from '@coretax-xml/core'
 import { bulat2, tanggalIso } from './angka.js'
 import { parseCsv } from './csv.js'
 import type { Lembar } from './xlsx.js'

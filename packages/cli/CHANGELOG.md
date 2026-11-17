@@ -1,5 +1,11 @@
 # @coretax-xml/cli
 
+## 0.2.1
+
+### Patch Changes
+
+- Bergantung pada `@coretax-xml/core` (library core pindah nama; nama `coretax-xml` di npm sudah dipakai pihak lain). 0.2.0 menunjuk ke paket `coretax-xml` yang bukan milik proyek ini: jangan dipakai.
+
 ## 0.2.0
 
 ### Minor Changes

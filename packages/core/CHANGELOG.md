@@ -1,6 +1,8 @@
-# coretax-xml
+# @coretax-xml/core
 
 ## 0.2.0
+
+Diterbitkan sebagai `@coretax-xml/core` (nama `coretax-xml` di npm milik pihak lain).
 
 ### Minor Changes
 

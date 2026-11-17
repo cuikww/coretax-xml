@@ -1,4 +1,4 @@
-# coretax-xml
+# @coretax-xml/core
 
 Buat dan validasi file XML impor **Coretax DJP** langsung dari data aplikasi, tanpa template Excel dan aplikasi converter. Pesan error per faktur dan per field dalam Bahasa Indonesia.
 
@@ -23,7 +23,7 @@ Yang **tidak** dilakukan: login atau unggah ke Coretax, menerbitkan nomor seri f
 ## Instalasi
 
 ```sh
-npm install coretax-xml
+npm install @coretax-xml/core
 ```
 
 ESM dan CommonJS, dengan tipe TypeScript. Tanpa dependensi runtime. Node.js 20+, Bun, Deno, dan browser.
@@ -31,7 +31,7 @@ ESM dan CommonJS, dengan tipe TypeScript. Tanpa dependensi runtime. Node.js 20+,
 ## Faktur pajak keluaran
 
 ```ts
-import { CoretaxValidationError, fakturKeluaran } from 'coretax-xml'
+import { CoretaxValidationError, fakturKeluaran } from '@coretax-xml/core'
 
 const batch = {
   penjual: { npwp: '0000000000000000', nitku: '0000000000000000000000' },
@@ -101,7 +101,7 @@ fakturKeluaran.check(xml) // atau returMasukan.check(xml)
 ## Retur faktur pajak masukan
 
 ```ts
-import { returMasukan } from 'coretax-xml'
+import { returMasukan } from '@coretax-xml/core'
 
 const xml = returMasukan.build({
   pembeli: { npwp: '0000000000000000' }, // pelapor retur

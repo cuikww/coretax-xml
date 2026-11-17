@@ -201,3 +201,9 @@ Maintainer memutuskan menerbitkan `coretax-xml` dan `@coretax-xml/cli` 0.2.0 ke 
 `returMasukan.buildStream` sekarang juga menerima nama field Inggris (`{ pembeli: { tin }, retur: [{ invoiceNumber, ... }] }`).
 
 Sebelum publish, tarball dari `pnpm pack` diinstal di proyek kosong: `import` (ESM), `require` (CJS), dan `npx coretax-xml` (template, convert, check) berjalan; dependensi `workspace:*` di CLI menjadi `0.2.0`.
+
+## 2026-11-17: core diterbitkan sebagai @coretax-xml/core
+
+Nama `coretax-xml` di npm didaftarkan pihak lain pada 2026-11-16 (maintainer `fsa-g`, repo `FSA-G/coretax-xml`), sehari sebelum rilis pertama. Keputusan 2026-11-05 ("core tanpa scope sebagai `coretax-xml`") batal: library terbit sebagai **`@coretax-xml/core`** di bawah org milik proyek, sehingga tidak bisa direbut lagi. Nama perintah CLI tetap `coretax-xml`.
+
+`@coretax-xml/cli@0.2.0` sempat terbit dengan dependensi `coretax-xml@0.2.0`, yaitu paket pihak lain. Jika pemilik nama itu menerbitkan 0.2.0, pengguna CLI kita akan menginstal kode mereka. Karena itu 0.2.0 harus di-unpublish (masih dalam 72 jam) setelah `@coretax-xml/cli@0.2.1`, yang bergantung pada `@coretax-xml/core`, terbit. Pelajaran: cek `npm view <nama>` tepat sebelum publish, bukan hanya di awal proyek.
