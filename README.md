@@ -1,6 +1,8 @@
 # coretax-xml
 
 [![CI](https://github.com/cuikww/coretax-xml/actions/workflows/ci.yml/badge.svg)](https://github.com/cuikww/coretax-xml/actions/workflows/ci.yml)
+[![npm core](https://img.shields.io/npm/v/@coretax-xml/core?label=%40coretax-xml%2Fcore)](https://www.npmjs.com/package/@coretax-xml/core)
+[![npm cli](https://img.shields.io/npm/v/@coretax-xml/cli?label=%40coretax-xml%2Fcli)](https://www.npmjs.com/package/@coretax-xml/cli)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 **Buat dan validasi file XML impor Coretax DJP langsung dari data aplikasi**, tanpa template Excel dan aplikasi converter. Pesan error per faktur dan per field dalam Bahasa Indonesia.
@@ -29,6 +31,8 @@ Library tidak login atau mengunggah ke Coretax, tidak menerbitkan nomor seri fak
 npm install @coretax-xml/core    # library
 npm install -g @coretax-xml/cli  # CLI untuk Excel/CSV
 ```
+
+Halaman npm: [@coretax-xml/core](https://www.npmjs.com/package/@coretax-xml/core) · [@coretax-xml/cli](https://www.npmjs.com/package/@coretax-xml/cli)
 
 ## Pemakaian
 

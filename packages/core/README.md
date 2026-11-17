@@ -1,5 +1,7 @@
 # @coretax-xml/core
 
+[![npm core](https://img.shields.io/npm/v/@coretax-xml/core?label=%40coretax-xml%2Fcore)](https://www.npmjs.com/package/@coretax-xml/core) [![provenance](https://img.shields.io/badge/npm-provenance-blue)](https://docs.npmjs.com/generating-provenance-statements)
+
 Buat dan validasi file XML impor **Coretax DJP** langsung dari data aplikasi, tanpa template Excel dan aplikasi converter. Pesan error per faktur dan per field dalam Bahasa Indonesia.
 
 > **Pra-rilis (0.x).** Output sama dengan converter resmi DJP v1.6 untuk 10 kasus faktur dan 3 kasus retur, tetapi **belum** diuji impor di Coretax sungguhan. DJP tidak menerbitkan XSD. Bandingkan dulu dengan converter DJP sebelum dipakai untuk produksi.

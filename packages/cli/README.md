@@ -1,5 +1,7 @@
 # @coretax-xml/cli
 
+[![npm cli](https://img.shields.io/npm/v/@coretax-xml/cli?label=%40coretax-xml%2Fcli)](https://www.npmjs.com/package/@coretax-xml/cli)
+
 Ubah template Excel DJP (faktur pajak keluaran atau retur faktur pajak masukan) atau CSV sederhana menjadi XML impor Coretax, dan periksa XML sebelum diunggah. Berjalan lokal, tanpa internet. Untuk staf pajak dan konsultan yang tidak menulis kode; developer bisa memakai library [`@coretax-xml/core`](https://www.npmjs.com/package/@coretax-xml/core) langsung.
 
 > **Pra-rilis (0.x).** Output sama dengan converter DJP v1.6 untuk kasus uji, tetapi belum diuji impor di Coretax sungguhan. Bukan produk DJP dan bukan nasihat pajak. XML yang lolos pemeriksaan belum tentu diterima Coretax.
