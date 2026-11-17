@@ -1,6 +1,6 @@
 {
   "name": "@coretax-xml/core",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Buat dan validasi file XML impor Coretax DJP (faktur pajak keluaran, retur faktur masukan, bukti potong PPh 21/26) langsung dari data aplikasi, dengan pesan error Bahasa Indonesia",
   "license": "MIT",
   "type": "module",
