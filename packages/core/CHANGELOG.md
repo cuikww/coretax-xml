@@ -1,5 +1,11 @@
 # @coretax-xml/core
 
+## 0.2.1
+
+### Patch Changes
+
+- 9a28f57: README: badge versi npm dan link ke halaman npm. Rilis pertama lewat GitHub Actions dengan provenance (trusted publishing).
+
 ## 0.2.0
 
 Diterbitkan sebagai `@coretax-xml/core` (nama `coretax-xml` di npm milik pihak lain).
