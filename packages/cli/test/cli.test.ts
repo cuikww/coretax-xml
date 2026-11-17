@@ -453,3 +453,90 @@ describe('retur: perbandingan dengan converter DJP', () => {
     expect(normal(readFileSync(f.replace('.xlsx', '.xml'), 'utf8'))).toBe(normal(resmi))
   })
 })
+
+describe('bukti potong PPh 21/26', () => {
+  const JUDUL_BP21 = [
+    undefined,
+    'Masa Pajak',
+    'Tahun Pajak',
+    'NPWP',
+    'ID TKU Penerima Penghasilan',
+    'Status PTKP',
+    'Fasilitas',
+    'Kode Objek Pajak',
+    'Penghasilan',
+    'Deemed',
+    'Tarif',
+    'Jenis Dok. Referensi',
+    'Nomor Dok. Referensi',
+    'Tanggal Dok. Referensi',
+    'ID TKU Pemotong',
+    'Tanggal Pemotongan',
+  ]
+  const bp21Excel = (tarif: number) =>
+    buatXlsx({
+      DATA: [
+        ['NPWP Pemotong', undefined, '29482015507000'], // Excel membuang nol di depan
+        [],
+        JUDUL_BP21,
+        [
+          undefined,
+          1,
+          2025,
+          '3172024806201234',
+          '3172024806201234000000',
+          'K/0',
+          'N/A',
+          '21-100-35',
+          14058150,
+          { rumus: 'VLOOKUP(H4,REF!$A$2:$D$33,3,0)', hasil: 100 },
+          { rumus: 'IF(S4="TER",T4,0)', hasil: tarif },
+          'Announcement',
+          'ABC123',
+          45304,
+          '0029482015507000000000',
+          45658,
+        ],
+      ],
+      BP21: [['Kolom pada excel']],
+      REF: [['Kode Objek Pajak']],
+    })
+
+  it('template Excel DJP (sheet DATA + BP21): tarif dari sel dicocokkan dengan rumus; baris ditunjuk di error', async () => {
+    const dir = folderSementara()
+    const f = tulis(dir, 'bp21.xlsx', bp21Excel(6))
+    const r = await cli('convert', f)
+    expect(r.out).toContain('LOLOS (0 error, 0 peringatan; skema bupot21@2025.04)')
+    const xml = readFileSync(f.replace('.xlsx', '.xml'), 'utf8')
+    expect(xml).toContain('<TIN>0029482015507000</TIN>')
+    expect(xml).toContain('<DocumentDate>2024-01-13</DocumentDate>')
+    expect(xml).toContain('<Rate>6</Rate>')
+
+    const salah = tulis(dir, 'salah.xlsx', bp21Excel(7))
+    const r2 = await cli('convert', salah)
+    expect(r2.out).toContain('PERINGATAN [RATE_MISMATCH] Bukti potong ke-1 (baris Excel 4) <Rate>')
+    // --hitung otomatis mengabaikan sel dan menghitung ulang
+    expect((await cli('convert', salah, '--hitung', 'otomatis')).out).toContain('0 peringatan')
+  })
+
+  it('CSV bupot21 dan bupot26 dari perintah template; check mengenali akar Bp21Bulk dan BP26Bulk', async () => {
+    const dir = folderSementara()
+    for (const jenis of ['bupot21', 'bupot26']) {
+      const csv = (await cli('template', jenis)).out
+      const f = tulis(dir, `${jenis}.csv`, csv)
+      expect((await cli('convert', f)).kode).toBe(0)
+    }
+    expect((await cli('check', dir)).out).toContain('2 dari 2 berkas lolos.')
+    expect((await cli('check', dariRepo('fixtures/djp/bp26.xml'))).out).toContain('skema bupot26@2024.12')
+  })
+
+  it('CSV: npwp_pemotong harus sama di semua baris', async () => {
+    const dir = folderSementara()
+    const [judul, isi] = (await cli('template', 'bupot21')).out.trim().split('\n')
+    const lain = (isi as string).replace(/^0000000000000000/, '1111111111111111')
+    const f = tulis(dir, 'campur.csv', `${judul}\n${isi}\n${lain}\n`)
+    const r = await cli('convert', f)
+    expect(r.kode).toBe(2)
+    expect(r.err).toContain('npwp_pemotong harus sama di semua baris')
+  })
+})

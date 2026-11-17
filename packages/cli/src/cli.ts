@@ -4,12 +4,22 @@ import { parseArgs } from 'node:util'
 import {
   type Bahasa,
   type BatchReturFakturMasukan,
+  bupot21,
+  bupot26,
   fakturKeluaran,
   type HasilValidasi,
   type OpsiValidasi,
   returMasukan,
 } from '@coretax-xml/core'
 import pkg from '../package.json' with { type: 'json' }
+import {
+  dariCsvBupot,
+  dariExcelBupot,
+  type HasilBupot,
+  jenisCsvBupot,
+  jenisExcelBupot,
+  templateCsvBupot,
+} from './baca-bupot.js'
 import {
   dariCsv,
   dariExcel,
@@ -33,14 +43,14 @@ Bukan produk DJP dan bukan nasihat pajak. Berjalan lokal, tanpa internet.
 Pemakaian:
   coretax-xml convert <file.xlsx|file.csv> [-o hasil.xml] [--hitung strict|otomatis] [--format teks|json|html]
                       [--maks-per-file N]   pecah faktur/retur menjadi beberapa file @ N faktur (hasil-0001.xml, ...)
-      .xlsx = template Excel DJP: faktur pajak keluaran (sheet Faktur + DetailFaktur) atau retur faktur pajak
-              masukan (sheet Retur + DetailRetur), dikenali otomatis; angka dibaca dari file
-              (default --hitung strict: dicocokkan dengan hitungan library)
-      .csv  = format sederhana, satu baris per item; faktur keluaran atau retur masukan (kolom no_retur), dikenali
-              dari judul kolom (default --hitung otomatis; lihat perintah template)
+      .xlsx = template Excel DJP, dikenali otomatis: faktur pajak keluaran (sheet Faktur + DetailFaktur), retur
+              faktur pajak masukan (sheet Retur + DetailRetur), bukti potong PPh 21/26 (sheet DATA + BP21/BP26);
+              angka dibaca dari file (default --hitung strict: dicocokkan dengan hitungan library)
+      .csv  = format sederhana: faktur keluaran, retur masukan (kolom no_retur), bupot PPh 21 (kolom status_ptkp),
+              bupot PPh 26 (kolom nama_penerima); default --hitung otomatis; lihat perintah template
   coretax-xml check <file.xml|folder> [--format teks|json|html] [-o laporan.html]
-      memeriksa XML faktur pajak keluaran atau retur faktur pajak masukan yang sudah ada (dikenali dari elemen akar)
-  coretax-xml template faktur-keluaran|retur-masukan [-o contoh.csv]
+      memeriksa XML faktur keluaran, retur masukan, atau bupot PPh 21/26 yang sudah ada (dikenali dari elemen akar)
+  coretax-xml template faktur-keluaran|retur-masukan|bupot21|bupot26 [-o contoh.csv]
       mencetak contoh CSV dengan kolom yang benar
   coretax-xml schemas
       daftar versi skema
@@ -61,6 +71,7 @@ class SalahPakai extends Error {}
 type Dibaca =
   | ({ dokumen: 'faktur-keluaran' } & HasilBaca)
   | { dokumen: 'retur-masukan'; batch: BatchReturFakturMasukan; sumber: Sumber }
+  | HasilBupot
 
 function bacaBerkas(
   berkas: string,
@@ -82,6 +93,8 @@ function bacaBerkas(
     if (ext === '.xlsx') {
       const h = hitung ?? 'strict'
       const sheets = bacaXlsx(new Uint8Array(data))
+      const bupot = jenisExcelBupot(sheets)
+      if (bupot) return { ...dariExcelBupot(sheets, bupot, { hitung: h }), hitung: h }
       if (sheets.Retur && sheets.DetailRetur) {
         return { dokumen: 'retur-masukan', ...dariExcelRetur(sheets, { hitung: h }), hitung: h }
       }
@@ -89,6 +102,8 @@ function bacaBerkas(
     }
     const h = hitung ?? 'otomatis'
     const teksCsv = data.toString('utf8')
+    const bupot = jenisCsvBupot(teksCsv)
+    if (bupot) return { ...dariCsvBupot(teksCsv, bupot), hitung: h }
     if (adalahCsvRetur(teksCsv)) {
       return { dokumen: 'retur-masukan', ...dariCsvRetur(teksCsv, { hitung: h }), hitung: h }
     }
@@ -96,6 +111,32 @@ function bacaBerkas(
   } catch (e) {
     if (e instanceof FormatBerkasError || e instanceof Error) throw new SalahPakai(`${berkas}: ${e.message}`)
     throw e
+  }
+}
+
+function validasi(d: Dibaca, opsi: OpsiValidasi): HasilValidasi {
+  switch (d.dokumen) {
+    case 'retur-masukan':
+      return returMasukan.validate(d.batch, opsi)
+    case 'bupot21':
+      return bupot21.validate(d.batch, opsi)
+    case 'bupot26':
+      return bupot26.validate(d.batch, opsi)
+    default:
+      return fakturKeluaran.validate(d.batch, opsi)
+  }
+}
+
+function buat(d: Dibaca, opsi: OpsiValidasi): string {
+  switch (d.dokumen) {
+    case 'retur-masukan':
+      return returMasukan.build(d.batch, opsi)
+    case 'bupot21':
+      return bupot21.build(d.batch, opsi)
+    case 'bupot26':
+      return bupot26.build(d.batch, opsi)
+    default:
+      return fakturKeluaran.build(d.batch, opsi)
   }
 }
 
@@ -154,7 +195,12 @@ export async function jalankan(
     const dasar: OpsiValidasi = { bahasa: v.bahasa as Bahasa, ...(v.schema ? { schema: v.schema } : {}) }
 
     if (perintah === 'schemas') {
-      for (const s of [...fakturKeluaran.schemas(), ...returMasukan.schemas()]) {
+      for (const s of [
+        ...fakturKeluaran.schemas(),
+        ...returMasukan.schemas(),
+        ...bupot21.schemas(),
+        ...bupot26.schemas(),
+      ]) {
         io.stdout(
           `${s.dokumen}@${s.id}  berlaku mulai ${s.berlakuMulai}\n  template: ${s.template}\n  converter: ${s.converter}\n  ${s.terverifikasiDenganXsdResmi ? 'diverifikasi dengan XSD resmi' : 'belum diverifikasi dengan XSD resmi (DJP tidak menerbitkan XSD)'}\n`,
         )
@@ -163,8 +209,14 @@ export async function jalankan(
     }
 
     if (perintah === 'template') {
-      const templat = { 'faktur-keluaran': templateCsv, 'retur-masukan': templateCsvRetur }[sisa[0] ?? '']
-      if (!templat) throw new SalahPakai('Jenis template yang tersedia: faktur-keluaran, retur-masukan')
+      const templat = {
+        'faktur-keluaran': templateCsv,
+        'retur-masukan': templateCsvRetur,
+        bupot21: () => templateCsvBupot('bupot21'),
+        bupot26: () => templateCsvBupot('bupot26'),
+      }[sisa[0] ?? '']
+      if (!templat)
+        throw new SalahPakai('Jenis template yang tersedia: faktur-keluaran, retur-masukan, bupot21, bupot26')
       if (v.output) writeFileSync(v.output, templat())
       else io.stdout(templat())
       return 0
@@ -176,10 +228,7 @@ export async function jalankan(
       const dibaca = bacaBerkas(berkas, v.hitung as 'strict' | 'otomatis' | undefined)
       const { sumber, hitung } = dibaca
       const opsi: OpsiValidasi = { ...dasar, hitung }
-      const hasil: HasilValidasi =
-        dibaca.dokumen === 'retur-masukan'
-          ? returMasukan.validate(dibaca.batch, opsi)
-          : fakturKeluaran.validate(dibaca.batch, opsi)
+      const hasil: HasilValidasi = validasi(dibaca, opsi)
       const laporan: Laporan = { berkas, hasil, sumber }
       if (hasil.valid) {
         const dasarKeluaran = (
@@ -190,15 +239,16 @@ export async function jalankan(
           throw new SalahPakai('--maks-per-file harus bilangan bulat >= 1.')
         }
         const tunggal =
-          dibaca.dokumen === 'retur-masukan' ? dibaca.batch.retur.length : dibaca.batch.faktur.length
+          dibaca.dokumen === 'retur-masukan'
+            ? dibaca.batch.retur.length
+            : dibaca.dokumen === 'faktur-keluaran'
+              ? dibaca.batch.faktur.length
+              : dibaca.batch.bupot.length
         if (maks === undefined || tunggal <= maks) {
           laporan.keluaran = [`${dasarKeluaran}.xml`]
-          writeFileSync(
-            laporan.keluaran[0] as string,
-            dibaca.dokumen === 'retur-masukan'
-              ? returMasukan.build(dibaca.batch, opsi)
-              : fakturKeluaran.build(dibaca.batch, opsi),
-          )
+          writeFileSync(laporan.keluaran[0] as string, buat(dibaca, opsi))
+        } else if (dibaca.dokumen === 'bupot21' || dibaca.dokumen === 'bupot26') {
+          throw new SalahPakai('--maks-per-file belum tersedia untuk bukti potong.')
         } else {
           // Terlalu banyak untuk satu file: pecah menjadi <nama>-0001.xml, <nama>-0002.xml, ...
           laporan.keluaran = []
@@ -220,8 +270,16 @@ export async function jalankan(
       if (!sisa[0]) throw new SalahPakai('check butuh nama file .xml atau folder.')
       const daftar: Laporan[] = kumpulkanXml(sisa[0]).map((f) => {
         const xml = readFileSync(f, 'utf8')
-        const retur = /<InputTaxInvoiceReturn[\s>/]/.test(xml.slice(0, 4000))
-        return { berkas: f, hasil: retur ? returMasukan.check(xml, dasar) : fakturKeluaran.check(xml, dasar) }
+        const awal = xml.slice(0, 4000)
+        const ada = (akar: string) => new RegExp(`<${akar}[\\s>/]`).test(awal)
+        const pemeriksa = ada('InputTaxInvoiceReturn')
+          ? returMasukan.check
+          : ada('Bp21Bulk')
+            ? bupot21.check
+            : ada('BP26Bulk')
+              ? bupot26.check
+              : fakturKeluaran.check
+        return { berkas: f, hasil: pemeriksa(xml, dasar) }
       })
       const teks = formatLaporan(format, daftar)
       if (v.output) writeFileSync(v.output, teks)

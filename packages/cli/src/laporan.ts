@@ -24,7 +24,8 @@ function barisSumber(m: MasalahValidasi, s?: Sumber): { faktur?: number; item?: 
 function lokasi(m: MasalahValidasi, s: Sumber | undefined, schema: string): string {
   if (m.faktur === null) return 'Dokumen'
   const b = barisSumber(m, s)
-  let t = `${schema.startsWith('retur-') ? 'Retur' : 'Faktur'} ke-${m.faktur}`
+  const nama = schema.startsWith('retur-') ? 'Retur' : schema.startsWith('bupot') ? 'Bukti potong' : 'Faktur'
+  let t = `${nama} ke-${m.faktur}`
   if (b.faktur !== undefined) t += ` (baris ${s?.jenis} ${b.faktur})`
   if (m.item !== null) {
     t += `, item ${m.item}`
