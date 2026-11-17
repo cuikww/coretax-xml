@@ -4,9 +4,13 @@
  * Bukan produk DJP dan bukan nasihat pajak. Semua proses berjalan lokal:
  * library ini tidak melakukan panggilan jaringan.
  */
+import { bupot21 as _bupot21, bupot26 as _bupot26 } from './bupot.js'
 import { analisis, build, validate } from './faktur-keluaran.js'
 import { type EntriKatalog, katalogError } from './messages.js'
 import * as retur from './retur-masukan.js'
+import * as skemaBp21 from './schemas/bupot/bp21-v2025-04.js'
+import * as skemaBp26 from './schemas/bupot/bp26-v2024-12.js'
+import { jenisDokumen } from './schemas/bupot/umum.js'
 import * as skema2025_09 from './schemas/faktur-keluaran/v2025-09.js'
 import { daftarSkema } from './schemas/index.js'
 import * as skemaRetur from './schemas/retur-masukan/v2025-03.js'
@@ -25,6 +29,15 @@ export type {
   PenjualEn,
   ReturFakturMasukanEn,
 } from './alias.js'
+export type {
+  AnalisisBupot,
+  BarisBupot,
+  BatchBupot21,
+  BatchBupot26,
+  Bupot21,
+  Bupot26,
+  Pemotong,
+} from './bupot.js'
 export type {
   Analisis,
   FakturTerhitung,
@@ -76,6 +89,16 @@ export const returMasukan = {
   schemas: () => [skemaRetur.meta],
 }
 
+/**
+ * Bukti potong PPh Pasal 21 (root XML `Bp21Bulk`). Deemed dan tarif yang kosong diisi dari sheet REF dan rumus
+ * template DJP BP21 v.4 (TER, Pasal 17, harian, pesangon, pensiun). Dalam hasil validasi, `faktur` berarti nomor
+ * bukti potong.
+ */
+export const bupot21 = _bupot21
+
+/** Bukti potong PPh Pasal 26 (root XML `BP26Bulk`), untuk penerima penghasilan luar negeri. */
+export const bupot26 = _bupot26
+
 /** Tabel referensi untuk mengisi dropdown di aplikasi. */
 export const referensi = {
   kodeTransaksi: () => ({ ...skema2025_09.kodeTransaksi }),
@@ -86,4 +109,13 @@ export const referensi = {
   /** Cap fasilitas untuk kode transaksi 07 atau 08. */
   capFasilitas: (kode: '07' | '08') => ({ ...skema2025_09.capFasilitas[kode] }),
   negara: () => ({ ...skema2025_09.negara }),
+  /** Daftar untuk bukti potong PPh 21 dan 26. */
+  bupot: {
+    jenisDokumen: () => ({ ...jenisDokumen }),
+    statusPtkp: () => [...skemaBp21.statusPtkp],
+    kodeObjekPajak21: () => ({ ...skemaBp21.kodeObjekPajak }),
+    kodeObjekPajak26: () => ({ ...skemaBp26.kodeObjekPajak }),
+    fasilitas21: () => ({ ...skemaBp21.fasilitas }),
+    fasilitas26: () => ({ ...skemaBp26.fasilitas }),
+  },
 }

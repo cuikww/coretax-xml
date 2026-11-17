@@ -597,6 +597,201 @@
       "saran": null
     }
   },
+  "BUPOT_EMPTY": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [],
+    "id": {
+      "pesan": "Batch harus berisi minimal 1 bukti potong.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "A batch needs at least 1 withholding slip.",
+      "saran": null
+    }
+  },
+  "PERIOD_FORMAT": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "label",
+      "nilai"
+    ],
+    "id": {
+      "pesan": "{label} \"{nilai}\" tidak valid.",
+      "saran": "Masa pajak diisi 1 sampai 12, tahun pajak 4 digit (mis. 2025)."
+    },
+    "en": {
+      "pesan": "{label} \"{nilai}\" is not valid.",
+      "saran": "Tax period month is 1 to 12, tax year has 4 digits (e.g. 2025)."
+    }
+  },
+  "PTKP_UNKNOWN": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Status PTKP \"{nilai}\" tidak dikenal.",
+      "saran": "Gunakan TK/0 sampai TK/3 atau K/0 sampai K/3."
+    },
+    "en": {
+      "pesan": "Unknown PTKP status \"{nilai}\".",
+      "saran": "Use TK/0 to TK/3 or K/0 to K/3."
+    }
+  },
+  "TAX_CERT_UNKNOWN": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Fasilitas \"{nilai}\" tidak dikenal.",
+      "saran": "Pakai kode fasilitas dari sheet REF template DJP, mis. \"N/A\" untuk tanpa fasilitas."
+    },
+    "en": {
+      "pesan": "Unknown facility \"{nilai}\".",
+      "saran": "Use a facility code from the REF sheet of the DJP template, e.g. \"N/A\" for none."
+    }
+  },
+  "SKD_NUMBER_REQUIRED": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [],
+    "id": {
+      "pesan": "Fasilitas SKD (COD) wajib mengisi nomor SKD WPLN.",
+      "saran": "Isi nomorFasilitas dengan nomor Surat Keterangan Domisili."
+    },
+    "en": {
+      "pesan": "Facility SKD (COD) requires the SKD number.",
+      "saran": "Fill nomorFasilitas with the certificate of domicile number."
+    }
+  },
+  "TAX_OBJECT_UNKNOWN": {
+    "tingkat": [
+      "warning"
+    ],
+    "params": [
+      "nilai",
+      "pasal"
+    ],
+    "id": {
+      "pesan": "Kode objek pajak \"{nilai}\" tidak ada di daftar template BP{pasal} DJP.",
+      "saran": "Periksa kodenya. Jika kodenya benar, isi deemed dan tarif sendiri."
+    },
+    "en": {
+      "pesan": "Tax object code \"{nilai}\" is not in the DJP BP{pasal} template list.",
+      "saran": "Check the code. If it is correct, fill deemed and rate yourself."
+    }
+  },
+  "AMOUNT_ZERO": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "label"
+    ],
+    "id": {
+      "pesan": "{label} harus lebih dari 0.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "{label} must be greater than 0.",
+      "saran": null
+    }
+  },
+  "DEEMED_RANGE": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Deemed {nilai}% melebihi 100%.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "Deemed {nilai}% is more than 100%.",
+      "saran": null
+    }
+  },
+  "DEEMED_MISMATCH": {
+    "tingkat": [
+      "warning"
+    ],
+    "params": [
+      "acuan",
+      "kode",
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Deemed {nilai}% berbeda dari referensi kode {kode} ({acuan}%).",
+      "saran": "Selisih hanya wajar jika memakai fasilitas (SKB, SKD, atau fasilitas lainnya)."
+    },
+    "en": {
+      "pesan": "Deemed {nilai}% differs from the reference for code {kode} ({acuan}%).",
+      "saran": "A difference is only expected with a facility (SKB, SKD, or other)."
+    }
+  },
+  "RATE_MISMATCH": {
+    "tingkat": [
+      "warning"
+    ],
+    "params": [
+      "acuan",
+      "kode",
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Tarif {nilai}% berbeda dari hasil rumus template DJP untuk kode {kode} ({acuan}%).",
+      "saran": "Selisih hanya wajar jika memakai fasilitas (SKB, SKD, atau fasilitas lainnya)."
+    },
+    "en": {
+      "pesan": "Rate {nilai}% differs from the DJP template formula for code {kode} ({acuan}%).",
+      "saran": "A difference is only expected with a facility (SKB, SKD, or other)."
+    }
+  },
+  "DOC_TYPE_UNKNOWN": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Jenis dokumen referensi \"{nilai}\" tidak dikenal.",
+      "saran": "Pakai kode dari referensi.bupot.jenisDokumen(), mis. \"CommercialInvoice\"."
+    },
+    "en": {
+      "pesan": "Unknown reference document type \"{nilai}\".",
+      "saran": "Use a code from referensi.bupot.jenisDokumen(), e.g. \"CommercialInvoice\"."
+    }
+  },
+  "WITHHOLDING_BEFORE_PERIOD": {
+    "tingkat": [
+      "error"
+    ],
+    "params": [
+      "masa",
+      "nilai"
+    ],
+    "id": {
+      "pesan": "Tanggal pemotongan {nilai} lebih awal dari masa pajak {masa}.",
+      "saran": null
+    },
+    "en": {
+      "pesan": "Withholding date {nilai} is before tax period {masa}.",
+      "saran": null
+    }
+  },
   "RETUR_QTY_EXCEEDS": {
     "tingkat": [
       "error"

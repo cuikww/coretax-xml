@@ -129,6 +129,45 @@ const id: Katalog = {
     saran: () => 'Hapus titik dan strip dari nomor faktur pajak masukan yang diretur.',
   },
   RETUR_EMPTY: { pesan: () => 'Batch harus berisi minimal 1 retur.' },
+  BUPOT_EMPTY: { pesan: () => 'Batch harus berisi minimal 1 bukti potong.' },
+  PERIOD_FORMAT: {
+    pesan: (p) => `${p.label} "${p.nilai}" tidak valid.`,
+    saran: () => 'Masa pajak diisi 1 sampai 12, tahun pajak 4 digit (mis. 2025).',
+  },
+  PTKP_UNKNOWN: {
+    pesan: (p) => `Status PTKP "${p.nilai}" tidak dikenal.`,
+    saran: () => 'Gunakan TK/0 sampai TK/3 atau K/0 sampai K/3.',
+  },
+  TAX_CERT_UNKNOWN: {
+    pesan: (p) => `Fasilitas "${p.nilai}" tidak dikenal.`,
+    saran: () => 'Pakai kode fasilitas dari sheet REF template DJP, mis. "N/A" untuk tanpa fasilitas.',
+  },
+  SKD_NUMBER_REQUIRED: {
+    pesan: () => 'Fasilitas SKD (COD) wajib mengisi nomor SKD WPLN.',
+    saran: () => 'Isi nomorFasilitas dengan nomor Surat Keterangan Domisili.',
+  },
+  TAX_OBJECT_UNKNOWN: {
+    pesan: (p) => `Kode objek pajak "${p.nilai}" tidak ada di daftar template BP${p.pasal} DJP.`,
+    saran: () => 'Periksa kodenya. Jika kodenya benar, isi deemed dan tarif sendiri.',
+  },
+  AMOUNT_ZERO: { pesan: (p) => `${p.label} harus lebih dari 0.` },
+  DEEMED_RANGE: { pesan: (p) => `Deemed ${p.nilai}% melebihi 100%.` },
+  DEEMED_MISMATCH: {
+    pesan: (p) => `Deemed ${p.nilai}% berbeda dari referensi kode ${p.kode} (${p.acuan}%).`,
+    saran: () => 'Selisih hanya wajar jika memakai fasilitas (SKB, SKD, atau fasilitas lainnya).',
+  },
+  RATE_MISMATCH: {
+    pesan: (p) =>
+      `Tarif ${p.nilai}% berbeda dari hasil rumus template DJP untuk kode ${p.kode} (${p.acuan}%).`,
+    saran: () => 'Selisih hanya wajar jika memakai fasilitas (SKB, SKD, atau fasilitas lainnya).',
+  },
+  DOC_TYPE_UNKNOWN: {
+    pesan: (p) => `Jenis dokumen referensi "${p.nilai}" tidak dikenal.`,
+    saran: () => 'Pakai kode dari referensi.bupot.jenisDokumen(), mis. "CommercialInvoice".',
+  },
+  WITHHOLDING_BEFORE_PERIOD: {
+    pesan: (p) => `Tanggal pemotongan ${p.nilai} lebih awal dari masa pajak ${p.masa}.`,
+  },
   RETUR_QTY_EXCEEDS: {
     pesan: (p) => `Jumlah barang retur ${p.retur} melebihi jumlah pada faktur asal (${p.jumlah}).`,
   },
@@ -256,6 +295,44 @@ const en: Katalog = {
   FAKTUR_EMPTY: { pesan: () => 'A batch needs at least 1 invoice.' },
   INVOICE_NUMBER_FORMAT: { pesan: (p) => `Invoice number "${p.nilai}" must be 17 digits.` },
   RETUR_EMPTY: { pesan: () => 'A batch needs at least 1 return.' },
+  BUPOT_EMPTY: { pesan: () => 'A batch needs at least 1 withholding slip.' },
+  PERIOD_FORMAT: {
+    pesan: (p) => `${p.label} "${p.nilai}" is not valid.`,
+    saran: () => 'Tax period month is 1 to 12, tax year has 4 digits (e.g. 2025).',
+  },
+  PTKP_UNKNOWN: {
+    pesan: (p) => `Unknown PTKP status "${p.nilai}".`,
+    saran: () => 'Use TK/0 to TK/3 or K/0 to K/3.',
+  },
+  TAX_CERT_UNKNOWN: {
+    pesan: (p) => `Unknown facility "${p.nilai}".`,
+    saran: () => 'Use a facility code from the REF sheet of the DJP template, e.g. "N/A" for none.',
+  },
+  SKD_NUMBER_REQUIRED: {
+    pesan: () => 'Facility SKD (COD) requires the SKD number.',
+    saran: () => 'Fill nomorFasilitas with the certificate of domicile number.',
+  },
+  TAX_OBJECT_UNKNOWN: {
+    pesan: (p) => `Tax object code "${p.nilai}" is not in the DJP BP${p.pasal} template list.`,
+    saran: () => 'Check the code. If it is correct, fill deemed and rate yourself.',
+  },
+  AMOUNT_ZERO: { pesan: (p) => `${p.label} must be greater than 0.` },
+  DEEMED_RANGE: { pesan: (p) => `Deemed ${p.nilai}% is more than 100%.` },
+  DEEMED_MISMATCH: {
+    pesan: (p) => `Deemed ${p.nilai}% differs from the reference for code ${p.kode} (${p.acuan}%).`,
+    saran: () => 'A difference is only expected with a facility (SKB, SKD, or other).',
+  },
+  RATE_MISMATCH: {
+    pesan: (p) => `Rate ${p.nilai}% differs from the DJP template formula for code ${p.kode} (${p.acuan}%).`,
+    saran: () => 'A difference is only expected with a facility (SKB, SKD, or other).',
+  },
+  DOC_TYPE_UNKNOWN: {
+    pesan: (p) => `Unknown reference document type "${p.nilai}".`,
+    saran: () => 'Use a code from referensi.bupot.jenisDokumen(), e.g. "CommercialInvoice".',
+  },
+  WITHHOLDING_BEFORE_PERIOD: {
+    pesan: (p) => `Withholding date ${p.nilai} is before tax period ${p.masa}.`,
+  },
   RETUR_QTY_EXCEEDS: {
     pesan: (p) => `Returned quantity ${p.retur} exceeds the original invoice quantity (${p.jumlah}).`,
   },
