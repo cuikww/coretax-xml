@@ -1,0 +1,262 @@
+{
+  "pemotong": {
+    "npwp": "0000000000000000",
+    "nitku": "0000000000000000000000"
+  },
+  "bupot": [
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201201",
+        "statusPtkp": "TK/0"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-100-35",
+      "penghasilan": 5400000,
+      "jenisDokumen": "PaymentProof",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201202",
+        "statusPtkp": "TK/1"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-100-35",
+      "penghasilan": 5400001,
+      "jenisDokumen": "PaymentProof",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201203",
+        "statusPtkp": "K/1"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-100-35",
+      "penghasilan": 9200000,
+      "jenisDokumen": "PaymentProof",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201204",
+        "statusPtkp": "K/3"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-100-35",
+      "penghasilan": 1500000000,
+      "jenisDokumen": "PaymentProof",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201205",
+        "statusPtkp": "TK/2"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-100-10",
+      "penghasilan": 20000000,
+      "jenisDokumen": "PaymentProof",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201206",
+        "statusPtkp": "TK/0"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-100-07",
+      "penghasilan": 120000000,
+      "jenisDokumen": "Contract",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201207",
+        "statusPtkp": "TK/0"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-100-07",
+      "penghasilan": "120000000.02",
+      "jenisDokumen": "Contract",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201208",
+        "statusPtkp": "K/0"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-100-17",
+      "penghasilan": 6000000000,
+      "jenisDokumen": "Decree",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201209",
+        "statusPtkp": "TK/0"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-100-24",
+      "penghasilan": 450000,
+      "jenisDokumen": "PaymentProof",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201210",
+        "statusPtkp": "TK/0"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-100-29",
+      "penghasilan": 1000000,
+      "jenisDokumen": "PaymentProof",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201211",
+        "statusPtkp": "TK/0"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-402-04",
+      "penghasilan": 3000000,
+      "jenisDokumen": "Other",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201212",
+        "statusPtkp": "TK/0"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-402-03",
+      "penghasilan": 3000000,
+      "jenisDokumen": "Other",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201213",
+        "statusPtkp": "K/2"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-401-01",
+      "penghasilan": 75000000,
+      "jenisDokumen": "DeedOfEngagement",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201214",
+        "statusPtkp": "K/2"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-401-01",
+      "penghasilan": 600000000,
+      "jenisDokumen": "DeedOfEngagement",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201215",
+        "statusPtkp": "TK/3"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-401-02",
+      "penghasilan": 50000000,
+      "jenisDokumen": "StatementLetter",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201216",
+        "statusPtkp": "TK/3"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-401-02",
+      "penghasilan": 50000001,
+      "jenisDokumen": "StatementLetter",
+      "nomorDokumen": "DOK-1",
+      "tanggalPemotongan": "2025-01-25",
+      "tanggalDokumen": "2025-01-10"
+    },
+    {
+      "masa": 1,
+      "tahun": 2025,
+      "penerima": {
+        "npwp": "3172024806201217",
+        "statusPtkp": "TK/0"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "21-100-35",
+      "penghasilan": "1234567.5",
+      "jenisDokumen": "PaymentProof",
+      "nomorDokumen": "A&B <1>",
+      "tanggalPemotongan": "2025-01-25"
+    }
+  ]
+}

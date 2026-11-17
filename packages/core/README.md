@@ -6,7 +6,7 @@ Buat dan validasi file XML impor **Coretax DJP** langsung dari data aplikasi, ta
 
 > **Pra-rilis (0.x).** Output sama dengan converter resmi DJP v1.6 untuk 10 kasus faktur dan 3 kasus retur, tetapi **belum** diuji impor di Coretax sungguhan. DJP tidak menerbitkan XSD. Bandingkan dulu dengan converter DJP sebelum dipakai untuk produksi.
 
-*English: builds and validates Indonesian DJP Coretax XML import files (output tax invoices, input-invoice returns) from application data. English field names and messages are supported (`bahasa: 'en'`).*
+*English: builds and validates Indonesian DJP Coretax XML import files (output tax invoices, input-invoice returns, PPh 21/26 withholding slips) from application data. English field names and messages are supported (`bahasa: 'en'`).*
 
 ## Untuk siapa
 
@@ -19,6 +19,7 @@ Contoh masalah yang diselesaikan:
 - NPWP pembeli kurang satu digit, atau PPN tidak sesuai hitungan. `validate()` menunjuk faktur, item, dan field yang salah, beserta saran perbaikan, sebelum file diunggah.
 - Ada XML buatan aplikasi lain yang ditolak Coretax. `check()` memeriksa struktur dan hitungannya.
 - Barang pembelian dikembalikan ke penjual. `returMasukan.build()` membuat XML retur faktur pajak masukan.
+- Penggajian bulanan untuk 200 karyawan. `bupot21.build()` membuat XML bukti potong PPh 21, dengan tarif TER dihitung dari status PTKP.
 
 Yang **tidak** dilakukan: login atau unggah ke Coretax, menerbitkan nomor seri faktur, atau menentukan kode transaksi yang benar untuk transaksi Anda.
 
@@ -119,6 +120,31 @@ const xml = returMasukan.build({
 ```
 
 PPN retur wajib diisi sendiri, karena template retur DJP tidak punya kolom tarif. `returMasukan.buildStream()` juga tersedia.
+
+## Bukti potong PPh 21 dan 26
+
+```ts
+import { bupot21 } from '@coretax-xml/core'
+
+const xml = bupot21.build({
+  pemotong: { npwp: '0000000000000000', nitku: '0000000000000000000000' },
+  bupot: [
+    {
+      masa: 1,
+      tahun: 2025,
+      penerima: { npwp: '0000000000000000', statusPtkp: 'TK/0' }, // NIK/NPWP 16 digit
+      kodeObjekPajak: '21-100-35',
+      penghasilan: 10000000,
+      // deemed dan tarif boleh dikosongkan: diisi seperti rumus template DJP (di sini TER A, 2%)
+      jenisDokumen: 'PaymentProof',
+      nomorDokumen: 'GAJI-2025-01',
+      tanggalPemotongan: '2025-01-25',
+    },
+  ],
+})
+```
+
+Deemed dari daftar kode objek pajak; tarif dihitung seperti rumus template "BP21 Excel to XML v.4" (TER A/B/C menurut status PTKP, Pasal 17, harian, pesangon, pensiun). Ini meniru template, bukan penghitungan PPh 21 lengkap: XML hanya memuat tarif, Coretax yang menghitung pajaknya. Tarif yang diisi sendiri dan berbeda dari rumus diberi peringatan, kecuali memakai fasilitas (SKB, SKD, lainnya). `bupot26` untuk penerima luar negeri (`penerima: { tin, nama, negara, ... }`). Skema diambil dari XSD yang tertanam di template Excel DJP.
 
 ## Opsi
 

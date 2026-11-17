@@ -2,7 +2,7 @@
 
 [![npm cli](https://img.shields.io/npm/v/@coretax-xml/cli?label=%40coretax-xml%2Fcli)](https://www.npmjs.com/package/@coretax-xml/cli)
 
-Ubah template Excel DJP (faktur pajak keluaran atau retur faktur pajak masukan) atau CSV sederhana menjadi XML impor Coretax, dan periksa XML sebelum diunggah. Berjalan lokal, tanpa internet. Untuk staf pajak dan konsultan yang tidak menulis kode; developer bisa memakai library [`@coretax-xml/core`](https://www.npmjs.com/package/@coretax-xml/core) langsung.
+Ubah template Excel DJP (faktur pajak keluaran, retur faktur pajak masukan, atau bukti potong PPh 21/26) atau CSV sederhana menjadi XML impor Coretax, dan periksa XML sebelum diunggah. Berjalan lokal, tanpa internet. Untuk staf pajak dan konsultan yang tidak menulis kode; developer bisa memakai library [`@coretax-xml/core`](https://www.npmjs.com/package/@coretax-xml/core) langsung.
 
 > **Pra-rilis (0.x).** Output sama dengan converter DJP v1.6 untuk kasus uji, tetapi belum diuji impor di Coretax sungguhan. Bukan produk DJP dan bukan nasihat pajak. XML yang lolos pemeriksaan belum tentu diterima Coretax.
 
@@ -22,13 +22,14 @@ npx @coretax-xml/cli convert penjualan.xlsx
 
 ```sh
 # Template Excel resmi DJP -> XML di sebelah file Excel-nya. Jenisnya dikenali dari nama sheet:
-#   Faktur + DetailFaktur = faktur pajak keluaran; Retur + DetailRetur = retur faktur pajak masukan
+#   Faktur + DetailFaktur = faktur pajak keluaran; Retur + DetailRetur = retur faktur pajak masukan;
+#   DATA + BP21 / DATA + BP26 = bukti potong PPh 21 / 26 (template "BP21 Excel to XML v.4", "BP26 Excel to XML")
 coretax-xml convert penjualan.xlsx
 coretax-xml convert penjualan.xlsx -o faktur-oktober.xml
 coretax-xml convert penjualan.xlsx --maks-per-file 1000   # pecah: penjualan-0001.xml, penjualan-0002.xml, ...
 
 # CSV sederhana: satu baris per item, data faktur atau retur diulang di tiap baris
-coretax-xml template faktur-keluaran -o contoh.csv     # atau: template retur-masukan
+coretax-xml template faktur-keluaran -o contoh.csv     # atau: retur-masukan, bupot21, bupot26
 coretax-xml convert contoh.csv                          # jenisnya dikenali dari judul kolom (no_retur = retur)
 
 # Periksa XML yang sudah ada (buatan converter DJP atau aplikasi lain), satu file atau satu folder.
@@ -63,7 +64,7 @@ Excel menyimpan rumus beserta hasil terakhir yang dihitungnya. CLI hanya membaca
 
 ## Keterbatasan
 
-- Faktur pajak keluaran dan retur faktur pajak masukan (Excel dan CSV). Bukti potong menyusul. Di CSV retur, `ppn` wajib diisi per baris (tarifnya tidak ada di template DJP, jadi tidak bisa dihitung).
+- Faktur pajak keluaran, retur faktur pajak masukan, dan bukti potong PPh 21/26 (Excel dan CSV). Bupot unifikasi menyusul. `--maks-per-file` belum berlaku untuk bukti potong. Di CSV retur, `ppn` wajib diisi per baris (tarifnya tidak ada di template DJP, jadi tidak bisa dihitung).
 - `.xls` lama tidak didukung; simpan sebagai `.xlsx`.
 - Angka CSV memakai titik desimal tanpa pemisah ribuan (`1500.50`, bukan `1.500,50`).
 - Kode barang dan kode transaksi yang kehilangan nol di depan karena Excel (`4`, `0`) dipulihkan menjadi `04` dan `000000`.

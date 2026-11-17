@@ -12,7 +12,7 @@ Per 17 November 2026: `coretax-xml` dan `@coretax-xml/cli` 0.2.0 siap terbit di 
 | --- | --- |
 | v0.1 Faktur | 🟡 Kode core, hitung, validasi, dan writer XML ada dengan 46 test. Paket resmi DJP (converter v1.6, template v1.6.1) sudah diunduh; tabel referensi dan urutan elemen dicocokkan, output sama dengan sampel resmi v1.4. **Belum**: golden file dari converter, uji impor nyata (Gerbang 1) |
 | v0.2 CLI + retur | 🟡 Ada: `check()` di core (F3.6); paket CLI dengan `convert` (template Excel DJP dan CSV), `check`, `template`, `schemas`, laporan teks/JSON/HTML, error menunjuk baris Excel; biner mandiri (workflow manual); **retur faktur pajak masukan** (`returMasukan.build/validate/check`, template Excel retur DJP lewat CLI). Output `convert` faktur sama dengan converter DJP untuk 10 kasus uji; retur dicocokkan dengan sampel resmi dan dengan converter DJP untuk 3 retur plus probe pembulatan `.50` (golden file), tetapi belum diuji impor. **Sudah** `buildStream` dan `--maks-per-file` (F1.5, F1.6) serta nama field Inggris untuk faktur keluaran (F1.1) dan katalog kode error `errors/katalog.json`. **Sudah** juga CSV untuk retur dan retur di paket uji impor. **Belum**: validasi XSD (DJP tidak menerbitkan), Gerbang 2 (diuji staf pajak) |
-| v0.3 sampai v0.4 Bupot | Belum dimulai |
+| v0.3 sampai v0.4 Bupot | 🟡 Bupot PPh 21 dan 26: core (`bupot21`, `bupot26`: build, validate, analisis, check), deemed dan tarif otomatis seperti rumus template (TER, Pasal 17, harian, pesangon, pensiun), CLI (Excel DJP, CSV, check, template). Skema dari XSD yang tertanam di template Excel DJP; output sama persis dengan sampel resmi. **Belum**: golden file ekspor Excel (kasus dan file Excel siap di `fixtures/bupot/golden/`), uji impor Coretax, bupot unifikasi (v0.4) |
 | v1.0 Stabil | Belum dimulai |
 
 ## Ringkasan
@@ -109,7 +109,7 @@ v0.1 hanya faktur pajak keluaran; jenis dokumen lain ditambahkan satu per satu s
 | --- | --- | --- | --- |
 | Faktur pajak keluaran | Sample Faktur PK Template v1.4, Excel v1.6.1, root `TaxInvoiceBulk` | Ya, dari dua sumber independen | v0.1 |
 | Retur faktur pajak masukan | Sample Retur Faktur PM Template v1.1 | Belum | v0.2 |
-| Bukti potong PPh 21/26 | Template dan converter bupot di halaman DJP | Belum | v0.3 |
+| Bukti potong PPh 21/26 | BP21 Excel to XML v.4, BP26 Excel to XML (XSD di XML Map) | Ada (belum diuji impor) | v0.3 |
 | Bukti potong unifikasi | Template dan converter bupot di halaman DJP | Belum | v0.4 |
 | Lampiran C SPT Masa PPN | Sample Lampiran C Template v1.1 | Belum | dievaluasi setelah v1.0 |
 | Impor data SPT Tahunan PPh Badan (mis. daftar aset) | Converter XML SPT PPh Badan | Belum | dievaluasi setelah v1.0 |

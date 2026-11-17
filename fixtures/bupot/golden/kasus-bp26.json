@@ -1,0 +1,49 @@
+{
+  "pemotong": {
+    "npwp": "0000000000000000",
+    "nitku": "0000000000000000000000"
+  },
+  "bupot": [
+    {
+      "masa": 2,
+      "tahun": 2025,
+      "penerima": {
+        "tin": "TIN-USA-001",
+        "nama": "JOHN & JANE DOE",
+        "negara": "USA",
+        "alamat": "1 MAIN ST",
+        "tanggalLahir": "1980-01-13",
+        "tempatLahir": "BOSTON",
+        "paspor": "P1234567",
+        "kitas": "KITAS-001"
+      },
+      "fasilitas": "N/A",
+      "kodeObjekPajak": "27-100-99",
+      "penghasilan": 100000000,
+      "jenisDokumen": "CommercialInvoice",
+      "nomorDokumen": "INV-1",
+      "tanggalDokumen": "2025-02-01",
+      "tanggalPemotongan": "2025-02-20",
+      "deemed": 100,
+      "tarif": 20
+    },
+    {
+      "masa": 2,
+      "tahun": 2025,
+      "penerima": {
+        "tin": "TIN-JPN-002",
+        "nama": "SATO",
+        "negara": "JPN"
+      },
+      "nomorFasilitas": "SKD-WPLN/2/2025/001",
+      "fasilitas": "COD",
+      "kodeObjekPajak": "27-100-99",
+      "penghasilan": "25000000.5",
+      "deemed": 100,
+      "tarif": 10,
+      "jenisDokumen": "Contract",
+      "nomorDokumen": "KTR-2",
+      "tanggalPemotongan": "2025-02-20"
+    }
+  ]
+}
