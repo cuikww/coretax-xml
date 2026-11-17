@@ -1,5 +1,13 @@
 # @coretax-xml/cli
 
+## 0.2.2
+
+### Patch Changes
+
+- 9a28f57: README: badge versi npm dan link ke halaman npm. Rilis pertama lewat GitHub Actions dengan provenance (trusted publishing).
+- Updated dependencies [9a28f57]
+  - @coretax-xml/core@0.2.1
+
 ## 0.2.1
 
 ### Patch Changes
